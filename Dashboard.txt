@@ -1,0 +1,836 @@
+@extends('layouts.app')
+
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+@endsection
+
+@section('body-class', 'dashboard')
+
+@section('content')
+    <header class="main-header">
+        <h2 class="logo-text">LoanHub</h2>
+        <div class="header-right">
+            <div class="notification">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill"
+                    viewBox="0 0 16 16">
+                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5
+                                                         5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7
+                                                         0-2.42-1.72-4.44-4.005-4.901" />
+                </svg>
+                <span class="dot"></span>
+            </div>
+            <div class="profile">
+                <img src="https://i.pravatar.cc/40" alt="User">
+                <span class="user-name">John Doe</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h2>Welcome back, John!</h2>
+            <p>Here's an overview of your financial dashboard</p>
+        </header>
+
+
+        <!--  DASHBOARD GRID  -->
+        <div class="row g-4">
+            <!-- Free CIBIL Score -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('images/Free-CIBIL-Score.png') }}" width="44" class="me-2">
+                                <h5 class="fw-semibold mb-0">Free CIBIL Score</h5>
+                            </div>
+                            <span class="badge bg-success bg-opacity-10 text-success fw-semibold">Auto-fetched</span>
+                        </div>
+                        <div class="text-center">
+                            <h2 class="fw-bold text-success display-6 mb-1">750</h2>
+                            <p class="text-muted mb-2 fw-medium">Excellent Credit Score</p>
+                            <div class="progress mb-3" style="height:6px;">
+                                <div class="progress-bar bg-success" style="width:80%"></div>
+                            </div>
+                            <button class="btn btn-primary w-100 fw-semibold"
+                                onclick="window.location.href='{{ route('loan.offers') }}'">
+                                View Detailed Report</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loan Offers -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('images/Loan_Offers.png') }}" width="44" class="me-2">
+                                <h5 class="fw-semibold mb-0">Loan Offers</h5>
+                            </div>
+                            <span class="badge bg-primary bg-opacity-10 text-primary fw-semibold">3 Available</span>
+                        </div>
+                        <ul class="list-unstyled mb-3">
+                            <li class="border-start border-success ps-3 mb-2">
+                                <strong>Personal Loan</strong><br>Pre-approved ₹5,00,000 • 12% APR
+                            </li>
+                            <li class="border-start border-primary ps-3">
+                                <strong>Home Loan</strong><br>Apply Fresh ₹50,00,000 • 8.5% APR
+                            </li>
+                        </ul>
+                        <button class="btn btn-success w-100 fw-semibold"
+                            onclick="window.location.href='{{ route('loan.offers') }}'">
+                            View All Offers</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Documents -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('images/Documents.png') }}" width="44" class="me-2">
+                                <h5 class="fw-semibold mb-0">My Documents</h5>
+                            </div>
+                            <span class="badge bg-warning bg-opacity-10 text-warning fw-semibold">2 Pending</span>
+                        </div>
+                        <ul class="list-unstyled mb-3">
+                            <li class="d-flex justify-content-between"><span>PAN Card</span><i
+                                    class="fa-solid fa-check text-success"></i></li>
+                            <li class="d-flex justify-content-between"><span>Aadhaar Card</span><i
+                                    class="fa-solid fa-check text-success"></i></li>
+                            <li class="d-flex justify-content-between"><span>Salary Slip</span><i
+                                    class="fa-solid fa-clock text-warning"></i></li>
+                            <li class="d-flex justify-content-between"><span>Bank Statement</span><i
+                                    class="fa-solid fa-clock text-warning"></i></li>
+                        </ul>
+                        <button class="btn btn-purple w-100 fw-semibold text-white"
+                            onclick="window.location.href='{{ route('loan.offers') }}'">
+                            Upload Documents</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loan Status -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('images/Status.png') }}" width="44" class="me-2">
+                                <h5 class="fw-semibold mb-0">My Loan Status</h5>
+                            </div>
+                            <span class="badge bg-warning bg-opacity-10 text-warning fw-semibold">In Progress</span>
+                        </div>
+                        <p class="fw-semibold mb-1 text-dark">Personal Loan #PL001</p>
+                        <p class="text-muted mb-2">₹2,00,000 • Applied on Dec 15, 2024</p>
+                        <div class="progress mb-4" style="height:6px;">
+                            <div class="progress-bar bg-warning" style="width:60%"></div>
+                        </div>
+                        <button class="btn btn-primary w-100 fw-semibold"
+                            onclick="window.location.href='{{ route('loan.offers') }}'">
+                            Track Status</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Eligibility Checker -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card shadow-sm border-0 h-100 text-center">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('images/Checker.png') }}" width="44" class="me-2">
+                                <h5 class="fw-semibold mb-0">AI Eligibility Checker</h5>
+                            </div>
+                            <span class="badge bg-light text-danger fw-semibold">Smart</span>
+                        </div>
+                        <h2 class="fw-bold text-dark display-6 mb-1">85%</h2>
+                        <p class="text-muted mb-3">Loan Approval Probability</p>
+                        <ul class="list-unstyled text-start mb-3">
+                            <li>✔ Excellent Credit Score</li>
+                            <li>✔ Stable Income Source</li>
+                            <li>⚠ Low Debt-to-Income Ratio</li>
+                        </ul>
+                        <button class="btn btn-pink w-100 fw-semibold text-white"
+                            onclick="window.location.href='{{ route('loan.offers') }}'">
+                            Check Eligibility</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="col-lg-4 col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <!-- Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('images/Notifications.png') }}" width="44" class="me-2">
+                                <h5 class="fw-semibold mb-0">Notifications</h5>
+                            </div>
+                            <span class="badge bg-danger bg-opacity-10 text-danger fw-semibold px-3 py-2">5 New</span>
+                        </div>
+
+                        <!-- Notification List -->
+                        <ul class="list-unstyled mb-3">
+                            <li class="notification-item bg-primary bg-opacity-10 border-0 rounded-3 p-3 mb-2">
+                                <div class="d-flex align-items-start">
+                                    <div class="me-2 fs-5 text-primary">
+
+                                    </div>
+                                    <div>
+                                        <strong class="d-block text-primary"> <img src="{{ asset('images/info.png') }}"
+                                                alt="Vector Logo"> KYC Verification</strong>
+                                        <small class="text-muted-notifications">Complete your KYC to proceed</small>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="notification-item bg-warning bg-opacity-10 border-0 rounded-3 p-3 mb-2">
+                                <div class="d-flex align-items-start">
+                                    <div class="me-2 fs-5 text-warning">
+
+                                    </div>
+                                    <div>
+                                        <strong class="d-block text-warning"><img src="{{ asset('images/EMI.png') }}"
+                                                alt="Vector Logo"> EMI Due</strong>
+                                        <small class="text-muted-notifications">₹15,000 due on Jan 5, 2025</small>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="notification-item bg-danger bg-opacity-10 border-0 rounded-3 p-3">
+                                <div class="d-flex align-items-start">
+                                    <div class="me-2 fs-5 text-danger">
+
+                                    </div>
+                                    <div>
+                                        <strong class="d-block text-danger"><img src="{{ asset('images/PendingDoc.png') }}"
+                                                alt="Vector Logo"> Pending
+                                            Documents</strong>
+                                        <small class="text-muted-notifications">2 documents pending upload</small>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <!-- Button -->
+                        <button class="btn btn-danger w-100 fw-semibold py-2"
+                            onclick="window.location.href='{{ route('loan.offers') }}'">
+
+                            View All Notifications
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="card shadow-sm border-0 mb-4 mt-5">
+            <div class="card-body-quick-actions">
+                <h5 class="fw-semibold mb-3">Quick Actions</h5>
+
+                <section class="quick-actions d-flex flex-wrap gap-3">
+                    <div class="quick-item text-center flex-fill">
+                        <img src="{{ asset('images/Loan.png') }}" alt="Apply Loan" width="30" class="mb-2">
+                        <p class="mb-0 fw-medium">Apply for Loan</p>
+                    </div>
+                    <div class="quick-item text-center flex-fill">
+                        <img src="{{ asset('images/Calculator.png') }}" alt="EMI Calculator" width="30" class="mb-2">
+                        <p class="mb-0 fw-medium">EMI Calculator</p>
+                    </div>
+                    <div class="quick-item text-center flex-fill">
+                        <img src="{{ asset('images/Support.png') }}" alt="Customer Support" width="30" class="mb-2">
+                        <p class="mb-0 fw-medium">Customer Support</p>
+                    </div>
+                    <div class="quick-item text-center flex-fill">
+                        <img src="{{ asset('images/Report.png') }}" alt="Financial Report" width="30" class="mb-2">
+                        <p class="mb-0 fw-medium">Financial Report</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+    </div>
+@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ====== GLOBAL STYLES ====== */
+body.dashboard {
+    font-family: "Poppins", sans-serif;
+    background: #fff !important;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    padding-top: 90px;
+    font-weight: 400;
+    overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+.main-header {
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1.5rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: 64px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+    padding-left: 8.4rem;
+    font-family: "Poppins", sans-serif;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.8rem;
+    padding-right: 4.4rem;
+}
+
+.notification {
+    position: relative;
+    font-size: 1.3rem;
+    color: #6b7280;
+    cursor: pointer;
+}
+
+.notification:hover {
+    color: #111827;
+}
+
+.notification .dot {
+    position: absolute;
+    top: 0px;
+    right: -3px;
+    width: 8px;
+    height: 8px;
+    background: #ef4444;
+    border-radius: 50%;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.profile img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid #e5e7eb;
+}
+
+.user-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+/* ===== DASHBOARD CONTAINER ===== */
+.dashboard-container {
+    width: 100%;
+    max-width: 1600px;
+    margin: auto;
+    /* padding: 0 1.5rem; */
+    margin-top: 2rem;
+    box-sizing: border-box;
+    background-color: white;
+}
+.dashboard-header {
+    margin-top: 36px;
+}
+.dashboard-header h2 {
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    font-family: "Poppins", sans-serif;
+}
+
+.dashboard-header p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+/* ===== GRID ===== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.8rem;
+}
+
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== CARDS ===== */
+.card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.card-header .icon img {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #f9fafb;
+    padding: 6px;
+}
+
+.card-header h4 {
+    flex: 1;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #111827;
+    margin-left: 12px;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-badge.auto {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.info {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-badge.warn {
+    background: #fef9c3;
+    color: #92400e;
+}
+
+.status-badge.in-progress {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.smart {
+    background: #f3e8ff;
+    color: rgb(236, 72, 153);
+}
+
+.status-badge.alert {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* ===== CIBIL CARD ===== */
+.cibil-card .score-value {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #059669;
+    margin: 10px 0 4px;
+    text-align: center;
+}
+
+.cibil-card .score-text {
+    color: #4b5563;
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 14px;
+}
+
+.cibil-card .progress-bar {
+    height: 6px;
+    width: 100%;
+    background: #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+.cibil-card .progress-bar div {
+    height: 100%;
+    width: 80%;
+    background: #10b981;
+}
+
+/* ===== LOAN CARD ===== */
+.loan-card .loan-list {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 12px;
+}
+
+.loan-card .loan-list li {
+    font-size: 0.95rem;
+    color: #1f2937;
+    margin-bottom: 6px;
+}
+
+.loan-card .loan-list li strong {
+    color: #111827;
+}
+
+.loan-card .loan-list li:first-child {
+    border-left: 3px solid #10b981;
+    padding-left: 8px;
+}
+
+.loan-card .loan-list li:last-child {
+    border-left: 3px solid #3b82f6;
+    padding-left: 8px;
+}
+
+/* ===== DOCUMENTS CARD ===== */
+.docs-card .docs-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+/* .docs-card .docs-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    color: #1f2937;
+    padding: 4px 0;
+}
+.docs-card .docs-list li::after {
+    content: "✔";
+    font-size: 0.8rem;
+    color: #10b981;
+}
+.docs-card .docs-list li:nth-child(3)::after,
+.docs-card .docs-list li:nth-child(4)::after {
+    content: "🕒";
+    color: #f59e0b;
+} */
+/* Document list */
+.docs-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.docs-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.95rem;
+    color: #1f2937;
+    padding: 6px 0;
+}
+
+
+
+/* ===== LOAN STATUS ===== */
+.loan-status-card p {
+    color: #4b5563;
+    margin: 8px 0;
+}
+
+.loan-status-card p strong {
+    color: #111827;
+}
+
+.loan-status-card .progress-bar {
+    height: 6px;
+    width: 100%;
+    background: #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    margin-top: 14px;
+}
+
+.loan-status-card .progress-bar div {
+    height: 100%;
+    width: 60%;
+    background: #facc15;
+}
+
+/* ===== AI CARD ===== */
+.ai-card {
+    text-align: center;
+}
+
+.ai-card .ai-score {
+    font-size: 2.2rem;
+    font-weight: 700;
+    /* color: #1e40af; */
+    margin: 10px 0 4px;
+}
+
+.ai-card p {
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.ai-card .eligibility-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0;
+    text-align: left;
+    /* display: inline-block; */
+}
+
+.ai-card .eligibility-list li {
+    font-size: 0.95rem;
+    color: #374151;
+    padding: 4px 0;
+    display: flex;
+    align-items: center;
+}
+
+.ai-card .eligibility-list li:nth-child(1)::before,
+.ai-card .eligibility-list li:nth-child(2)::before {
+    content: "✔";
+    color: #10b981;
+    margin-right: 8px;
+}
+
+.ai-card .eligibility-list li:nth-child(3)::before {
+    content: "⚠";
+    color: #f59e0b;
+    margin-right: 8px;
+}
+
+/* ===== NOTIFICATIONS ===== */
+.notify-card .notify-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.notify-card .notify-list li {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #374151;
+    display: flex;
+    flex-direction: column;
+}
+
+.notify-card .notify-list li strong {
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 2px;
+}
+
+.notify-card .notify-list li:nth-child(1) {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+}
+
+.notify-card .notify-list li:nth-child(2) {
+    background: #fef9c3;
+    border-left: 4px solid #eab308;
+}
+
+.notify-card .notify-list li:nth-child(3) {
+    background: #fee2e2;
+    border-left: 4px solid #ef4444;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    color: #fff;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.btn-blue {
+    background: #2563eb;
+}
+
+.btn-green {
+    background: #10b981;
+}
+
+.btn-purple {
+    background: #8b5cf6;
+}
+
+.btn-pink {
+    background: #ec4899;
+}
+
+.btn-red {
+    background: #ef4444;
+}
+
+/* ===== QUICK ACTIONS ===== */
+.quick-actions {
+    margin-top: 2.5rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.quick-item {
+    background: #fff;
+    border-radius: 10px;
+    text-align: center;
+    flex: 1;
+    min-width: 200px;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.quick-item:hover {
+    background: #f3f4f6;
+    transform: translateY(-3px);
+}
+
+
+
+
+/* body {
+    font-family: 'Inter', sans-serif;
+    background: #f9fafc;
+    color: #333;
+    overflow-x: hidden;
+}
+
+.btn-purple { background-color: #8b5cf6; }
+.btn-pink { background-color: #ec4899; } */
+/* Make left border thicker */
+.border-start.border-success {
+    border-left-width: 5px !important;
+}
+
+.border-start.border-primary {
+    border-left-width: 5px !important;
+}
+
+.text-muted-notifications {
+    padding-left: 17px;
+}
+
+.text-white{
+    background-color: rgba(147, 51, 234, 1) !important;
+}
+
+.btn.btn-pink.w-100.fw-semibold.text-white {
+    background-color: rgba(219, 39, 119, 1) !important;
+}
+
+.fw-semibold.mb-0{
+     font-family: "Poppins", sans-serif ;
+}
+
+.quick-actions {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.quick-item {
+    background-color: #f9fafc;
+    border-radius: 10px;
+    flex: 1 1 calc(25% - 15px);
+    padding: 20px 10px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    /* border: 1px solid rgba(0, 0, 0, 0.05); */
+}
+
+.quick-item:hover {
+    background-color: #f0f4ff;
+    transform: translateY(-3px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+}
+
+.quick-item img {
+    display: block;
+    margin: 0 auto 8px;
+}
+
+@media (max-width: 768px) {
+    .quick-item {
+        flex: 1 1 calc(50% - 10px);
+    }
+}
+
+@media (max-width: 480px) {
+    .quick-item {
+        flex: 1 1 100%;
+    }
+}
+
+.card.shadow-sm{
+    border: 1px solid rgba(229, 231, 235, 1) !important;
+    border-radius: 8px;
+}

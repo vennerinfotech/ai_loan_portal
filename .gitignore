@@ -1,0 +1,27 @@
+
+/vendor
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/.env
+/.env.local
+/.env.*.backup
+/phpunit.xml
+/phpunit.xml.dist
+/.idea
+/.vscode
+/storage
+/storage/logs
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+/.phpunit.result.cache
+public/images/*
+# Laravel debugging tools
+/.phpunit.result.cache
+# Node.js specific
+/package-lock.json
+/yarn.lock
+/npm-debug.log
+/yarn-error.log

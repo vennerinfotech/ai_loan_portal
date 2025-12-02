@@ -1,0 +1,235 @@
+body.aadhaar {
+    font-family: "Poppins", sans-serif;
+    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+    background: linear-gradient(135deg, #f5f8ff, #e8f0ff);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.aadhaar-container {
+    width: 448px;
+    max-width: 590.5px;
+}
+
+.aadhaar-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    position: relative;
+}
+
+.aadhaar-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.aadhaar-icon {
+    width: 64px;
+    height: 64px;
+    background: #e3f2fd;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.aadhaar-header h1 {
+    font-size: 24px;
+    font-weight: 400;
+    color: #1f2937;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    font-family: "DM Sans", sans-serif;
+}
+
+.aadhaar-subtitle {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0 auto;
+    font-family: "DM Sans", sans-serif;
+    font-weight: 400;
+}
+
+.aadhaar-form {
+    margin-bottom: 24px;
+}
+
+.aadhaar-input-group {
+    margin-bottom: 6px;
+}
+
+.aadhaar-input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(55, 65, 81, 1);
+    margin-bottom: 8px;
+    font-family: "DM Sans", sans-serif;
+}
+
+.aadhaar-input-container {
+    position: relative;
+}
+
+.aadhaar-input-container input {
+    width: 100%;
+    padding: 12px 48px 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    background: #f9fafb;
+}
+
+.aadhaar-input-container input:focus {
+    outline: none;
+    border-color: #4285f4;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.1);
+}
+
+.aadhaar-toggle-visibility {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: color 0.2s ease;
+}
+
+.aadhaar-toggle-visibility:hover {
+    color: #374151;
+}
+
+.aadhaar-security-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(107, 114, 128, 1);
+    padding-top: 1px;
+    margin-bottom: 24px;
+}
+
+.aadhaar-continue-btn {
+    width: 100%;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 1) 0%, rgba(79, 70, 229, 1)100%);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 16px;
+    font-family: "DM Sans", sans-serif;
+}
+
+/* Hover effect */
+.aadhaar-continue-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.aadhaar-help-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 24px;
+}
+
+.aadhaar-help-link a {
+    color: #4285f4;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "DM Sans", sans-serif;
+}
+
+.aadhaar-help-link a:hover {
+    text-decoration: underline;
+}
+
+.aadhaar-security-info {
+    border-top: 1px solid #f3f4f6;
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.aadhaar-security-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.aadhaar-security-item h3 {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(55, 65, 81, 1);
+    margin-bottom: 4px;
+    font-family: "DM Sans", sans-serif;
+}
+
+.aadhaar-security-item p {
+    font-size: 12px;
+    color: rgba(107, 114, 128, 1);
+    line-height: 1.4;
+    font-family: "DM Sans", sans-serif;
+}
+
+.aadhaar-footer {
+    border-top: 1px solid #f3f4f6;
+    padding-top: 16px;
+}
+
+.aadhaar-trust-indicators {
+    text-align: center;
+}
+
+.aadhaar-trust-text {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 8px;
+    font-weight: 400;
+    font-family: "DM Sans", sans-serif;
+}
+
+.aadhaar-ratings {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.aadhaar-rating,
+.aadhaar-ssl {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.aadhaar-rating svg {
+    width: 14px;
+    height: 14px;
+}
+
+.aadhaar-ssl svg {
+    width: 14px;
+    height: 14px;
+}

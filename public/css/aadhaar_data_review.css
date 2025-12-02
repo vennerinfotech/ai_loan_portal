@@ -1,0 +1,150 @@
+
+body.review {
+    background-color: #f4f7fa;
+    font-family: 'Roboto', sans-serif;
+}
+
+.review-container {
+    max-width: 600px;
+}
+
+.review-card {
+    padding: 30px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.header-icon {
+    background-color: #e8f0fe;
+    color: #3b82f6;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.review-card
+.form-control,
+.form-select {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 10px 15px;
+    height: 45px;
+    color: #333;
+}
+
+.form-control:focus,
+.form-select:focus {
+    box-shadow: none;
+    border-color: #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.input-group-field {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.input-group-field .form-control {
+    padding-right: 40px;
+}
+
+.input-icon.textarea-icon {
+    top: 15px;
+    transform: none;
+}
+
+.input-group-field textarea.form-control {
+    height: auto;
+}
+
+.verification-notice {
+    background-color: #e3f2fd;
+    padding: 15px;
+    border-radius: 8px;
+    color: #333;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.verification-notice .bi-info-circle-fill {
+    color: #2196f3;
+    margin-right: 10px;
+    font-size: 1.2rem;
+    min-width: 1.2rem;
+}
+
+.verification-notice p {
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.verification-notice span {
+    font-weight: 400;
+    color: #555;
+    line-height: 1.4;
+    font-size: 0.85rem;
+}
+
+
+.button-group .btn-primary {
+    background-color: #4285f4;
+    border-color: #4285f4;
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.btn-light {
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: #495057;
+    border: 1px solid #ced4da;
+    background-color: white;
+    font-size: 1rem;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.button-group .btn {
+    flex-grow: 1;
+}
+
+.security-footer {
+    margin-top: 25px;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+#successMessage {
+    display: none;
+    padding: 30px;
+}

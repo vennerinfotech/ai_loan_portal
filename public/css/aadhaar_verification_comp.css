@@ -1,0 +1,134 @@
+body.verification-card {
+    background: linear-gradient(135deg, #f5f8ff, #e8f0ff);
+    font-family: 'Roboto', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 15px;
+    overflow: hidden;
+}
+
+.verification-card .verification-container {
+    max-width: 360px;
+    width: 100%;
+}
+
+.verification-card {
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+.check-circle-exact {
+    background-color: #38b47a;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.text-header {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.text-subheader {
+    font-size: 0.9rem;
+    color: #777;
+    line-height: 1.4;
+    margin-bottom: 25px;
+}
+
+.verification-label {
+    background-color: #f1fff4;
+    color: #38b47a;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 25px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.verification-label .bi-question-circle-fill {
+    font-size: 1rem;
+    margin-right: 8px;
+    color: #38b47a;
+}
+
+.security-info {
+    margin-bottom: 30px;
+}
+
+.security-info-content {
+    text-align: left;
+    padding: 0;
+    font-size: 0.75rem;
+    color: #777;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+}
+
+.security-info .bi-lock-fill {
+    color: #8c8c8c;
+    font-size: 0.9rem;
+    margin-right: 8px;
+    margin-top: 1px;
+    min-width: 0.9rem;
+}
+
+.btn-continue {
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    width: 100%;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(100, 100, 250, 0.4);
+    background: linear-gradient(90deg, #3B82F6 0%, #4F46E5 100%);
+
+}
+
+.btn-download-receipt {
+    background-color: #f9f9f9;
+    border: none;
+    padding: 10px 20px;
+    font-weight: 500;
+    width: 100%;
+    font-size: 0.95rem;
+    margin-top: 10px;
+    text-decoration: none;
+}
+
+.btn-download-receipt i {
+    margin-right: 5px;
+    font-size: 1rem;
+}
+
+.help-footer {
+        margin-top: 25px;
+        font-size: 0.8rem;
+        color: #999;
+}
+
+.help-footer a {
+        color: #6a82fb;
+        text-decoration: none;
+        font-weight: 500;
+}

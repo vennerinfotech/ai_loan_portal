@@ -1,0 +1,216 @@
+/* Base Styles */
+body.uploads {
+    font-family: 'Inter', sans-serif;
+    background: #eef3ff;
+    margin-top: 4.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 50px 15px;
+}
+
+/* Main Card Container */
+.pan-upload-card {
+    width: 100%;
+    max-width: 400px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+}
+
+/* Secondary Card Styling (For Upload Box and Instructions/Sample) */
+.pan-secondary-card {
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(229, 231, 235, 1);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+
+/* Header Icon Box */
+.pan-icon-box {
+    height: 48px;
+    width: 48px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: #ff5a2b;
+    background-color: #E8E8FD;
+}
+
+.pan-upload-card h5 {
+    font-size: 24px;
+    font-weight: 700;
+    font-family: "Poppins", sans-serif;
+}
+
+/* Upload Text/Description */
+.pan-upload-description {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* Dashed Upload Area */
+.pan-upload-area {
+    border: 1.5px dashed #cfcfcf;
+    padding: 30px 10px;
+    border-radius: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pan-upload-area:hover {
+    border-color: #b8b8b8;
+    background: #fafafa;
+}
+
+.pan-upload-area i {
+    font-size: 36px;
+    color: #4f4f4f;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.pan-upload-area p {
+    margin: 0;
+    color: #4f4f4f;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Upload Buttons */
+.pan-btn-primary {
+    background: #0d6efd;
+    border-color: #0d6efd;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: white;
+}
+
+.pan-btn-light {
+    background-color: #f8f9fa !important;
+    border-color: #ced4da !important;
+    color: #212529 !important;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 14px;
+}
+
+/* --- Instructions Styles --- */
+
+.pan-instructions h6 i {
+    color: #0d6efd;
+}
+
+.pan-instructions ul {
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.pan-instructions ul li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 14px;
+    color: #343a40;
+    margin-bottom: 8px;
+    list-style: none;
+}
+
+/* Custom checkmark icon */
+.pan-instructions ul li::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #0cab66;
+    font-weight: 900;
+}
+
+/* --- Sample Photo Styles --- */
+.pan-sample-box {
+    background: rgba(239, 246, 255, 1);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.pan-sample-box h4 {
+    font-size: 16px;
+    color: rgba(30, 58, 138, 1);
+}
+
+.pan-sample-box h6 i {
+    color: #0d6efd;
+}
+
+.pan-sample-img-box img {
+    max-width: 80%;
+    height: auto;
+    display: block;
+    margin: 0 auto 5px auto;
+}
+
+.pan-sample-img-box p {
+    font-size: 12px;
+    text-align: center;
+    color: rgba(30, 58, 138, 1);
+}
+
+
+/* --- Format and Size Info --- */
+.pan-format-info p {
+    font-size: 14px;
+    color: #212529;
+    margin-bottom: 4px;
+}
+
+.pan-format-info i.bi-lightning-charge-fill {
+    color: #0d6efd;
+}
+
+.pan-format-info i.bi-arrow-up-circle-fill {
+    color: #0cab66;
+}
+
+
+/* --- Secure Upload Box --- */
+.pan-secure-box {
+    background: #fff8e6;
+    border: 1px solid #f7b325;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.pan-secure-box strong {
+    color: #f7b325;
+    font-weight: 600;
+    display: block;
+    font-size: 14px;
+}
+
+.pan-secure-box p {
+    font-size: 12px;
+    color: #856404;
+    margin-top: 2px;
+}
+
+.pan-secure-box i.bi-shield-fill {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+/* --- Footer Buttons --- */
+.pan-btn-success {
+    background-color: #0cab66 !important;
+    border-color: #0cab66 !important;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: white !important;
+}

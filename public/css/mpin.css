@@ -1,0 +1,68 @@
+ body.mpin-bg {
+     background: linear-gradient(to bottom right, #e6f0ff, #f7f2ff);
+ }
+
+ .mpin-card {
+     width: 470px;
+     background: white;
+ }
+
+ .icon-circle {
+     background: linear-gradient(135deg, #6a5cff, #b14bff);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     color: white;
+     font-size: 28px;
+ }
+
+ .icon-square {
+    width: 53px;
+    height: 54px;
+    border-radius: 9px;
+}
+ .pin-box {
+     margin-left: 25px;
+     margin-right: 35px;
+ }
+
+ .mpin-box {
+     width: 45px;
+     height: 50px;
+     border-radius: 8px;
+     text-align: center;
+     font-size: 22px;
+     border: 1.5px solid #ccc;
+ }
+
+ .mpin-box::-webkit-inner-spin-button,
+ .mpin-box::-webkit-outer-spin-button {
+     -webkit-appearance: none;
+     margin: 0;
+ }
+
+ .mpin-box:focus {
+     border-color: #7a5bff;
+     outline: none;
+     box-shadow: 0 0 5px rgba(122, 91, 255, 0.4);
+ }
+
+ .mpin-req-box {
+     background: #f3f6ff;
+ }
+
+ .gradient-btn {
+     background: linear-gradient(90deg, #7b62ff, #b650ff);
+     border: none !important;
+     transition: all 0.2s ease-in-out;
+ }
+
+ .gradient-btn:hover {
+     opacity: 0.9;
+     box-shadow: 0 4px 12px rgba(123, 98, 255, 0.3);
+ }
+
+ /* Styling for the red cross icon */
+ .text-danger {
+     color: #dc3545 !important;
+ }
