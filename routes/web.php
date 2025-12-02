@@ -1,26 +1,33 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-
 // Route::get('/register', function () {
 //     return view('auth.register');
 // })->name('register');
 
-
 //  Registration Page
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
+// Route::get('/register', function () {
+//     return view('auth.register');
+// })->name('register');
+
+// Route to show the registration form (GET request)
+Route::get('/registration', [RegisterController::class, 'create'])->name('register.create');
+
+// Route to store the registration data (POST request)
+Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 
 //  OTP Page
 Route::get('/verify_otp', function (Request $request) {
     return view('auth.verify_otp');
 })->name('verify.otp');
+
+Route::post('/verify-otp', [RegisterController::class, 'verifyOtp'])->name('otp.verify');
 
 // create a MPIN page
 Route::get('/MPIN', function () {
@@ -52,7 +59,6 @@ Route::get('/aadhaar_data_review', function () {
 Route::get('/aadhaar_verification_completed', function () {
     return view('aadhaar_verification_comp');
 })->name('aadhaar_verification_comp');
-
 
 // Pancard verification
 Route::get('/enter-pan', function () {
@@ -104,4 +110,3 @@ Route::get('/loan_offers', function () {
 Route::get('/aa', function () {
     return view('aa');
 })->name('aa');
-

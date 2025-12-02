@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('styles')
-     <link rel="stylesheet" href="{{ asset('css/verify_otp.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/verify_otp.css') }}">
 @endsection
 
 @section('body-class', 'verify_otp')
@@ -37,18 +37,18 @@
 
                 <div class="extra-links">
                     <p>Didn’t receive the code? <br><br> <a href="#" id="resend">Resend Code</a></p>
-                    <a href="/" class="change-number"><img src="{{ asset('images/pencil.png') }}" alt="Vector Logo"> Change
-                        phone number</a>
+                    <a href="/" class="change-number"><img src="{{ asset('images/pencil.png') }}" alt="Vector Logo">
+                        Change phone number</a>
                 </div>
 
                 <div class="security-note">
-                    {{-- <i class="fa-solid fa-circle-info" style="color: #2a63ea;"></i> --}}
                     <p>For your security, this code will expire in 2 minutes.<br>
                         Don’t share this code with anyone.</p>
                 </div>
             </form>
         </div>
     </div>
+
 @endsection
 
 @push('scripts')
