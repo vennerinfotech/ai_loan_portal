@@ -1,0 +1,132 @@
+/* Variables for easy color changes */
+:root {
+    --primary-purple: #7a31ee;
+    /* Main sign-in button color */
+    --link-purple: #7a31ee;
+    /* Link color for 'Sign up for free' */
+    --forgot-link-color: #707070;
+    /* Color for 'Forgot password?' */
+    --icon-bg-color: #f7f7f7;
+    /* Background color for input icons/text */
+    --text-muted-color: #707070;
+}
+
+body.bg-light {
+    background: linear-gradient(to bottom right, #e6f0ff, #f7f2ff);
+}
+.custom-card {
+    max-width: 450px;
+    width: 100%;
+    border-radius: 12px;
+    border: none;
+}
+
+/* Input Group Styling */
+.custom-input-group {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.custom-input-group .input-group-text {
+    border: none;
+    background-color: var(--icon-bg-color);
+    padding: 0.75rem 1rem;
+    color: var(--text-muted-color);
+}
+
+.custom-input-group .form-control {
+    border: none;
+    padding: 0.75rem 0.75rem;
+    box-shadow: none;
+}
+
+.custom-input-group .form-control:focus {
+    box-shadow: none;
+}
+
+.password-toggle {
+    cursor: pointer;
+}
+
+/* Sign In Button Styling */
+.sign-in-btn {
+    background-color: #4b83ff;
+    /* border-color: var(--primary-purple); */
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+/* Google Button Styling */
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    color: #444;
+    border-color: #e0e0e0;
+}
+
+.google-logo {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+#google {
+    color: #EF4444;
+}
+
+.google-btn i {
+    margin-right: 10px;
+    color: #EF4444;
+    font-size: 1.2rem;
+}
+
+/* Divider Text */
+.divider-text {
+    position: relative;
+    text-align: center;
+    color: var(--text-muted-color);
+    font-size: 0.9rem;
+}
+
+
+
+/* Link Styling */
+.forgot-password-link {
+    color: #4b83ff;
+    font-weight: 500;
+}
+
+.sign-up-link,
+.contact-support-link {
+    color: #4b83ff;
+    font-weight: 600;
+}
+
+.need-help-text {
+    margin-bottom: 0.25rem !important;
+}
+
+label[for="email"] {
+    display: none;
+}
+
+/* Style for the input-group when validation fails */
+.input-group.is-invalid-group {
+    border: 1px solid red;
+    border-radius: .25rem;
+}
+
+
+/* Error message styling */
+.error-message {
+    font-size: 0.875rem;
+    color: red;
+    margin-top: 5px;
+}

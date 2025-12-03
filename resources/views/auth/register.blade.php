@@ -18,8 +18,13 @@
         <!-- Register card -->
         <div class="register-card">
             <h3 class="form-title">Create Account</h3>
+            {{-- @if ($errors->any())
+                <script>
+                    alert("{{ implode('\n', $errors->all()) }}");
+                </script>
+            @endif --}}
 
-            <form class="register-form" method="POST" action="{{ route('register.store') }}">
+            <form class="register-form" method="POST" action="{{ route('register.store') }}" id="registerForm">
                 @csrf
                 <div class="input-group">
                     <label>Full Name</label>
@@ -66,7 +71,7 @@
                     @enderror
                 </div>
 
-                <button type="submit" class="btn-primary-otp">Continue with OTP Verification</button>
+                <button type="submit" class="btn-primary-otp" id="form-submit">Continue with OTP Verification</button>
 
                 <div class="otp-info">
                     <div class="icon"><img src="{{ asset('images/Vector.png') }}" alt="Vector Logo"></div>
@@ -81,6 +86,7 @@
 
                 <p class="signin-text">Already have an account? <a href="#">Sign In</a></p>
             </form>
+
         </div>
     </div>
 @endsection

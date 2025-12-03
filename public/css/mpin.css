@@ -66,3 +66,17 @@
  .text-danger {
      color: #dc3545 !important;
  }
+
+
+/* Add this to your mpin.css Red color for error messages*/
+.input-error {
+    border: 1px solid red;
+}
+
+#cmpin-error-message{
+    padding-bottom: 10px;
+}
+
+#mpin-error-message{
+    padding-bottom: 10px;
+}

@@ -834,3 +834,771 @@ body.dashboard {
     border: 1px solid rgba(229, 231, 235, 1) !important;
     border-radius: 8px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use App\Models\Customer;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
+
+class RegisterController extends Controller
+{
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('auth.register');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        Log::info('Request Data Before Validation:', $request->all());
+
+        // Validate the registration form input
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'phone' => 'required|string|regex:/^[0-9]{10}$/|unique:customers,phone|unique:users,phone',
+                'email' => 'required|email|unique:customers,email|unique:users,email',
+                'pan_card_number' => 'nullable|string|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/',
+                'reference_code' => 'nullable|string|regex:/^[A-Z]{3}[0-9]{3}$/',
+            ]);
+            Log::info('Validated Data:', $validated);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation Failed:', $e->errors());
+
+            return back()->withErrors($e->errors());
+        }
+
+        $cleanedPhoneNumber = preg_replace('/[^0-9]/', '', $validated['phone']);
+        Log::info('Cleaned Phone Number:', ['phone' => $cleanedPhoneNumber]);
+
+        DB::beginTransaction();
+
+        try {
+            // Generate random OTP
+            $otp = rand(100000, 999999);
+            $otpExpiresAt = now()->addMinutes(2); // OTP expiration time (2 minutes)
+
+            // Create the customer record
+            $customer = Customer::create([
+                'name' => $validated['name'],
+                'phone' => $cleanedPhoneNumber,
+                'email' => $validated['email'],
+                'pan_card_number' => $validated['pan_card_number'],
+                'reference_code' => $validated['reference_code'],
+                'otp' => $otp,
+                'otp_expires_at' => $otpExpiresAt,
+            ]);
+
+            Log::info('Customer Created:', $customer->toArray());
+
+            // Insert the same data into the 'users' table
+            $user = User::create([
+                'name' => $validated['name'],
+                'phone' => $cleanedPhoneNumber,
+                'email' => $validated['email'],
+                'pan_card_number' => $validated['pan_card_number'],
+                'reference_code' => $validated['reference_code'],
+                'otp' => $otp,
+                'otp_expires_at' => $otpExpiresAt,
+                'password' => bcrypt('defaultpassword'), // or generate a password
+            ]);
+
+            Log::info('User Created:', $user->toArray());
+
+            // Commit the transaction
+            DB::commit();
+            Log::info('Transaction Committed');
+
+            // Store the customer ID and OTP in session
+            Session::put('customer_id', $customer->id);
+            Session::put('otp', $otp);
+            Session::put('otp_expires_at', $otpExpiresAt);
+
+            Log::info('OTP Stored in session:', ['otp' => $otp]);
+
+            return redirect()->route('verify.otp');  // Redirect to OTP verification route
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Error during customer creation: '.$e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+            ]);
+
+            return back()->withErrors(['error' => 'An error occurred while creating the customer.']);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+
+    /**
+     * Validate the OTP entered by the user.
+     */
+    public function verifyOtp(Request $request)
+    {
+        // Retrieve OTP from session
+        $sessionOtp = Session::get('otp');
+        $otpExpiresAt = Session::get('otp_expires_at');
+
+        // Check if OTP exists in session and if it has expired
+        if (! $sessionOtp || Carbon::now()->greaterThan($otpExpiresAt)) {
+            return back()->withErrors(['error' => 'OTP has expired or is invalid. Please request a new one.']);
+        }
+
+        // Validate the OTP entered by the user
+        $request->validate([
+            'otp' => 'required|numeric|digits:6', // Ensure OTP is a 6-digit number
+        ]);
+
+        $enteredOtp = $request->input('otp');
+
+        // Compare entered OTP with the one in session
+        if ($enteredOtp == $sessionOtp) {
+            // OTP is valid, proceed with verification
+            $customer = Customer::find(Session::get('customer_id'));
+
+            // Optionally: Mark customer as verified or proceed to the next step
+            // $customer->update(['verified' => true]);
+
+            // Clear the OTP from the session after successful verification
+            Session::forget('otp');
+            Session::forget('otp_expires_at');
+
+            return redirect()->route('home')->with('success', 'Your account has been successfully verified.');
+        } else {
+            return back()->withErrors(['error' => 'Invalid OTP. Please try again.']);
+        }
+    }
+
+    /**
+     * Store the generated MPIN in the database.
+     */
+    public function storeMPIN(Request $request)
+    {
+        // Validate the MPIN and confirmation MPIN
+        $validated = $request->validate([
+            'mpin' => 'required|array|size:6',  // Validate that it's an array of size 6
+            'mpin.*' => 'required|numeric|digits:1',  // Ensure each digit is numeric and 1 character long
+            'cmpin' => 'required|array|size:6',  // Validate that it's an array of size 6
+            'cmpin.*' => 'required|numeric|digits:1',  // Ensure each digit is numeric and 1 character long
+        ]);
+
+        // Combine the MPIN and Confirm MPIN arrays into strings
+        $mpin = implode('', $request->input('mpin'));  // Convert the MPIN array to a string
+        $confirmMpin = implode('', $request->input('cmpin'));  // Convert the Confirm MPIN array to a string
+
+        // Ensure MPIN and Confirm MPIN match
+        if ($mpin !== $confirmMpin) {
+            return redirect()->back()->withErrors(['cmpin' => 'The MPIN and Confirm MPIN do not match!']);
+        }
+
+        // Hash the MPIN before saving it to the customers table
+        $hashedMpin = Hash::make($mpin);
+
+        // Retrieve the customer using the session ID
+        $customer = Customer::find(Session::get('customer_id'));  // Get customer from session
+
+        if (! $customer) {
+            return redirect()->back()->withErrors(['customer' => 'Customer not found']);
+        }
+
+        // Store the hashed MPIN in the customers table
+        $customer->m_pin = $hashedMpin;  // Store the hashed MPIN
+        $customer->save();  // Save the customer record
+
+        // Store the MPIN in the users table (if required)
+        $user = User::find(Session::get('customer_id'));  // Find the corresponding user (adjust logic if needed)
+
+        if ($user) {
+            $user->m_pin = $mpin;  // Store the plain MPIN (in case you need to store it for user)
+            $user->save();  // Save the user record
+        } else {
+            // If no user found, you can handle this case (optional)
+            return redirect()->back()->withErrors(['user' => 'User not found']);
+        }
+
+        // Redirect to the dashboard or next step
+        return redirect()->route('dashboard')->with('success', 'MPIN generated successfully!');
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@extends('layouts.app')
+
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/mpin.css') }}">
+@endsection
+
+@section('body-class', 'mpin-bg')
+
+@section('content')
+    <div class="container d-flex justify-content-center align-items-center min-vh-100 mpin-bg">
+        <div class="mpin-card shadow p-4 rounded-4">
+
+            <div class="text-center mb-4">
+                <div class="icon-circle mx-auto icon-square">
+                    <i class="bi bi-lock-fill"></i>
+                </div>
+                <h3 class="fw-bold mt-3">Generate Your MPIN</h3>
+                <p class="text-muted">Create a secure 6-digit MPIN for your account</p>
+            </div>
+            <form method="POST" action="{{ route('mpin.store') }}">
+                @csrf
+                <div class="pin-box">
+                    <label class="fw-semibold mb-1">Enter 6-Digit MPIN</label>
+                    <div class="d-flex justify-content-between mb-3">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-1"
+                            name="mpin[0]">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-2"
+                            name="mpin[1]">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-3"
+                            name="mpin[2]">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-4"
+                            name="mpin[3]">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-5"
+                            name="mpin[4]">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-6"
+                            name="mpin[5]">
+
+                    </div>
+                    <div id="mpin-error-message" class="error-message text-danger"></div>
+                    <label class="fw-semibold mb-1">Confirm MPIN</label>
+                    <div class="d-flex justify-content-between mb-3">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-1"
+                            name="cmpin[0]">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-2"
+                            name="cmpin[1]">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-3"
+                            name="cmpin[2]">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-4"
+                            name="cmpin[3]">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-5"
+                            name="cmpin[4]">
+                        <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-6"
+                            name="cmpin[5]">
+                    </div>
+                </div>
+                <div id="cmpin-error-message" class="error-message text-danger"></div>
+                <div class="p-3 rounded-3 mpin-req-box mb-3">
+                    <h6 class="fw-semibold mb-2"><i class="bi bi-info-circle"></i> MPIN Requirements</h6>
+                    <ul class="small list-unstyled m-0">
+                        <li id="req-length">
+                            <i class="bi bi-x-lg text-danger me-1"></i><span class="text-danger">Must be exactly 6
+                                digits</span>
+                        </li>
+                        <li id="req-sequential">
+                            <i class="bi bi-x-lg text-danger me-1"></i><span class="text-danger">Avoid sequential numbers
+                                (123456)</span>
+                        </li>
+                        <li id="req-repeated">
+                            <i class="bi bi-x-lg text-danger me-1"></i><span class="text-danger">Avoid repeated digits
+                                (111111)</span>
+                        </li>
+                        <li>
+                            <i class="bi bi-check-lg text-success me-1"></i><span class="text-success">Keep it
+                                confidential and memorable</span>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <button class="btn btn-primary w-100 mb-2 gradient-btn" onclick="generateMPIN()">
+                    Generate MPIN
+                </button>
+
+                <button class="btn btn-outline-secondary w-100">
+                    Cancel
+                </button>
+            </form>
+            <p class="text-center small text-muted mt-3">
+                <i class="bi bi-shield-shaded" style="color: rgba(79, 70, 229, 1);"></i> Your MPIN is encrypted and stored
+                securely
+            </p>
+
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+    <script src="{{ asset('js/mpin.js') }}"></script>
+@endpush
+
+
+
+
+
+
+
+
+
+
+// // Function to combine individual input fields into a single 6-digit string
+// function getMPIN(prefix) {
+//     let mpin = "";
+//     for (let i = 1; i <= 6; i++) {
+//         mpin += document.getElementById(`${prefix}-${i}`).value;
+//     }
+//     return mpin;
+// }
+
+// // Checks for sequential numbers (e.g., 123456, 654321)
+// function isSequential(num) {
+//     const seqAsc = "123456";
+//     const seqDesc = "654321";
+//     return num === seqAsc || num === seqDesc;
+// }
+
+// // Checks for repeated digits (e.g., 111111, 222222)
+// function isRepeated(num) {
+//     return /^(\d)\1+$/.test(num);
+// }
+
+// // Real-Time Requirements Update Function
+// function updateRequirements() {
+//     const mpin = getMPIN("mpin");
+
+//     // 1. Length Requirement (Must be exactly 6 digits)
+//     const lengthValid = mpin.length === 6;
+//     updateIcon('req-length', lengthValid);
+
+//     // 2. Sequential Requirement (Avoid sequential)
+//     const sequentialValid = !isSequential(mpin);
+//     if (mpin.length === 6) {
+//         updateIcon('req-sequential', sequentialValid);
+//     } else {
+//         // Keep red until 6 digits are entered
+//         updateIcon('req-sequential', false, true);
+//     }
+
+//     // 3. Repeated Requirement (Avoid repeated)
+//     const repeatedValid = !isRepeated(mpin);
+//     if (mpin.length === 6) {
+//         updateIcon('req-repeated', repeatedValid);
+//     } else {
+//         // Keep red until 6 digits are entered
+//         updateIcon('req-repeated', false, true);
+//     }
+// }
+
+// // Helper function to update the icon (✅ or ❌)
+// function updateIcon(elementId, isValid, forceCross = false) {
+//     const li = document.getElementById(elementId);
+//     if (!li) return;
+
+//     let icon = li.querySelector('i');
+//     if (!icon) {
+//         icon = document.createElement('i');
+//         li.prepend(icon);
+//     }
+
+//     if (isValid && !forceCross) {
+//         icon.className = 'bi bi-check-lg text-success me-1';
+//     } else {
+//         icon.className = 'bi bi-x-lg text-danger me-1';
+//     }
+// }
+
+
+// // MPIN Generation and Validation Logic (Swal.fire used here)
+// function generateMPIN() {
+//     const mpin = getMPIN("mpin");
+//     const confirm = getMPIN("cmpin");
+
+//     // Re-run the requirement check before final submission
+//     updateRequirements();
+
+//     if (mpin.length !== 6 || confirm.length !== 6) {
+//         Swal.fire({
+//             icon: 'warning',
+//             title: 'Incomplete MPIN',
+//             text: 'Please enter a complete 6-digit MPIN in both fields.',
+//             confirmButtonColor: '#7b62ff'
+//         });
+//         return;
+//     }
+
+//     if (mpin !== confirm) {
+//         Swal.fire({
+//             icon: 'error',
+//             title: 'MPIN Mismatch',
+//             text: 'The MPIN and Confirm MPIN do not match!',
+//             confirmButtonColor: '#d33'
+//         });
+//         return;
+//     }
+
+//     if (isSequential(mpin)) {
+//         Swal.fire({
+//             icon: 'error',
+//             title: 'Unsafe MPIN',
+//             text: 'MPIN should not be sequential (e.g., 123456 or 654321).',
+//             confirmButtonColor: '#d33'
+//         });
+//         return;
+//     }
+
+//     if (isRepeated(mpin)) {
+//         Swal.fire({
+//             icon: 'error',
+//             title: 'Unsafe MPIN',
+//             text: 'MPIN should not contain repeated digits (e.g., 111111).',
+//             confirmButtonColor: '#d33'
+//         });
+//         return;
+//     }
+
+//     // Success Pop-up
+//     Swal.fire({
+//         icon: 'success',
+//         title: 'MPIN Generated Successfully!',
+//         text: 'Your secure 6-digit MPIN has been set.',
+//         confirmButtonColor: '#28a745'
+//     }).then(() => {
+//         Optional: "Redirect or perform next action here..";
+//         window.location.href = "/dashboard";
+//     });
+// }
+
+
+// // Auto-Focus/Auto-Tab Logic
+// function handleInput(e) {
+//     const input = e.target;
+//     const isMPINInput = input.id.startsWith('mpin');
+
+//     // Call the real-time update function only for the main MPIN entry
+//     if (isMPINInput) {
+//         updateRequirements();
+//     }
+
+//     // Auto-focus next input field on successful entry
+//     if (input.value && input.value.length === input.maxLength) {
+//         let next = input.nextElementSibling;
+//         while (next && next.tagName !== 'INPUT') {
+//             next = next.nextElementSibling;
+//         }
+//         if (next) {
+//             next.focus();
+//         }
+//     }
+
+//     // Auto-focus previous input field on backspace/delete
+//     if (e.inputType === 'deleteContentBackward' && input.value.length === 0) {
+//         let prev = input.previousElementSibling;
+//         while (prev && prev.tagName !== 'INPUT') {
+//             prev = prev.previousElementSibling;
+//         }
+//         if (prev) {
+//             prev.focus();
+//         }
+//     }
+// }
+
+// // Setup function to attach event listeners
+// function setupAutoTab() {
+//     const mpinInputs = document.querySelectorAll('.mpin-box');
+
+//     mpinInputs.forEach(input => {
+//         input.addEventListener('input', handleInput);
+
+//         // Prevent non-numeric key presses
+//         input.addEventListener('keydown', (e) => {
+//             if (e.key.length === 1 && isNaN(parseInt(e.key)) && e.key !== ' ' && e.key !== '.' && e.key !== ',') {
+//                 if (!e.ctrlKey && !e.altKey && !e.metaKey) {
+//                     e.preventDefault();
+//                 }
+//             }
+//         });
+//     });
+//     // Initial check to ensure requirements are visible (all crosses initially)
+//     updateRequirements();
+// }
+
+// document.addEventListener('DOMContentLoaded', setupAutoTab);
+
+
+
+
+
+// Function to combine individual input fields into a single 6-digit string
+function getMPIN(prefix) {
+    let mpin = "";
+    for (let i = 1; i <= 6; i++) {
+        mpin += document.getElementById(`${prefix}-${i}`).value;
+    }
+    return mpin;
+}
+
+// Checks for sequential numbers (e.g., 123456, 654321)
+function isSequential(num) {
+    const seqAsc = "123456";
+    const seqDesc = "654321";
+    return num === seqAsc || num === seqDesc;
+}
+
+// Checks for repeated digits (e.g., 111111, 222222)
+function isRepeated(num) {
+    return /^(\d)\1+$/.test(num); // Regex to check if all digits are the same (e.g., 111111)
+}
+
+// Real-Time Requirements Update Function
+function updateRequirements() {
+    const mpin = getMPIN("mpin");
+
+    // 1. Length Requirement (Must be exactly 6 digits)
+    const lengthValid = mpin.length === 6;
+    updateIcon('req-length', lengthValid);
+
+    // 2. Sequential Requirement (Avoid sequential)
+    const sequentialValid = !isSequential(mpin);
+    updateIcon('req-sequential', sequentialValid);
+
+    // 3. Repeated Requirement (Avoid repeated)
+    const repeatedValid = !isRepeated(mpin);
+    updateIcon('req-repeated', repeatedValid);
+}
+
+// Helper function to update the icon and text color
+function updateIcon(elementId, isValid) {
+    const li = document.getElementById(elementId);
+    if (!li) return;
+
+    let icon = li.querySelector('i');
+    if (!icon) {
+        icon = document.createElement('i');
+        li.prepend(icon);
+    }
+
+    let text = li.querySelector('span');
+    if (!text) {
+        text = document.createElement('span');
+        li.appendChild(text);
+    }
+
+    if (isValid) {
+        icon.className = 'bi bi-check-lg text-success me-1';  // Green checkmark for valid
+        text.className = 'text-success';  // Change text color to green
+    } else {
+        icon.className = 'bi bi-x-lg text-danger me-1';  // Red cross for invalid
+        text.className = 'text-danger';  // Change text color to red
+    }
+}
+
+// MPIN Generation and Validation Logic
+function generateMPIN() {
+    const mpin = getMPIN("mpin");
+    const confirm = getMPIN("cmpin");
+
+    // Clear previous error messages
+    document.getElementById("mpin-error-message").textContent = '';
+    document.getElementById("cmpin-error-message").textContent = '';
+
+    // Clear previous red border from all input fields
+    const mpinInputs = document.querySelectorAll('.mpin-box');
+    mpinInputs.forEach(input => {
+        input.classList.remove('input-error');
+    });
+
+    // Re-run the requirement check before final submission
+    updateRequirements();
+
+    // 1. Check if both MPIN and Confirm MPIN are exactly 6 digits
+    if (mpin.length !== 6 || confirm.length !== 6) {
+        document.getElementById("mpin-error-message").textContent = 'Please enter a complete 6-digit MPIN in both fields.';
+
+        // Add red border to MPIN fields
+        mpinInputs.forEach(input => {
+            input.classList.add('input-error');
+        });
+
+        return;  // Stop execution if the MPIN is not correct
+    }
+
+    // 2. Check if MPIN and Confirm MPIN match
+    if (mpin !== confirm) {
+        document.getElementById("cmpin-error-message").textContent = 'The MPIN and Confirm MPIN do not match!';
+
+        // Add red border to MPIN fields
+        mpinInputs.forEach(input => {
+            input.classList.add('input-error');
+        });
+
+        return;
+    }
+
+    // 3. Check for sequential MPIN
+    if (isSequential(mpin)) {
+        document.getElementById("mpin-error-message").textContent = 'MPIN should not be sequential (e.g., 123456 or 654321).';
+
+        // Add red border to MPIN fields
+        mpinInputs.forEach(input => {
+            input.classList.add('input-error');
+        });
+
+        return;
+    }
+
+    // 4. Check for repeated MPIN
+    if (isRepeated(mpin)) {
+        document.getElementById("mpin-error-message").textContent = 'MPIN should not contain repeated digits (e.g., 111111).';
+
+        // Add red border to MPIN fields
+        mpinInputs.forEach(input => {
+            input.classList.add('input-error');
+        });
+
+        return;
+    }
+
+    // If all checks pass, show success message and redirect after 5 seconds
+    Swal.fire({
+        icon: 'success',
+        title: 'MPIN Generated Successfully!',
+        text: 'Your MPIN has been created successfully.',
+        confirmButtonColor: '#28a745',
+        timer: 5000,  // 5 seconds
+        timerProgressBar: true,  // Show progress bar during timer
+    }).then(() => {
+        // Redirect to dashboard after success
+        window.location.href = '/dashboard';  // Replace this with the correct dashboard URL
+    });
+}
+
+// Auto-Focus/Auto-Tab Logic for input fields
+function handleInput(e) {
+    const input = e.target;
+
+    // Call the real-time update function only for the main MPIN entry
+    if (input.id.startsWith('mpin')) {
+        updateRequirements();
+    }
+
+    // Auto-focus next input field on successful entry
+    if (input.value && input.value.length === input.maxLength) {
+        let next = input.nextElementSibling;
+        while (next && next.tagName !== 'INPUT') {
+            next = next.nextElementSibling;
+        }
+        if (next) {
+            next.focus();
+        }
+    }
+
+    // Auto-focus previous input field on backspace/delete
+    if (e.inputType === 'deleteContentBackward' && input.value.length === 0) {
+        let prev = input.previousElementSibling;
+        while (prev && prev.tagName !== 'INPUT') {
+            prev = prev.previousElementSibling;
+        }
+        if (prev) {
+            prev.focus();
+        }
+    }
+}
+
+// Setup function to attach event listeners
+function setupAutoTab() {
+    const mpinInputs = document.querySelectorAll('.mpin-box');
+
+    mpinInputs.forEach(input => {
+        input.addEventListener('input', handleInput);
+    });
+
+    // Initialize the validation icons and text to be red by default
+    const initialIcons = document.querySelectorAll('.mpin-req-box li');
+    initialIcons.forEach((li) => {
+        let icon = li.querySelector('i');
+        if (!icon) {
+            icon = document.createElement('i');
+            li.prepend(icon);
+        }
+        icon.className = 'bi bi-x-lg text-danger me-1';  // Set all to red initially
+
+        let text = li.querySelector('span');
+        if (!text) {
+            text = document.createElement('span');
+            li.appendChild(text);
+        }
+        text.className = 'text-danger';  // Set text to red initially
+    });
+
+    // Initial check to ensure requirements are visible (all crosses initially)
+    updateRequirements();
+}
+
+// Adding the red border CSS class to highlight inputs on error
+document.addEventListener('DOMContentLoaded', function () {
+    setupAutoTab();
+});

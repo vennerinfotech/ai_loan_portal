@@ -16,7 +16,7 @@ function isSequential(num) {
 
 // Checks for repeated digits (e.g., 111111, 222222)
 function isRepeated(num) {
-    return /^(\d)\1+$/.test(num);
+    return /^(\d)\1+$/.test(num); // Regex to check if all digits are the same (e.g., 111111)
 }
 
 // Real-Time Requirements Update Function
@@ -29,25 +29,15 @@ function updateRequirements() {
 
     // 2. Sequential Requirement (Avoid sequential)
     const sequentialValid = !isSequential(mpin);
-    if (mpin.length === 6) {
-        updateIcon('req-sequential', sequentialValid);
-    } else {
-        // Keep red until 6 digits are entered
-        updateIcon('req-sequential', false, true);
-    }
+    updateIcon('req-sequential', sequentialValid);
 
     // 3. Repeated Requirement (Avoid repeated)
     const repeatedValid = !isRepeated(mpin);
-    if (mpin.length === 6) {
-        updateIcon('req-repeated', repeatedValid);
-    } else {
-        // Keep red until 6 digits are entered
-        updateIcon('req-repeated', false, true);
-    }
+    updateIcon('req-repeated', repeatedValid);
 }
 
-// Helper function to update the icon (✅ or ❌)
-function updateIcon(elementId, isValid, forceCross = false) {
+// Helper function to update the icon and text color
+function updateIcon(elementId, isValid) {
     const li = document.getElementById(elementId);
     if (!li) return;
 
@@ -57,82 +47,112 @@ function updateIcon(elementId, isValid, forceCross = false) {
         li.prepend(icon);
     }
 
-    if (isValid && !forceCross) {
-        icon.className = 'bi bi-check-lg text-success me-1';
+    let text = li.querySelector('span');
+    if (!text) {
+        text = document.createElement('span');
+        li.appendChild(text);
+    }
+
+    if (isValid) {
+        icon.className = 'bi bi-check-lg text-success me-1';  // Green checkmark for valid
+        text.className = 'text-success';  // Change text color to green
     } else {
-        icon.className = 'bi bi-x-lg text-danger me-1';
+        icon.className = 'bi bi-x-lg text-danger me-1';  // Red cross for invalid
+        text.className = 'text-danger';  // Change text color to red
     }
 }
 
+// MPIN Generation and Validation Logic
+function generateMPIN(event) {
+    event.preventDefault();  // Prevent form submission until validation passes
 
-// MPIN Generation and Validation Logic (Swal.fire used here)
-function generateMPIN() {
     const mpin = getMPIN("mpin");
     const confirm = getMPIN("cmpin");
+
+    // Clear previous error messages
+    document.getElementById("mpin-error-message").textContent = '';
+    document.getElementById("cmpin-error-message").textContent = '';
+
+    // Clear previous red border from all input fields
+    const mpinInputs = document.querySelectorAll('.mpin-box');
+    mpinInputs.forEach(input => {
+        input.classList.remove('input-error');
+    });
 
     // Re-run the requirement check before final submission
     updateRequirements();
 
+    // 1. Check if both MPIN and Confirm MPIN are exactly 6 digits
     if (mpin.length !== 6 || confirm.length !== 6) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Incomplete MPIN',
-            text: 'Please enter a complete 6-digit MPIN in both fields.',
-            confirmButtonColor: '#7b62ff'
+        document.getElementById("mpin-error-message").textContent = 'Please enter a complete 6-digit MPIN in both fields.';
+
+        // Add red border to MPIN fields
+        mpinInputs.forEach(input => {
+            input.classList.add('input-error');
         });
-        return;
+
+        return;  // Stop execution if the MPIN is not correct
     }
 
+    // 2. Check if MPIN and Confirm MPIN match
     if (mpin !== confirm) {
-        Swal.fire({
-            icon: 'error',
-            title: 'MPIN Mismatch',
-            text: 'The MPIN and Confirm MPIN do not match!',
-            confirmButtonColor: '#d33'
+        document.getElementById("cmpin-error-message").textContent = 'The MPIN and Confirm MPIN do not match!';
+
+        // Add red border to MPIN fields
+        mpinInputs.forEach(input => {
+            input.classList.add('input-error');
         });
+
         return;
     }
 
+    // 3. Check for sequential MPIN
     if (isSequential(mpin)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Unsafe MPIN',
-            text: 'MPIN should not be sequential (e.g., 123456 or 654321).',
-            confirmButtonColor: '#d33'
+        document.getElementById("mpin-error-message").textContent = 'MPIN should not be sequential (e.g., 123456 or 654321).';
+
+        // Add red border to MPIN fields
+        mpinInputs.forEach(input => {
+            input.classList.add('input-error');
         });
+
         return;
     }
 
+    // 4. Check for repeated MPIN
     if (isRepeated(mpin)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Unsafe MPIN',
-            text: 'MPIN should not contain repeated digits (e.g., 111111).',
-            confirmButtonColor: '#d33'
+        document.getElementById("mpin-error-message").textContent = 'MPIN should not contain repeated digits (e.g., 111111).';
+
+        // Add red border to MPIN fields
+        mpinInputs.forEach(input => {
+            input.classList.add('input-error');
         });
+
         return;
     }
 
-    // Success Pop-up
+    // If all checks pass, submit the form
+    document.getElementById("mpin-form").submit(); // Submit the form programmatically
+
+    // Show success message and redirect after 5 seconds
     Swal.fire({
         icon: 'success',
         title: 'MPIN Generated Successfully!',
-        text: 'Your secure 6-digit MPIN has been set.',
-        confirmButtonColor: '#28a745'
+        text: 'Your MPIN has been created successfully.',
+        confirmButtonColor: '#28a745',
+        timer: 5000,  // 5 seconds
+        timerProgressBar: true,  // Show progress bar during timer
     }).then(() => {
-        Optional: "Redirect or perform next action here..";
-        window.location.href = "/dashboard";
+        // Redirect to dashboard after success
+        window.location.href = '/dashboard';  // Replace this with the correct dashboard URL
     });
 }
 
-
-// Auto-Focus/Auto-Tab Logic
+// Auto-Focus/Auto-Tab Logic for input fields
 function handleInput(e) {
     const input = e.target;
-    const isMPINInput = input.id.startsWith('mpin');
 
     // Call the real-time update function only for the main MPIN entry
-    if (isMPINInput) {
+    if (input.id.startsWith('mpin')) {
         updateRequirements();
     }
 
@@ -165,18 +185,34 @@ function setupAutoTab() {
 
     mpinInputs.forEach(input => {
         input.addEventListener('input', handleInput);
-
-        // Prevent non-numeric key presses
-        input.addEventListener('keydown', (e) => {
-            if (e.key.length === 1 && isNaN(parseInt(e.key)) && e.key !== ' ' && e.key !== '.' && e.key !== ',') {
-                if (!e.ctrlKey && !e.altKey && !e.metaKey) {
-                    e.preventDefault();
-                }
-            }
-        });
     });
+
+    // Initialize the validation icons and text to be red by default
+    const initialIcons = document.querySelectorAll('.mpin-req-box li');
+    initialIcons.forEach((li) => {
+        let icon = li.querySelector('i');
+        if (!icon) {
+            icon = document.createElement('i');
+            li.prepend(icon);
+        }
+        icon.className = 'bi bi-x-lg text-danger me-1';  // Set all to red initially
+
+        let text = li.querySelector('span');
+        if (!text) {
+            text = document.createElement('span');
+            li.appendChild(text);
+        }
+        text.className = 'text-danger';  // Set text to red initially
+    });
+
     // Initial check to ensure requirements are visible (all crosses initially)
     updateRequirements();
 }
 
-document.addEventListener('DOMContentLoaded', setupAutoTab);
+// Adding the red border CSS class to highlight inputs on error
+document.addEventListener('DOMContentLoaded', function () {
+    setupAutoTab();
+
+    // Attach the event listener to the submit button
+    document.getElementById('form-submit').addEventListener('click', generateMPIN);
+});

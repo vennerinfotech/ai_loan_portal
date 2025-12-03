@@ -286,3 +286,18 @@ body.register {
         font-size: 11.5px;
     }
 }
+
+/* Red color for error messages */
+.error-message {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+}
+
+/* Red border for invalid fields */
+.input-group input.is-invalid {
+    border: 1px solid red;
+}
+

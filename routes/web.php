@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,11 +35,20 @@ Route::get('/MPIN', function () {
     return view('mpin');
 })->name('mpin');
 
-//  Dashboard (after MPIN create successfully)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+// Route to handle MPIN submission
+Route::post('/MPIN', [RegisterController::class, 'storeMPIN'])->name('mpin.store');
 
+Route::get('/logins', function (Request $request) {
+    return view('auth.login');
+})->name('login');
+
+Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+//  Dashboard (after MPIN create successfully)
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->name('dashboard');
+Route::get('/dashboard', [RegisterController::class, 'showDashboard'])->name('dashboard');
 // Aadhaarcard verification
 Route::get('/enter-aadhaar', function () {
     return view('aadhaar');
