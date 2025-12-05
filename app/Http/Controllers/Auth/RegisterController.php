@@ -178,6 +178,14 @@ class RegisterController extends Controller
     }
 
     /**
+     * Show show_verify_otp resource.
+     */
+    public function show_verify_otp()
+    {
+        return view('auth.verify_otp');
+    }
+
+    /**
      * Store the generated MPIN in the database.
      */
     // public function storeMPIN(Request $request)
@@ -227,7 +235,7 @@ class RegisterController extends Controller
     //     return redirect()->route('dashboard')->with('success', 'MPIN generated successfully!');
     // }
 
-    public function storeMPIN(Request $request)
+    public function store_mpin(Request $request)
     {
         Log::info('storeMPIN:', $request->all());
 
@@ -276,6 +284,17 @@ class RegisterController extends Controller
         return redirect()->route('dashboard')->with('success', 'MPIN generated successfully!');
     }
 
+    /**
+     * Show show_mpin resource.
+     */
+    public function show_mpin()
+    {
+        return view('mpin');
+    }
+
+    /**
+     * Show Dashboard resource.
+     */
     public function showDashboard()
     {
         // Check if the user is authenticated

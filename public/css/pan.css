@@ -239,11 +239,6 @@ body.verifications-page {
     font-weight: 400;
 }
 
-
-
-
-
-
 /* --- 1. SweetAlert2 Popup Override --- */
 
 /* Sets the dark gray background overlay for the whole screen */
@@ -374,3 +369,35 @@ body.verifications-page {
     line-height: 32px;
     color: rgba(17, 24, 39, 1);
 }
+
+
+.pan-error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+/* Error styles for the PAN input field */
+.verifications-input-group input.error {
+    border-color: red;
+    box-shadow: 0 0 0 1px red;
+}
+
+.pan-success-message {
+    color: green;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+input.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+}
+

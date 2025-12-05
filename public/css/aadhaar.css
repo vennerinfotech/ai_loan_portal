@@ -233,3 +233,51 @@ body.aadhaar {
     width: 14px;
     height: 14px;
 }
+
+/* Normal state for input field */
+.aadhaar-input-container input {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Focus state (this will now apply correctly even when there's an error) */
+.aadhaar-input-container input:focus {
+    border-color: #4285f4;
+}
+
+/* Error state for input when validation fails */
+.aadhaar-error-message {
+    color: red;
+    font-size: 0.875rem;
+    /* position: absolute; */
+    bottom: -20px;
+    left: 0;
+    width: 100%;
+    padding-left: 5px;
+    margin-top: 5px;
+}
+
+.aadhaar-input-container.shake {
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+/* Styles for the success message */
+.aadhaar-success-message {
+    color: green;
+    font-size: 0.875rem;
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    width: 100%;
+    padding-left: 5px;
+    margin-top: 5px;
+}
+

@@ -17,4 +17,4 @@ function prevSlide() {
 }
 
 // Auto-slide every 5 seconds
-setInterval(nextSlide, 2000);
+setInterval(nextSlide, 5000);

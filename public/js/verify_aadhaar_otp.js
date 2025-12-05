@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const demoOtp = "111111";
     localStorage.setItem("aadhaarOtp", demoOtp);
 
-    let timeLeft = 30;
+    let timeLeft = 120;
 
     // Focus first box
     otpBoxes[0].focus();

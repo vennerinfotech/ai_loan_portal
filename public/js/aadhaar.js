@@ -1,111 +1,91 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const aadhaarInput = document.getElementById('aadhaar');
-    const toggleBtn = document.getElementById('toggleBtn');
-    const continueBtn = document.getElementById('continueBtn');
-    const helpLink = document.getElementById('helpLink');
+document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('.aadhaar-form');
-
+    const aadhaarInput = document.getElementById('aadhaar');
+    const errorMessage = document.createElement('div');
+    const successMessage = document.createElement('div'); // For success message
+    const aadhaarInputContainer = document.querySelector('.aadhaar-input-container');
+    const toggleBtn = document.getElementById('toggleBtn');
     let isVisible = false;
-    let originalValue = '';
 
-    // Error message element
-    let errorMsg = document.createElement('div');
-    errorMsg.className = 'aadhaar-error text-danger small mt-1';
-    aadhaarInput.parentNode.appendChild(errorMsg);
+    // Regular expression to only allow digits
+    const digitRegex = /^\d*$/;
 
-    // Format Aadhaar number
-    function formatAadhaar(value) {
-        const digits = value.replace(/\D/g, '');
-        const limitedDigits = digits.substring(0, 12);
-        return limitedDigits.replace(/(\d{4})(?=\d)/g, '$1 ');
-    }
-
-    // Mask Aadhaar number
-    function maskAadhaar(value) {
-        const digits = value.replace(/\D/g, '');
-        if (digits.length <= 8) {
-            return digits.replace(/\d/g, 'X').replace(/(\w{4})(?=\w)/g, '$1 ');
+    // Validate Aadhaar number on input (allow only digits)
+    aadhaarInput.addEventListener('input', function () {
+        if (!digitRegex.test(aadhaarInput.value)) {
+            aadhaarInput.value = aadhaarInput.value.replace(/[^\d]/g, '');  // Remove non-digit characters
         }
-        const masked = 'X'.repeat(8) + digits.substring(8);
-        return masked.replace(/(\w{4})(?=\w)/g, '$1 ');
-    }
-
-    // Input formatting
-    aadhaarInput.addEventListener('input', function(e) {
-        const cursorPosition = e.target.selectionStart;
-        const oldLength = e.target.value.length;
-        originalValue = formatAadhaar(e.target.value);
-
-        e.target.value = isVisible ? originalValue : maskAadhaar(originalValue);
-
-        const newLength = e.target.value.length;
-        const newPosition = cursorPosition + (newLength - oldLength);
-        e.target.setSelectionRange(newPosition, newPosition);
-
-        updateContinueButton();
-        clearError();
     });
 
-    // Toggle visibility
-    toggleBtn.addEventListener('click', function() {
-        isVisible = !isVisible;
-        aadhaarInput.value = isVisible ? originalValue : maskAadhaar(originalValue);
-        toggleBtn.innerHTML = isVisible
-            ? `<i class="bi bi-shield-shaded"></i>`
-            : `<i class="bi bi-shield-slash-fill"></i>`;
-    });
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();  // Prevent the default form submission behavior
 
-    // Enable/disable continue
-    function updateContinueButton() {
-        const digits = originalValue.replace(/\D/g, '');
-        continueBtn.disabled = digits.length !== 12;
-        if (digits.length === 12) clearError();
-    }
+        const originalValue = aadhaarInput.value.replace(/\D/g, ''); // Get only digits
 
-    // Show error message
-    function showError(msg) {
-        aadhaarInput.classList.add('input-error');
-        errorMsg.innerText = msg;
-    }
+        // Reset error state before validation
+        aadhaarInput.classList.remove('shake');
+        aadhaarInput.style.border = '';  // Remove any border styles from input
+        aadhaarInput.style.borderRadius = '';  // Reset border-radius on input
+        errorMessage.innerHTML = '';  // Clear the error message
+        successMessage.innerHTML = ''; // Clear success message
 
-    function clearError() {
-        aadhaarInput.classList.remove('input-error');
-        errorMsg.innerText = '';
-    }
-
-    // Form submission
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const digits = originalValue.replace(/\D/g, '');
-
-        if (digits.length !== 12) {
-            showError('Aadhaar number is required and must be 12 digits.');
-            aadhaarInput.classList.add('shake');
-            setTimeout(() => aadhaarInput.classList.remove('shake'), 500);
+        // Validate Aadhaar number length (12 digits)
+        if (originalValue.length !== 12) {
+            // showError('Aadhaar number must be 12 digits long.');
+            showError('Aadhaar number is required.');
             aadhaarInput.focus();
             return;
         }
 
-        // SweetAlert2 popup
+        // If valid, show success message
+        showSuccess(`Aadhaar number ${originalValue} stored successfully.`);
+
+        // If valid, show success popup
         await Swal.fire({
             icon: 'success',
             title: 'Aadhaar Verified!',
-            html: `Aadhaar <strong>${digits}</strong> verification initiated successfully.<br>
+            html: `Aadhaar <strong>${originalValue}</strong> verification initiated successfully.<br>
                    <small>(This is a demo popup)</small>`,
             confirmButtonText: 'Proceed',
             confirmButtonColor: '#28a745'
         });
 
-        // Redirect to OTP page
-        window.location.href = "/aadhaar_verify_otp"; // Your OTP page route
+        // After the popup, submit the form to the server
+        form.submit();
     });
 
-    // Help link
-    helpLink.addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('Help: Please enter your 12-digit Aadhaar number. If you need assistance, contact our support team.');
+    // Toggle visibility of Aadhaar number (mask/unmask)
+    toggleBtn.addEventListener('click', function () {
+        isVisible = !isVisible;
+        aadhaarInput.value = isVisible ? aadhaarInput.value.replace(/\D/g, '') : maskAadhaar(aadhaarInput.value);
+        toggleBtn.innerHTML = isVisible
+            ? `<i class="bi bi-shield-shaded"></i>`  // Show unmasked icon
+            : `<i class="bi bi-shield-slash-fill"></i>`;  // Show masked icon
     });
 
-    updateContinueButton();
-    aadhaarInput.focus();
+    // Function to show error
+    function showError(message) {
+        // Apply red border with rounded corners (8px radius) and display error message
+        aadhaarInput.style.border = '1px solid red';  // Red border on input
+        aadhaarInput.style.borderRadius = '8px';  // 8px rounded corners
+        errorMessage.classList.add('aadhaar-error-message');
+        errorMessage.innerHTML = message;
+        aadhaarInputContainer.appendChild(errorMessage);
+        aadhaarInput.classList.add('shake');
+        setTimeout(() => aadhaarInput.classList.remove('shake'), 500);
+    }
+
+    // Function to show success message
+    function showSuccess(message) {
+        successMessage.classList.add('aadhaar-success-message');
+        successMessage.innerHTML = message;
+        aadhaarInputContainer.appendChild(successMessage);
+    }
+
+    // Mask Aadhaar number to hide digits
+    function maskAadhaar(value) {
+        return value.replace(/\d(?=\d{4})/g, "*");
+    }
 });
+
+

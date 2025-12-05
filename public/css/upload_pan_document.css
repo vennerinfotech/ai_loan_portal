@@ -214,3 +214,48 @@ body.uploads {
     font-size: 14px;
     color: white !important;
 }
+
+/* Error styles */
+.pan-upload-area.error {
+    border: 1px solid red;
+}
+
+.pan-upload-area.error .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.error-message {
+    display: block;
+    margin-top: 10px;
+}
+
+/* Success styles */
+.success-message {
+    color: green;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Preview image */
+.pan-upload-area img {
+    max-width: 100%;
+    margin-top: 10px;
+}
+
+/* Red border and shake effect for invalid input */
+.pan-upload-area.shake {
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+#galleryButton:hover {
+    background-color: #207ad4ce !important;
+}

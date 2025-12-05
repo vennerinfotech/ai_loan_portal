@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -317,4 +317,321 @@
         });
     </script>
 </body>
+</html> --}}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aadhaar Verification Receipt</title>
+    <style>
+        /* IMPORT GOOGLE FONTS FOR HINDI & ENGLISH */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
+
+        /* PAGE SETUP FOR A4 PDF */
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Roboto', 'Noto Sans Devanagari', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #222;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .container {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm;
+            margin: 0 auto;
+            position: relative;
+            box-sizing: border-box;
+            background-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.02) 0%, rgba(255, 255, 255, 1) 70%);
+        }
+
+        /* HEADER SECTION */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #db8e31;
+            /* Saffron Line */
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .header-center {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .header-center h1 {
+            font-size: 16pt;
+            font-weight: 700;
+            margin: 0;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .header-center h2 {
+            font-size: 11pt;
+            font-weight: 500;
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .hindi-text {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            font-weight: 700;
+            display: block;
+        }
+
+        /* LOGO PLACEHOLDERS */
+        .logo-box {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-box img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        /* STATUS BANNER */
+        .status-banner {
+            background-color: #e8f5e9;
+            border: 1px solid #2e7d32;
+            /* Official Green */
+            color: #1b5e20;
+            padding: 10px;
+            text-align: center;
+            font-size: 12pt;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* CONTENT GRID */
+        .content-area {
+            display: flex;
+            gap: 20px;
+        }
+
+        .details-left {
+            flex: 60%;
+        }
+
+        .photo-right {
+            flex: 40%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-left: 1px dashed #ccc;
+            padding-left: 20px;
+        }
+
+        /* DATA ROWS */
+        .data-row {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .label {
+            font-size: 8pt;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 3px;
+        }
+
+        .value {
+            font-size: 11pt;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .aadhaar-masked {
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        /* IMAGES */
+        .card-preview {
+            width: 100%;
+            max-width: 250px;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 4px;
+            background: #fafafa;
+        }
+
+        .card-preview img {
+            width: 100%;
+            display: block;
+        }
+
+        /* TRANSACTION FOOTER */
+        .txn-footer {
+            margin-top: 30px;
+            background-color: #f1f8ff;
+            border-left: 4px solid #005691;
+            /* UIDAI Blue */
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9pt;
+        }
+
+        .txn-group strong {
+            display: block;
+            color: #005691;
+            margin-bottom: 2px;
+        }
+
+        /* DISCLAIMER */
+        .legal-footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 15mm;
+            right: 15mm;
+            text-align: center;
+            font-size: 8pt;
+            color: #888;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <div class="logo-box">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="Emblem">
+            </div>
+
+            <div class="header-center">
+                <span class="hindi-text" style="font-size: 14pt;">भारत सरकार</span>
+                <h1>Government of India</h1>
+                <span class="hindi-text" style="font-size: 10pt; color: #555; margin-top:5px;">भारतीय विशिष्ट पहचान
+                    प्राधिकरण</span>
+                <h2>Unique Identification Authority of India</h2>
+                <div style="font-size: 10pt; font-weight: bold; margin-top: 5px; text-decoration: underline;">
+                    Aadhaar Verification Receipt
+                </div>
+            </div>
+
+            <div class="logo-box">
+                <img src="https://upload.wikimedia.org/wikipedia/en/c/cf/Aadhaar_Logo.svg" alt="Aadhaar">
+            </div>
+        </div>
+
+        <div class="status-banner">
+            <span>&#10003;</span>
+            Authentication Successful / <span class="hindi-text" style="margin-left:5px;">प्रमाणीकरण सफल</span>
+        </div>
+
+        <div class="content-area">
+
+            <div class="details-left">
+                <div class="data-row">
+                    <div class="label">Resident Name / <span class="hindi-text" style="display:inline;">निवासी का
+                            नाम</span></div>
+                    <div class="value">{{ $name ?? 'PATEL CHAMANBEN' }}</div>
+                </div>
+
+                <div class="data-row">
+                    <div class="label">Aadhaar Number / <span class="hindi-text" style="display:inline;">आधार
+                            संख्या</span></div>
+                    <div class="value aadhaar-masked">
+                        {{ $aadhaar_number_masked ?? '4513 XXXX 0803' }}
+                    </div>
+                </div>
+
+                <div class="data-row">
+                    <div class="label">Authentication Method / <span class="hindi-text"
+                            style="display:inline;">प्रमाणीकरण विधि</span></div>
+                    <div class="value">
+                        OTP (One Time Password) <span style="color:green; font-weight:bold;">&#10003; Verified</span>
+                    </div>
+                </div>
+
+                <div class="data-row" style="border:none;">
+                    <div class="label">Response Code / <span class="hindi-text" style="display:inline;">प्रतिक्रिया
+                            कोड</span></div>
+                    <div class="value"
+                        style="font-family: monospace; font-size: 9pt; background: #f0f0f0; padding: 4px; border-radius: 3px; word-break: break-all;">
+                        {{ $response_code ?? '96E164B006C32B98DB0A9A2ACE22FAAD' }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="photo-right">
+                <div class="label" style="width: 100%; text-align: center;">ID Card Image / <span class="hindi-text"
+                        style="display:inline;">पहचान पत्र</span></div>
+
+                <div class="card-preview">
+                    @if (!empty($aadhar_card_image))
+                        <img src="data:{{ $aadhar_card_image_mime }};base64,{{ $aadhar_card_image }}"
+                            alt="Aadhaar Card">
+                    @else
+                        <div
+                            style="height:150px; display:flex; align-items:center; justify-content:center; color:#ccc;">
+                            Image Not Available
+                        </div>
+                    @endif
+                </div>
+
+                <div
+                    style="margin-top: 10px; font-size: 8pt; color: green; font-weight: bold; border: 1px solid green; padding: 2px 8px; border-radius: 10px;">
+                    [ VERIFIED ]
+                </div>
+            </div>
+
+        </div>
+
+        <div class="txn-footer">
+            <div class="txn-group">
+                <strong>Transaction ID</strong>
+                {{ $transaction_id ?? '44138419' }}
+            </div>
+            <div class="txn-group">
+                <strong>Date / <span class="hindi-text" style="display:inline;">दिनांक</span></strong>
+                {{ $verification_date ?? '05/12/2025' }}
+            </div>
+            <div class="txn-group">
+                <strong>Time / <span class="hindi-text" style="display:inline;">समय</span></strong>
+                {{ $verification_time ?? '04:23:44' }}
+            </div>
+        </div>
+
+        <div class="legal-footer">
+            This is a computer-generated receipt. / <span class="hindi-text" style="display:inline;">यह एक कंप्यूटर जनित
+                रसीद है।</span><br>
+            © 2025 Unique Identification Authority of India
+        </div>
+
+    </div>
+</body>
+
 </html>

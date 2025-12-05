@@ -76,11 +76,12 @@
                 </form>
 
                 <p class="text-center mt-4">
-                    Don't have an account? <a href="#" class="text-decoration-none sign-up-link">Sign up for free</a>
+                    Don't have an account? <a href="{{ route('register.create') }}"
+                        class="text-decoration-none sign-up-link">Sign up for free</a>
                 </p>
                 <p class="text-center mt-3 text-muted need-help-text">Need help?</p>
                 <p class="text-center">
-                    <a href="#" class="text-decoration-none contact-support-link">Contact support</a>
+                    <a href="https://www.google.com/" class="text-decoration-none contact-support-link">Contact support</a>
                 </p>
             </div>
         </div>

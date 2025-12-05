@@ -89,10 +89,6 @@
                         <i class="bi bi-arrow-left" style="margin-right: 5px;"></i>
                         Back to Edit
                     </button>
-                    {{-- <button type="submit" class="btn btn-primary d-flex align-items-center justify-content-center">
-                            <i class="bi bi-check-lg" style="margin-right: 5px;"></i>
-                            Confirm & Submit
-                        </button> --}}
 
                     <a href="{{ route('aadhaar_verification_comp') }}" class="btn btn-primary d-flex align-items-center justify-content-center">
                         Confirm & Submit

@@ -84,7 +84,7 @@
                     </div>
                 </div>
 
-                <p class="signin-text">Already have an account? <a href="#">Sign In</a></p>
+                <p class="signin-text">Already have an account? <a href="{{ route('login') }}">Sign In</a></p>
             </form>
 
         </div>
