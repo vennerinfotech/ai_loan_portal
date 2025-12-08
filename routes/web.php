@@ -40,6 +40,31 @@ route::get('/aadhaar_verification_completed', [AadhaarController::class, 'aadhaa
 // Route to download Aadhaar verification receipt
 Route::get('/download-verification-receipt', [AadhaarController::class, 'downloadReceipt'])->name('aadhaar.downloadReceipt');
 
+// Test OCR Route (for testing only)
+Route::get('/test-ocr', function () {
+    return view('test_ocr');
+})->name('test.ocr');
+Route::post('/test-ocr', function (\Illuminate\Http\Request $request) {
+    $request->validate([
+        'aadhaar_image' => 'required|mimes:jpg,png,pdf|max:10240',
+    ]);
+
+    if ($request->hasFile('aadhaar_image')) {
+        $file = $request->file('aadhaar_image');
+        $filename = 'test_aadhaar_'.time().'.'.$file->getClientOriginalExtension();
+        $path = $file->storeAs('private_uploads/aadhar_card', $filename);
+
+        $imagePath = storage_path('app/private_uploads/aadhar_card/'.$filename);
+
+        $service = new \App\Services\AadhaarExtractionService;
+        $result = $service->extractFromImage($imagePath);
+
+        return view('test_ocr', ['result' => $result, 'image' => $filename]);
+    }
+
+    return back()->with('error', 'Please upload an image');
+})->name('test.ocr.post');
+
 route::get('/enter-pan', [PancardController::class, 'showpanform'])->name('pan');
 // Route::post('/verify-pan-otp', [PancardController::class, 'verifyOtp'])->name('verify.pan.otp');
 route::get('/upload_pan_document', [PancardController::class, 'upload_pan_document'])->name('Verify_pan');

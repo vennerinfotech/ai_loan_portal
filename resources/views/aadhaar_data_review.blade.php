@@ -29,12 +29,54 @@
         </div>
 
         <div class="review-card">
+            @if(!$document || (!$user && !$customer && !$extracted))
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>No Aadhaar data found.</strong> Please upload your Aadhaar card first.
+                    <br><br>
+                    <a href="{{ route('enter-aadhaar') }}" class="btn btn-primary">Upload Aadhaar Card</a>
+                </div>
+            @else
             <form id="aadhaarForm">
+
+                @php
+                    // Get real data from user/customer or extracted data
+                    $fullName = ($user->name ?? null) ?? ($customer->name ?? null) ?? ($extracted['name'] ?? null) ?? 'N/A';
+                    $dob = ($user->date_of_birth ?? null) ?? ($customer->date_of_birth ?? null) ?? ($extracted['date_of_birth'] ?? null) ?? 'N/A';
+                    $address = ($user->address ?? null) ?? ($customer->address ?? null) ?? ($extracted['address'] ?? null) ?? 'N/A';
+                    $gender = ($user->gender ?? null) ?? ($customer->gender ?? null) ?? ($extracted['gender'] ?? null) ?? 'N/A';
+                    $phone = ($user->phone ?? null) ?? ($customer->phone ?? null) ?? ($extracted['phone'] ?? null) ?? 'N/A';
+                    $email = ($user->email ?? null) ?? ($customer->email ?? null) ?? ($extracted['email'] ?? null) ?? 'N/A';
+                    $aadhaarNumber = ($document->aadhar_card_number ?? null) ?? 'N/A';
+                    
+                    // Format Aadhaar number (mask it)
+                    $maskedAadhaar = 'N/A';
+                    if ($aadhaarNumber && $aadhaarNumber !== 'N/A' && strlen($aadhaarNumber) >= 8) {
+                        $maskedAadhaar = substr($aadhaarNumber, 0, 4) . ' XXXX ' . substr($aadhaarNumber, -4);
+                    }
+                    
+                    // Format DOB
+                    $dobFormatted = 'N/A';
+                    if ($dob && $dob !== 'N/A') {
+                        try {
+                            if (is_string($dob) && strpos($dob, '/') !== false) {
+                                // Format: DD/MM/YYYY
+                                $dobParts = explode('/', $dob);
+                                if (count($dobParts) == 3) {
+                                    $dob = $dobParts[2] . '-' . $dobParts[1] . '-' . $dobParts[0];
+                                }
+                            }
+                            $dobFormatted = \Carbon\Carbon::parse($dob)->format('Y-m-d');
+                        } catch (\Exception $e) {
+                            $dobFormatted = $dob;
+                        }
+                    }
+                @endphp
 
                 <div class="mb-3">
                     <label for="fullName" class="form-label">Full Name</label>
                     <div class="input-group-field">
-                        <input type="text" class="form-control" id="fullName" value="Rajesh Kumar Sharma" readonly>
+                        <input type="text" class="form-control" id="fullName" value="{{ $fullName }}" readonly>
                         <i class="bi bi-person input-icon"></i>
                     </div>
                 </div>
@@ -42,7 +84,7 @@
                 <div class="mb-3">
                     <label for="dob" class="form-label">Date of Birth</label>
                     <div class="input-group-field">
-                        <input type="text" class="form-control" id="dob" value="1985-03-15" readonly>
+                        <input type="text" class="form-control" id="dob" value="{{ $dobFormatted }}" readonly>
                         <i class="bi bi-calendar input-icon"></i>
                     </div>
                 </div>
@@ -50,8 +92,7 @@
                 <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
                     <div class="input-group-field">
-                        <textarea class="form-control" id="address" rows="3" readonly>123, MG Road, Block A, Sector 15, New Delhi - 110001</textarea>
-
+                        <textarea class="form-control" id="address" rows="3" readonly>{{ $address }}</textarea>
                         <i class="bi bi-geo-alt input-icon textarea-icon"></i>
                     </div>
                 </div>
@@ -59,16 +100,32 @@
                 <div class="mb-3">
                     <label for="gender" class="form-label">Gender</label>
                     <select class="form-select" id="gender" disabled>
-                        <option selected>Male</option>
-                        <option>Female</option>
-                        <option>Other</option>
+                        <option value="Male" {{ ($gender == 'Male' || $gender == 'M' || $gender == 'MALE') ? 'selected' : '' }}>Male</option>
+                        <option value="Female" {{ ($gender == 'Female' || $gender == 'F' || $gender == 'FEMALE') ? 'selected' : '' }}>Female</option>
+                        <option value="Other" {{ ($gender != 'Male' && $gender != 'Female' && $gender != 'M' && $gender != 'F' && $gender != 'MALE' && $gender != 'FEMALE' && $gender != 'N/A') ? 'selected' : '' }}>Other</option>
                     </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <div class="input-group-field">
+                        <input type="text" class="form-control" id="phone" value="{{ $phone }}" readonly>
+                        <i class="bi bi-phone input-icon"></i>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="input-group-field">
+                        <input type="email" class="form-control" id="email" value="{{ $email }}" readonly>
+                        <i class="bi bi-envelope input-icon"></i>
+                    </div>
                 </div>
 
                 <div class="mb-4">
                     <label for="aadhaar" class="form-label">Aadhaar Number</label>
                     <div class="input-group-field">
-                        <input type="text" class="form-control" id="aadhaar" value="**** **** 5678" readonly>
+                        <input type="text" class="form-control" id="aadhaar" value="{{ $maskedAadhaar }}" readonly>
                         <i class="bi bi-lock input-icon"></i>
                     </div>
                     <small class="text-muted mt-1 d-block" style="font-size: 0.8rem;">Aadhaar number is masked for
@@ -95,6 +152,7 @@
                     </a>
                 </div>
             </form>
+            @endif
         </div>
         <div class="text-center security-footer" id="securityFooter">
             <i class="bi bi-shield-lock-fill" style="margin-right: 5px; color: #198754;"></i>

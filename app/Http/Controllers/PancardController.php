@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Services\AccountCreationService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,9 +55,9 @@ class PancardController extends Controller
             // Begin a database transaction
             DB::beginTransaction();
 
-            // Save the PAN card number and OTP in the 'documents' table
+            // Always create NEW document entry (never update existing)
             $document = new Document;
-            $document->user_id = Auth::id();
+            $document->user_id = Auth::check() ? Auth::id() : null;
             $document->pan_card_number = $validated['pan_card_number'];
             $document->pan_card_otp = $otp;
             $document->pan_card_otp_expired = $otpExpiration;
@@ -110,16 +111,70 @@ class PancardController extends Controller
             $file = $request->file('pan_card_image');
 
             // Generate a unique filename with the current timestamp
-            $filename = 'pan_card_'.time().'.'.$file->getClientOriginalExtension();
+            $filename = 'pan_card_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
 
             // Store the file in the 'private_uploads/pan_card' folder inside 'storage/app'
             $path = $file->storeAs('private_uploads/pan_card', $filename);
 
-            // Save only the filename in the database (no directory path)
+            // Get the PAN number from request or latest document
+            $panNumber = $request->input('pan_card_number') ?? 
+                        Document::whereNotNull('pan_card_number')
+                                ->latest()
+                                ->value('pan_card_number');
+
+            if (!$panNumber) {
+                return back()->with('error', 'PAN number not found. Please enter PAN number first.');
+            }
+
+            // Always create NEW document entry (never update existing)
             $document = new Document;
-            $document->user_id = Auth::id();
+            $document->pan_card_number = $panNumber;
             $document->pan_card_image = $filename;  // Store only the image name in the database
-            $document->save();
+
+            // Check if Aadhaar is also uploaded
+            $aadhaarDocument = Document::whereNotNull('aadhar_card_number')
+                ->whereNotNull('aadhar_card_image')
+                ->latest()
+                ->first();
+
+            $accountService = new AccountCreationService();
+
+            if ($aadhaarDocument) {
+                // Both Aadhaar and PAN exist, create or get accounts
+                $accounts = $accountService->createOrGetAccountsFromAadhaar(
+                    $aadhaarDocument->aadhar_card_number,
+                    $panNumber
+                );
+
+                if ($accounts) {
+                    // Link document to accounts
+                    $document->user_id = Auth::check() ? Auth::id() : ($accounts['user']->id ?? null);
+                    $document->customer_id = $accounts['customer']->id;
+                    $document->customer_name = $accounts['user']->name;
+                    $document->aadhar_card_number = $aadhaarDocument->aadhar_card_number; // Link Aadhaar to PAN document
+                    $document->save();
+
+                    Log::info('PAN document saved and accounts linked', [
+                        'document_id' => $document->id,
+                        'user_id' => $accounts['user']->id,
+                        'customer_id' => $accounts['customer']->id,
+                        'pan' => $panNumber,
+                    ]);
+
+                    // Auto-login the user
+                    if ($accounts['user']) {
+                        Auth::login($accounts['user']);
+                    }
+                } else {
+                    // If account creation failed, still save document
+                    $document->user_id = Auth::check() ? Auth::id() : null;
+                    $document->save();
+                }
+            } else {
+                // Only PAN uploaded, save document without account creation
+                $document->user_id = Auth::check() ? Auth::id() : null;
+                $document->save();
+            }
 
             // Optionally, you can also return a success message
             return redirect()->route('pan_data_review')->with('success', 'PAN card uploaded successfully.');

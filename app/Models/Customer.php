@@ -18,6 +18,7 @@ class Customer extends Model
         'email',
         'phone',
         'pan_card_number',
+        'aadhaar_card_number',
         'reference_code',
         'm_pin',
         'otp',

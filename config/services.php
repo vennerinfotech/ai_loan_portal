@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'ocr_space' => [
+        'api_key' => env('OCR_SPACE_API_KEY'),
+    ],
+
+    'google_vision' => [
+        'api_key' => env('GOOGLE_VISION_API_KEY'),
+    ],
+
+    'tesseract' => [
+        'path' => env('TESSERACT_PATH', 'tesseract'),
+    ],
+
 ];

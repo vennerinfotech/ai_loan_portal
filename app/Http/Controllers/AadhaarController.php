@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Document;
+use App\Models\User;
+use App\Services\AccountCreationService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -54,9 +57,10 @@ class AadhaarController extends Controller
             // Begin a database transaction
             DB::beginTransaction();
 
-            // Save the Aadhaar number and OTP in the 'documents' table
+            // Always create NEW document entry (never update existing)
             $document = new Document;
-            $document->user_id = Auth::id();  // Assuming you want to store the current user ID
+            // Link to user only if logged in; otherwise keep null to avoid FK failures
+            $document->user_id = Auth::check() ? Auth::id() : null;
             $document->aadhar_card_number = $validated['aadhaar_number'];
             $document->aadhar_card_otp = $otp;
             $document->aadhar_card_otp_expired = $otpExpiration;
@@ -139,16 +143,82 @@ class AadhaarController extends Controller
             $file = $request->file('aadhaar_card_image');
 
             // Generate a unique filename with the current timestamp
-            $filename = 'aadhaar_card_'.time().'.'.$file->getClientOriginalExtension();
+            $filename = 'aadhaar_card_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
 
             // Store the file in the 'private_uploads/aadhar_card' folder inside 'storage/app'
             $path = $file->storeAs('private_uploads/aadhar_card', $filename);
 
-            // Save only the filename in the database (no directory path)
+            // Get the Aadhaar number from request or latest document
+            $aadhaarNumber = $request->input('aadhaar_number') ?? 
+                           Document::whereNotNull('aadhar_card_number')
+                                   ->latest()
+                                   ->value('aadhar_card_number');
+
+            if (!$aadhaarNumber) {
+                return back()->with('error', 'Aadhaar number not found. Please enter Aadhaar number first.');
+            }
+
+            // Resolve user_id only if logged in AND user exists (avoid FK failures)
+            $resolvedUserId = null;
+            if (Auth::check()) {
+                $resolvedUser = \App\Models\User::find(Auth::id());
+                $resolvedUserId = $resolvedUser?->id;
+            }
+
+            // Always create NEW document entry (never update existing)
             $document = new Document;
-            $document->user_id = Auth::id();
+            $document->aadhar_card_number = $aadhaarNumber;
             $document->aadhar_card_image = $filename;  // Store only the image name in the database
-            $document->save();
+            
+            // Get full path to uploaded image for extraction
+            // Check both possible storage paths
+            $aadhaarImagePath = storage_path('app/private_uploads/aadhar_card/'.$filename);
+            if (!file_exists($aadhaarImagePath)) {
+                $aadhaarImagePath = storage_path('app/private/private_uploads/aadhar_card/'.$filename);
+            }
+
+            // Create or get accounts based on Aadhaar number with image extraction
+            $accountService = new AccountCreationService();
+            $accounts = $accountService->createOrGetAccountsFromAadhaar($aadhaarNumber, null, null, $aadhaarImagePath);
+
+            if ($accounts) {
+                // Link document to accounts
+                $document->user_id = $resolvedUserId ?? ($accounts['user']->id ?? null);
+                $document->customer_id = $accounts['customer']->id;
+                $document->customer_name = $accounts['user']->name;
+                $document->save();
+
+                Log::info('Aadhaar document saved and accounts linked', [
+                    'document_id' => $document->id,
+                    'user_id' => $accounts['user']->id,
+                    'customer_id' => $accounts['customer']->id,
+                    'aadhaar' => $aadhaarNumber,
+                ]);
+
+                // Check if PAN is also uploaded, then link it
+                $panDocument = Document::whereNotNull('pan_card_number')
+                    ->whereNotNull('pan_card_image')
+                    ->where('aadhar_card_number', $aadhaarNumber)
+                    ->orWhere(function($query) use ($accounts) {
+                        $query->where('user_id', $accounts['user']->id)
+                              ->whereNotNull('pan_card_number')
+                              ->whereNotNull('pan_card_image');
+                    })
+                    ->latest()
+                    ->first();
+
+                if ($panDocument && !$panDocument->user_id) {
+                    $panDocument->user_id = $resolvedUserId ?? ($accounts['user']->id ?? null);
+                    $panDocument->customer_id = $accounts['customer']->id;
+                    $panDocument->customer_name = $accounts['user']->name;
+                    $panDocument->aadhar_card_number = $aadhaarNumber; // Link Aadhaar to PAN document
+                    $panDocument->save();
+                }
+            } else {
+                // If account creation failed, still save document
+                $document->user_id = $resolvedUserId;
+                $document->save();
+            }
 
             // Optionally, you can also return a success message
             return redirect()->route('aadhaar1')->with('success', 'Aadhaar card uploaded successfully.');
@@ -280,7 +350,75 @@ class AadhaarController extends Controller
      */
     public function aadhaar_data_review()
     {
-        return view('aadhaar_data_review');
+        try {
+            // Get the latest Aadhaar document for the current user or latest uploaded
+            $document = null;
+            
+            if (Auth::check()) {
+                $document = Document::where('user_id', Auth::id())
+                    ->whereNotNull('aadhar_card_number')
+                    ->whereNotNull('aadhar_card_image')
+                    ->latest()
+                    ->first();
+            }
+            
+            // If no document found for user, get latest
+            if (!$document) {
+                $document = Document::whereNotNull('aadhar_card_number')
+                    ->whereNotNull('aadhar_card_image')
+                    ->latest()
+                    ->first();
+            }
+
+            // Get user/customer data if document exists
+            $userData = null;
+            $customerData = null;
+            $extractedData = null;
+
+            if ($document) {
+                // Get user data
+                if ($document->user_id) {
+                    $userData = User::find($document->user_id);
+                }
+
+                // Get customer data
+                if ($document->customer_id) {
+                    $customerData = Customer::find($document->customer_id);
+                }
+
+                // Try to extract data from Aadhaar image if not already in database
+                if ($document->aadhar_card_image) {
+                    $imagePath = storage_path('app/private_uploads/aadhar_card/'.$document->aadhar_card_image);
+                    if (!file_exists($imagePath)) {
+                        $imagePath = storage_path('app/private/private_uploads/aadhar_card/'.$document->aadhar_card_image);
+                    }
+
+                    if (file_exists($imagePath)) {
+                        $extractionService = new \App\Services\AadhaarExtractionService();
+                        $extractedData = $extractionService->extractFromImage($imagePath);
+                    }
+                }
+            }
+
+            // Prepare data for view
+            $data = [
+                'document' => $document,
+                'user' => $userData,
+                'customer' => $customerData,
+                'extracted' => $extractedData,
+            ];
+
+            return view('aadhaar_data_review', $data);
+
+        } catch (\Exception $e) {
+            Log::error('Error loading aadhaar data review: '.$e->getMessage());
+            return view('aadhaar_data_review', [
+                'document' => null,
+                'user' => null,
+                'customer' => null,
+                'extracted' => null,
+            ]);
+        }
     }
 
     /**
