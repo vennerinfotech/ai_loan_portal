@@ -165,10 +165,19 @@ class AadhaarController extends Controller
                 $resolvedUserId = $resolvedUser?->id;
             }
 
-            // Always create NEW document entry (never update existing)
-            $document = new Document;
-            $document->aadhar_card_number = $aadhaarNumber;
+            // Find the existing document created during OTP verification
+            $document = Document::where('aadhar_card_number', $aadhaarNumber)
+                                ->latest()
+                                ->first();
+
+            if (!$document) {
+                // Fallback if somehow OTP step was skipped or doc missing
+                $document = new Document;
+                $document->aadhar_card_number = $aadhaarNumber;
+            }
+
             $document->aadhar_card_image = $filename;  // Store only the image name in the database
+            $document->save(); // Save immediately to ensure image is linked
             
             // Get full path to uploaded image for extraction
             // Check both possible storage paths
@@ -188,6 +197,12 @@ class AadhaarController extends Controller
                 $document->customer_name = $accounts['user']->name;
                 $document->save();
 
+                // AUTO-LOGIN the user to ensure next steps (PAN) are linked to this user
+                if (!Auth::check() && $accounts['user']) {
+                    Auth::login($accounts['user']);
+                    Log::info('User auto-logged in after Aadhaar upload', ['user_id' => $accounts['user']->id]);
+                }
+
                 Log::info('Aadhaar document saved and accounts linked', [
                     'document_id' => $document->id,
                     'user_id' => $accounts['user']->id,
@@ -195,27 +210,31 @@ class AadhaarController extends Controller
                     'aadhaar' => $aadhaarNumber,
                 ]);
 
-                // Check if PAN is also uploaded, then link it
+                // Check if PAN is also uploaded (unlikely in this flow, but good consistency)
                 $panDocument = Document::whereNotNull('pan_card_number')
                     ->whereNotNull('pan_card_image')
                     ->where('aadhar_card_number', $aadhaarNumber)
                     ->orWhere(function($query) use ($accounts) {
-                        $query->where('user_id', $accounts['user']->id)
-                              ->whereNotNull('pan_card_number')
-                              ->whereNotNull('pan_card_image');
+                         // Use safe access for accounts['user']
+                         if (isset($accounts['user']->id)) {
+                             $query->where('user_id', $accounts['user']->id)
+                                   ->whereNotNull('pan_card_number')
+                                   ->whereNotNull('pan_card_image');
+                         }
                     })
                     ->latest()
                     ->first();
 
-                if ($panDocument && !$panDocument->user_id) {
+                if ($panDocument && $panDocument->id !== $document->id && !$panDocument->user_id) {
+                     // Merge separate PAN doc if it exists and is different (rare case now)
                     $panDocument->user_id = $resolvedUserId ?? ($accounts['user']->id ?? null);
                     $panDocument->customer_id = $accounts['customer']->id;
                     $panDocument->customer_name = $accounts['user']->name;
-                    $panDocument->aadhar_card_number = $aadhaarNumber; // Link Aadhaar to PAN document
+                    $panDocument->aadhar_card_number = $aadhaarNumber; 
                     $panDocument->save();
                 }
             } else {
-                // If account creation failed, still save document
+                // If account creation failed, still save document linkage attempt
                 $document->user_id = $resolvedUserId;
                 $document->save();
             }

@@ -21,6 +21,7 @@ class Document extends Model
         'pan_card_image',
         'pan_card_otp',
         'pan_card_otp_expired',
+        'cibil_score',
     ];
 
     public function customer()

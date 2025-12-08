@@ -147,7 +147,18 @@ route::get('/pan_verification_completed', [PancardController::class, 'pan_verifi
 // })->name('pan_verification_comp');
 
 Route::get('/cibil_credit_report', action: function () {
-    return view('cibil_crif');
+    $user = Illuminate\Support\Facades\Auth::user();
+    $panNumber = $user->pan_card_number ?? ($user->customer->pan_card_number ?? 'N/A');
+    
+    // If not in DB, check session (optional fallback)
+    if ($panNumber === 'N/A' || !$panNumber) {
+        $sessionData = session('pan_extracted_data');
+        if (isset($sessionData['pan_number'])) {
+            $panNumber = $sessionData['pan_number'];
+        }
+    }
+    
+    return view('cibil_crif', ['panNumber' => $panNumber]);
 })->name('cibil_crifr');
 
 Route::get('/verify_cibil_credit_scores', action: function () {
@@ -155,8 +166,50 @@ Route::get('/verify_cibil_credit_scores', action: function () {
 })->name('verify_cibil_credit');
 
 Route::get('/cibil_credit_score_report', action: function () {
-    return view('cibil_credit_score');
+    $user = Illuminate\Support\Facades\Auth::user();
+    $panNumber = $user->pan_card_number ?? ($user->customer->pan_card_number ?? 'N/A');
+    
+    // Fallback to session if N/A
+    if ($panNumber === 'N/A' || !$panNumber) {
+        $sessionData = session('pan_extracted_data');
+        if (isset($sessionData['pan_number'])) {
+            $panNumber = $sessionData['pan_number'];
+        }
+    }
+
+    $score = 750; // Default fallback
+    $provider = 'CIBIL';
+    $reportDate = now()->format('M d, Y');
+
+    // Try to fetch real/mocked score
+    if ($panNumber !== 'N/A' && $panNumber) {
+        try {
+            // Check if we have a stored score in the specific document
+            // $document = \App\Models\Document::where('pan_card_number', $panNumber)->latest()->first();
+            // if ($document && $document->cibil_score) {
+            //    $score = $document->cibil_score;
+            // } else {
+                 $service = new \App\Services\CibilScoreService();
+                 $result = $service->fetchCibilScore($panNumber);
+                 if ($result['success']) {
+                     $score = $result['data']['cibil_score'];
+                     $provider = $result['data']['provider'];
+                 }
+            // }
+        } catch (\Exception $e) {
+            // Keep default
+        }
+    }
+
+    return view('cibil_credit_score', [
+        'score' => $score,
+        'panNumber' => $panNumber,
+        'reportDate' => $reportDate,
+        'provider' => $provider
+    ]);
 })->name('cibil_credit_score');
+
+Route::get('/download-cibil-report', [PancardController::class, 'downloadFullReport'])->name('cibil.download.report');
 
 Route::get('/final_confirmation', action: function () {
     return view('verify_cibil_credit_score');

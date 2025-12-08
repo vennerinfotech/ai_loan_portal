@@ -25,7 +25,7 @@
                 <div class="mb-3">
                     <label for="fullName" class="form-label field-label">Full Name</label>
                     <div class="input-group">
-                        <input type="text" class="form-control field-input" id="fullName" value="RAJESH KUMAR SHARMA" readonly>
+                        <input type="text" class="form-control field-input" id="fullName" value="{{ $full_name }}" readonly>
                         <span class="input-group-text field-edit-icon" onclick="enableEdit('fullName')">
                             <i class="bi bi-pencil-square"></i>
                         </span>
@@ -35,7 +35,7 @@
                 <div class="mb-3">
                     <label for="dob" class="form-label field-label">Date of Birth</label>
                     <div class="input-group">
-                        <input type="text" class="form-control field-input" id="dob" value="15/03/1985" readonly>
+                        <input type="text" class="form-control field-input" id="dob" value="{{ $dob }}" readonly>
                         <span class="input-group-text field-edit-icon" onclick="enableEdit('dob')">
                             <i class="bi bi-pencil-square"></i>
                         </span>
@@ -45,7 +45,7 @@
                 <div class="mb-3">
                     <label for="fatherName" class="form-label field-label">Father's Name</label>
                     <div class="input-group">
-                        <input type="text" class="form-control field-input" id="fatherName" value="MOHAN LAL SHARMA" readonly>
+                        <input type="text" class="form-control field-input" id="fatherName" value="{{ $father_name }}" readonly>
                         <span class="input-group-text field-edit-icon" onclick="enableEdit('fatherName')">
                             <i class="bi bi-pencil-square"></i>
                         </span>
@@ -55,7 +55,7 @@
                 <div class="mb-4">
                     <label for="panNumber" class="form-label field-label">PAN Number</label>
                     <div class="input-group">
-                        <input type="text" class="form-control field-input" id="panNumber" value="ABCDE1234F" readonly>
+                        <input type="text" class="form-control field-input" id="panNumber" value="{{ $pan_number }}" readonly>
                         <span class="input-group-text field-edit-icon" onclick="enableEdit('panNumber')">
                             <i class="bi bi-pencil-square"></i>
                         </span>

@@ -25,7 +25,7 @@
         <div class="pan-input-group-container">
             <p class="pan-label">Verified PAN Number</p>
             <div class="pan-input-row">
-                <input type="text" id="panNumber" class="form-control fw-bold" value="ABCDE1234F" readonly>
+                <input type="text" id="panNumber" class="form-control fw-bold" value="{{ $panNumber }}" readonly>
                 <div class="pan-check-icon-wrapper">
                     <div class="pan-check-badge">
                         <i class="bi bi-check-lg"></i>

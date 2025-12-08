@@ -27,16 +27,99 @@ class AccountCreationService
         try {
             DB::beginTransaction();
 
+            // 1. Perform OCR Extraction FIRST (if image provided)
+            // We do this even if user exists, so we can update their details (name, address, etc.)
+            $extractionService = new AadhaarExtractionService();
+            $extractedData = null;
+            
+            if ($aadhaarImagePath && file_exists($aadhaarImagePath)) {
+                $maxRetries = 2; // Reduced retries since we might just be updating
+                $retryCount = 0;
+                while ($retryCount < $maxRetries && !$extractedData) {
+                    $retryCount++;
+                    try {
+                         $extractedData = $extractionService->extractFromImage($aadhaarImagePath);
+                    } catch (\Exception $e) {
+                        Log::error('OCR Extraction failed: ' . $e->getMessage());
+                    }
+                    if (!$extractedData && $retryCount < $maxRetries) sleep(1);
+                }
+            }
+
+            // Prepare common data from extraction
+            $updateData = [];
+            if ($extractedData) {
+                // Name
+                if (!empty($extractedData['name']) && $extractedData['name'] !== 'N/A') {
+                    $name = trim($extractedData['name']);
+                    $name = preg_replace('/[^A-Za-z\s\.]/', '', $name);
+                    $name = preg_replace('/\s+/', ' ', $name);
+                    $updateData['name'] = ucwords(strtolower($name));
+                }
+                // Phone (careful with overwrite? let's trust OCR if valid)
+                if (!empty($extractedData['phone']) && preg_match('/^[6-9]\d{9}$/', $extractedData['phone'])) {
+                    // Update only if we want to trust OCR phone (User usually manually verifies this, but let's capture it)
+                    // $updateData['phone'] = $extractedData['phone']; 
+                }
+                // DOB
+                if (!empty($extractedData['date_of_birth'])) {
+                    $updateData['date_of_birth'] = $this->parseDateOfBirth($extractedData['date_of_birth']);
+                }
+                // Gender
+                if (!empty($extractedData['gender'])) {
+                    $updateData['gender'] = $this->parseGender($extractedData['gender']);
+                }
+                // Address
+                if (!empty($extractedData['address'])) {
+                    $updateData['address'] = $extractedData['address'];
+                }
+            }
+
             // Check if user/customer already exists with this Aadhaar number
             $existingUser = User::where('aadhaar_card_number', $aadhaarNumber)->first();
             $existingCustomer = Customer::where('aadhaar_card_number', $aadhaarNumber)->first();
 
             if ($existingUser && $existingCustomer) {
-                // Accounts already exist, return them
-                Log::info('Using existing accounts for Aadhaar', [
+                // Accounts already exist, update PAN and extracted details
+                $updated = false;
+                
+                // Update PAN
+                if ($panNumber) {
+                    if ($existingUser->pan_card_number !== $panNumber) {
+                        $existingUser->pan_card_number = $panNumber;
+                        $updated = true;
+                    }
+                    if ($existingCustomer->pan_card_number !== $panNumber) {
+                        $existingCustomer->pan_card_number = $panNumber;
+                        $existingCustomer->save();
+                    }
+                }
+
+                // Update extracted details (Name, DOB, Address, Gender)
+                if (!empty($updateData)) {
+                    foreach ($updateData as $key => $value) {
+                         // Only update if value is different and not null
+                         if ($value && $existingUser->$key !== $value) {
+                             $existingUser->$key = $value;
+                             $updated = true;
+                         }
+                         if ($value && $existingCustomer->$key !== $value) {
+                             $existingCustomer->$key = $value;
+                             $existingCustomer->save();
+                         }
+                    }
+                }
+
+                if ($updated) {
+                    $existingUser->save();
+                }
+
+                Log::info('Using existing accounts for Aadhaar (Updated details)', [
                     'aadhaar' => $aadhaarNumber,
                     'user_id' => $existingUser->id,
                     'customer_id' => $existingCustomer->id,
+                    'updated' => $updated,
+                    'data' => $updateData
                 ]);
                 DB::commit();
                 return ['user' => $existingUser, 'customer' => $existingCustomer];
@@ -45,13 +128,16 @@ class AccountCreationService
             // If only one exists, create the missing one
             if ($existingUser && !$existingCustomer) {
                 $customer = Customer::create([
-                    'name' => $existingUser->name,
+                    'name' => $updateData['name'] ?? $existingUser->name,
                     'email' => $existingUser->email,
                     'phone' => $existingUser->phone,
                     'pan_card_number' => $panNumber ?? $existingUser->pan_card_number,
                     'aadhaar_card_number' => $aadhaarNumber,
                     'password' => $existingUser->password,
                     'email_verified_at' => $existingUser->email_verified_at,
+                    'date_of_birth' => $updateData['date_of_birth'] ?? $existingUser->date_of_birth,
+                    'gender' => $updateData['gender'] ?? $existingUser->gender,
+                    'address' => $updateData['address'] ?? $existingUser->address,
                 ]);
                 DB::commit();
                 return ['user' => $existingUser, 'customer' => $customer];
@@ -59,62 +145,40 @@ class AccountCreationService
 
             if ($existingCustomer && !$existingUser) {
                 $user = User::create([
-                    'name' => $existingCustomer->name,
+                    'name' => $updateData['name'] ?? $existingCustomer->name,
                     'email' => $existingCustomer->email,
                     'phone' => $existingCustomer->phone,
                     'pan_card_number' => $panNumber ?? $existingCustomer->pan_card_number,
                     'aadhaar_card_number' => $aadhaarNumber,
                     'password' => $existingCustomer->password,
                     'email_verified_at' => $existingCustomer->email_verified_at,
+                    'date_of_birth' => $updateData['date_of_birth'] ?? $existingCustomer->date_of_birth,
+                    'gender' => $updateData['gender'] ?? $existingCustomer->gender,
+                    'address' => $updateData['address'] ?? $existingCustomer->address,
                 ]);
                 DB::commit();
                 return ['user' => $user, 'customer' => $existingCustomer];
             }
 
             // No existing accounts, create new ones
-            // MANDATORY: Extract real data from Aadhaar card image using OCR API
-            // DO NOT generate any data - ONLY use API extracted data
+            // MANDATORY: Check if we have extracted data from the top
             
-            if (!$aadhaarImagePath || !file_exists($aadhaarImagePath)) {
-                DB::rollback();
-                Log::error('Aadhaar image not found for extraction', [
-                    'image_path' => $aadhaarImagePath,
-                ]);
-                throw new \Exception('Aadhaar card image is required to extract your information. Please upload a clear image and try again.');
-            }
-
-            // Extract data using OCR API - Try multiple times if needed
-            $extractionService = new AadhaarExtractionService();
-            $extractedData = null;
-            $maxRetries = 3;
-            $retryCount = 0;
-
-            while ($retryCount < $maxRetries && !$extractedData) {
-                $retryCount++;
-                Log::info("Attempting OCR extraction (Attempt {$retryCount}/{$maxRetries})...");
-                
-                $extractedData = $extractionService->extractFromImage($aadhaarImagePath);
-                
-                if ($extractedData) {
-                    Log::info('✅ Successfully extracted data from Aadhaar card via OCR API', $extractedData);
-                    break;
-                } else {
-                    Log::warning("OCR extraction attempt {$retryCount} failed");
-                    if ($retryCount < $maxRetries) {
-                        sleep(2); // Wait 2 seconds before retry
-                    }
-                }
-            }
-
-            // CRITICAL: If extraction failed completely, we CANNOT proceed
             if (!$extractedData) {
+                // If we reached here without extracted data, and no accounts exist, we failed.
+                // Re-check image path just to be sure we didn't skip extraction by mistake
+                 if (!$aadhaarImagePath || !file_exists($aadhaarImagePath)) {
+                    DB::rollback();
+                    Log::error('Aadhaar image not found for extraction', [
+                        'image_path' => $aadhaarImagePath,
+                    ]);
+                    throw new \Exception('Aadhaar card image is required to extract your information. Please upload a clear image and try again.');
+                }
+                
+                // If we have image path but $extractedData is null, it means extraction failed silently above (or max retries reached)
                 DB::rollback();
-                Log::error('CRITICAL: OCR API extraction failed after all retries', [
-                    'image_path' => $aadhaarImagePath,
-                    'retries' => $maxRetries,
-                ]);
-                throw new \Exception('Failed to extract information from Aadhaar card. Please ensure the image is clear, well-lit, and try again. If the problem persists, contact support.');
+                throw new \Exception('Failed to extract information from Aadhaar card. Please ensure the image is clear and try again.');
             }
+
 
             // Extract and validate data from API response
             // ONLY use data extracted from API - NO generation allowed
