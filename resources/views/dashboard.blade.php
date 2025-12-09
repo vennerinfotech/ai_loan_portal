@@ -86,11 +86,11 @@
         <section class="quick-actions-section">
             <h5 class="fw-semibold mb-3 quick-actions-title">Quick Actions</h5>
             <div class="quick-actions-list">
-                <a href="#" class="quick-item-button">
+                <a href="{{ route('enter-aadhaar') }}" class="quick-item-button">
                     <i class="fas fa-plus"></i>
                     <p class="mb-0 fw-medium">Free CIBIL Score</p>
                 </a>
-                <a href="#" class="quick-item-button my-doc">
+                <a href="{{ route('my-documents') }}" class="quick-item-button my-doc">
                     <i class="fas fa-folder"></i>
                     <p class="mb-0 fw-medium">My Document Locker</p>
                 </a>

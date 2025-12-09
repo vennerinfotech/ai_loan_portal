@@ -228,3 +228,9 @@ Route::get('/loan_offers', function () {
 Route::get('/aa', function () {
     return view('aa');
 })->name('aa');
+
+// Document Locker Route
+Route::get('/my-documents', [App\Http\Controllers\DocumentController::class, 'index'])->name('my-documents');
+Route::get('/my-documents/{type}', [App\Http\Controllers\DocumentController::class, 'show'])->name('my-documents.show');
+Route::get('/document-image/{type}/{filename}', [App\Http\Controllers\DocumentController::class, 'serveImage'])->name('document.image');
+
