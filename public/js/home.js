@@ -1,20 +1,18 @@
-const slides = document.getElementById('slides');
-const totalSlides = slides.children.length;
-let currentIndex = 0;
-
-function showSlide(index) {
-    slides.style.transform = `translateX(-${index * 100}%)`;
-}
-
-function nextSlide() {
-    currentIndex = (currentIndex + 1) % totalSlides;
-    showSlide(currentIndex);
-}
-
-function prevSlide() {
-    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-    showSlide(currentIndex);
-}
-
-// Auto-slide every 5 seconds
-setInterval(nextSlide, 5000);
+const heroSwiper = new Swiper(".heroSwiper", {
+    loop: true,
+    speed: 800,
+    autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+    },
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+    pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+    },
+    slidesPerView: 1,
+    spaceBetween: 30,
+});

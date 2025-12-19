@@ -4,6 +4,7 @@ use App\Http\Controllers\AadhaarController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PancardController;
+use App\Http\Controllers\HeaderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -149,7 +150,7 @@ route::get('/pan_verification_completed', [PancardController::class, 'pan_verifi
 Route::get('/cibil_credit_report', action: function () {
     $user = Illuminate\Support\Facades\Auth::user();
     $panNumber = $user->pan_card_number ?? ($user->customer->pan_card_number ?? 'N/A');
-    
+
     // If not in DB, check session (optional fallback)
     if ($panNumber === 'N/A' || !$panNumber) {
         $sessionData = session('pan_extracted_data');
@@ -157,7 +158,7 @@ Route::get('/cibil_credit_report', action: function () {
             $panNumber = $sessionData['pan_number'];
         }
     }
-    
+
     return view('cibil_crif', ['panNumber' => $panNumber]);
 })->name('cibil_crifr');
 
@@ -168,7 +169,7 @@ Route::get('/verify_cibil_credit_scores', action: function () {
 Route::get('/cibil_credit_score_report', action: function () {
     $user = Illuminate\Support\Facades\Auth::user();
     $panNumber = $user->pan_card_number ?? ($user->customer->pan_card_number ?? 'N/A');
-    
+
     // Fallback to session if N/A
     if ($panNumber === 'N/A' || !$panNumber) {
         $sessionData = session('pan_extracted_data');

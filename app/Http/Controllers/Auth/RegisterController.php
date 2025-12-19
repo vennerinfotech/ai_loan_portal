@@ -310,4 +310,7 @@ class RegisterController extends Controller
         // If user is not authenticated, redirect to login page
         return redirect()->route('login');
     }
+
+
+
 }
