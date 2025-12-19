@@ -304,7 +304,7 @@ class RegisterController extends Controller
             // dd($user);
 
             // Pass the user's name to the view
-            return view('dashboard', ['userName' => $user->name]);
+            return view('dashboard', ['userName' => $user->name ,'showHeader' => true ]);
         }
 
         // If user is not authenticated, redirect to login page

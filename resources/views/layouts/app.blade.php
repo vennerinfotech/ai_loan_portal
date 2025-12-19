@@ -28,11 +28,14 @@
     <style></style>
     <!-- CSS Files -->
     @yield('styles')
-    @include('layouts.header')
 
 </head>
 
 <body class="@yield('body-class')">
+    @if(isset($showHeader) && $showHeader)
+        @include('layouts.header')
+    @endif
+
     @yield('content')
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

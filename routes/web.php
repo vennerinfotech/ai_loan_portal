@@ -8,7 +8,7 @@ use App\Http\Controllers\HeaderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome', ['showHeader' => true]);
 });
 
 Route::get('/register', [RegisterController::class, 'create'])->name('register.create');
