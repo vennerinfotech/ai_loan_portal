@@ -11,6 +11,7 @@
     --text-muted-color: #707070;
 }
 
+
 body.bg-light {
     background: linear-gradient(to bottom right, #e6f0ff, #f7f2ff);
 }

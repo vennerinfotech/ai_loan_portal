@@ -1,5 +1,11 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: "Inter", sans-serif;
+    font-family: "Poppins", sans-serif;
 }
 .section-padding {
     padding: 100px 0px;
@@ -49,7 +55,7 @@ body {
 
 .slide p {
     margin: 30px 0;
-    font-size: 20px;
+    font-size: 18px;
     color: #fff;
     font-weight: 400;
 }
@@ -402,12 +408,21 @@ body {
 @media (max-width: 767px) {
     .slide h1,
     .how-it-works h2 {
-        font-size: 26px;
+        font-size: 22px;
     }
 
     .slide p {
-        font-size: 16px;
+        font-size: 14px;
         margin: 20px 0;
+    }
+
+    .card-info p,
+    .how-it-works .steps .step p,
+    .how-it-works .subtitle,
+    .footer .tagline,
+    .footer-left,
+    .footer-right a{
+        font-size: 14px;
     }
 
     .carousel-wrapper .swiper-button-prev,

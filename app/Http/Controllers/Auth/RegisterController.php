@@ -292,6 +292,11 @@ class RegisterController extends Controller
         return view('mpin');
     }
 
+    public function forgot_mpin()
+    {
+      return view('forgot_mpin');
+    }
+
     /**
      * Show Dashboard resource.
      */
@@ -304,7 +309,7 @@ class RegisterController extends Controller
             // dd($user);
 
             // Pass the user's name to the view
-            return view('dashboard', ['userName' => $user->name ,'showHeader' => true ]);
+            return view('dashboard', ['userName' => $user->name]);
         }
 
         // If user is not authenticated, redirect to login page

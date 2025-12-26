@@ -20,6 +20,9 @@ Route::post('/verify-otp', [RegisterController::class, 'verifyOtp'])->name('otp.
 route::get('/MPIN', [RegisterController::class, 'show_mpin'])->name('mpin');
 Route::post('/mpin', [RegisterController::class, 'store_mpin'])->name('mpin.store');
 
+Route::get('/Forgot_MPIN', [RegisterController::class, 'forgot_mpin'])->name('forgot_mpin');
+
+
 Route::get('/dashboard', [RegisterController::class, 'showDashboard'])->name('dashboard');
 
 route::get('/login', [LoginController::class, 'create'])->name('login');
@@ -52,10 +55,10 @@ Route::post('/test-ocr', function (\Illuminate\Http\Request $request) {
 
     if ($request->hasFile('aadhaar_image')) {
         $file = $request->file('aadhaar_image');
-        $filename = 'test_aadhaar_'.time().'.'.$file->getClientOriginalExtension();
+        $filename = 'test_aadhaar_' . time() . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs('private_uploads/aadhar_card', $filename);
 
-        $imagePath = storage_path('app/private_uploads/aadhar_card/'.$filename);
+        $imagePath = storage_path('app/private_uploads/aadhar_card/' . $filename);
 
         $service = new \App\Services\AadhaarExtractionService;
         $result = $service->extractFromImage($imagePath);
@@ -190,12 +193,12 @@ Route::get('/cibil_credit_score_report', action: function () {
             // if ($document && $document->cibil_score) {
             //    $score = $document->cibil_score;
             // } else {
-                 $service = new \App\Services\CibilScoreService();
-                 $result = $service->fetchCibilScore($panNumber);
-                 if ($result['success']) {
-                     $score = $result['data']['cibil_score'];
-                     $provider = $result['data']['provider'];
-                 }
+            $service = new \App\Services\CibilScoreService();
+            $result = $service->fetchCibilScore($panNumber);
+            if ($result['success']) {
+                $score = $result['data']['cibil_score'];
+                $provider = $result['data']['provider'];
+            }
             // }
         } catch (\Exception $e) {
             // Keep default
@@ -234,4 +237,3 @@ Route::get('/aa', function () {
 Route::get('/my-documents', [App\Http\Controllers\DocumentController::class, 'index'])->name('my-documents');
 Route::get('/my-documents/{type}', [App\Http\Controllers\DocumentController::class, 'show'])->name('my-documents.show');
 Route::get('/document-image/{type}/{filename}', [App\Http\Controllers\DocumentController::class, 'serveImage'])->name('document.image');
-

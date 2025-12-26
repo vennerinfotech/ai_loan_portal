@@ -1,46 +1,35 @@
-body.dashboard {
+body {
     font-family: "Poppins", sans-serif;
-    background: #f9fafc !important;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    padding-top: 64px;
-    font-weight: 400;
-    overflow-x: hidden;
 }
 
-.main-header {
-    width: 100%;
-    background: #fff;
+.header-wrapper{
     border-bottom: 1px solid #e5e7eb;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    padding: 15px 0px;
+}
+
+.header-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.8rem 13rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    height: 64px;
+    gap: 15px;
 }
 
 .logo-text {
     font-size: 24px;
-    font-weight: 700;
+    font-weight: 600;
     color: #111827;
-    font-family: "Poppins", sans-serif;
 }
 
 .header-right {
     display: flex;
     align-items: center;
-    gap: 1.8rem;
+    gap: 15px;
 }
 
 .notification {
     position: relative;
-    font-size: 1.3rem;
+    font-size: 14px;
     color: #6b7280;
     cursor: pointer;
 }
@@ -69,26 +58,9 @@ body.dashboard {
 }
 
 .user-name {
-    font-size: 0.95rem;
+    font-size: 16px;
     font-weight: 600;
     color: #111827;
-}
-
-/* .dashboard-container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 0 1.5rem;
-    margin-top: 1rem;
-    box-sizing: border-box;
-} */
-
-.dashboard-container {
-    width: 100%;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    margin-top: 1rem;
-    box-sizing: border-box;
 }
 
 .dashboard-header {
@@ -97,9 +69,10 @@ body.dashboard {
 }
 
 .dashboard-header h2 {
-    font-weight: 700;
+    font-weight: 600;
     margin-bottom: 0.3rem;
-    font-family: "Poppins", sans-serif;
+    font-size: 30px;
+    line-height: 40px;
 }
 
 .dashboard-header p {
@@ -114,10 +87,9 @@ body.dashboard {
 }
 
 .action-card {
-    border-radius: 12px;
-    padding: 24px;
+    border-radius: 10px;
+    padding: 30px;
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     min-height: 200px;
     display: flex;
@@ -129,38 +101,60 @@ body.dashboard {
     transform: translateY(-5px);
 }
 
-.action-card .icon-box {
-    font-size: 1.5rem;
+.action-card.card-green .icon-box,
+.action-card.card-blue-light .icon-box,
+.action-card.card-blue-dark  .icon-box,
+.action-card.card-orange .icon-box  {
+    font-size: 20px;
+    background: #4ccb7b75;
+    height: 55px;
+    width: 55px;
+    text-align: center;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 15px;
 }
 
+.action-card.card-blue-light .icon-box{
+    background: #5a599e;
+}
+
+.action-card.card-blue-dark .icon-box{
+    background: #7573e6;
+}
+
+.action-card.card-orange .icon-box{
+    background: #F7B13C;
+}
+
 .card-title {
-    font-size: 1.5rem;
+    font-size: 24px;
     font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .card-description {
-    font-size: 0.95rem;
-    line-height: 1.4;
+    font-size: 16px;
+    line-height: 24px;
     margin-bottom: 20px;
-    flex-grow: 1;
 }
 
 .card-green {
-    background-color: #34d399;
+    background: linear-gradient(to left, #22C55E, #16A34A);
 }
 
 .card-blue-light {
-    background-color: #60a5fa;
+    background: linear-gradient(to left, #6969a6, #252484);
 }
 
 .card-blue-dark {
-    background-color: #3b82f6;
+     background: linear-gradient(to left, #8887d6, #6765e8);
 }
 
 .card-orange {
-    background-color: #fb923c;
+    background: linear-gradient(to left, #E6AF52, #F59E0B);
 }
 
 /* Button Styling for Main Cards */
@@ -185,15 +179,15 @@ body.dashboard {
 .quick-actions-section {
     background: white;
     border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid #E5E7EB;
     padding: 20px 24px;
     margin-bottom: 3rem;
 }
 
 .quick-actions-title {
-    font-size: 1.15rem;
-    color: #1f2937;
-    margin-bottom: 1rem;
+    font-size: 18px;
+    color: #111827;
+    margin-bottom: 20px;
 }
 
 .quick-actions-list {
@@ -206,13 +200,12 @@ body.dashboard {
     text-align: center;
     flex: 1;
     min-width: 150px;
-    padding: 15px 0;
+    padding: 20px;
     border-radius: 8px;
-    background-color: #f9fafc;
+    background-color: #F9FAFB;
     text-decoration: none;
-    color: #4b5563;
+    color: #374151;
     transition: all 0.2s ease;
-    border: 1px solid #e5e7eb;
 }
 
 .quick-item-button i {
@@ -227,10 +220,9 @@ body.dashboard {
     font-size: 0.9rem;
 }
 
-.my-doc i {
-    background-color: #eef2ff;
+.my-doc i,
+.my-doc p {
     color: #4f46e5;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .quick-item-button:hover {
@@ -250,11 +242,18 @@ body.dashboard {
     }
 }
 
-@media (max-width: 600px) {
-    .main-header {
-        padding: 0.8rem 1rem;
+@media (max-width: 767px) {
+    .dashboard-header h2,
+    .card-title,
+    .logo-text{
+        font-size: 20px;
+        line-height: 28px;
     }
-
+    .dashboard-header p,
+    .card-description,
+    .user-name{
+        font-size: 14px;
+    }
     .logo-text {
         padding-left: 0;
     }
@@ -269,6 +268,10 @@ body.dashboard {
 
     .quick-item-button {
         flex: 1 1 calc(50% - 10px);
+    }
+    .profile-toggle img{
+        height: 30px;
+        width: 30px;
     }
 }
 

@@ -5,20 +5,22 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: "Poppins", sans-serif;
 }
 
 .form-container-wrapper {
-    display: grid;
+    display: flex;
     justify-content: center;
     align-items: center;
     height: 100dvh;
     padding: 20px;
+    position: relative;
+    background: linear-gradient(to bottom left, #c7e1f8, #f5f5f5);
 }
 
 .container {
     display: flex;
+
     max-width: 1200px;
     width: 100%;
 }
@@ -26,18 +28,19 @@ body {
 .form-container {
     display: flex;
     width: 100%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     border-radius: 20px;
     overflow: hidden;
+    z-index: 1;
     background-color: #ffffff;
 }
 
 .left-section {
     color: #fff;
-    flex: 1;
     padding: 40px;
     background: linear-gradient(180deg, #6765e8 0%, #6765e8 50%, #252484 100%);
     position: relative;
+    width: 50%;
 }
 
 .left-section::before,
@@ -81,6 +84,11 @@ body {
     line-height: normal;
 }
 
+.left-section i{
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
 .left-section p {
     font-size: 18px;
     margin-bottom: 30px;
@@ -97,9 +105,10 @@ body {
 }
 
 .form-card {
-    flex: 1;
+
     padding: 40px;
     background-color: #ffffff;
+    width: 50%;
 }
 
 .form-card h3 {
@@ -111,6 +120,7 @@ body {
 
 .form-card .form-group {
     margin-bottom: 20px;
+    position: relative;
 }
 
 .form-card .form-group label {
@@ -124,11 +134,14 @@ body {
     border: 1px solid #E5E7EB;
     height: 50px;
     color: #ADAEBC;
+        transition: all 0.3s ease;
 }
 
 .form-card .form-group .form-control:focus {
-    border-color: #222;
-    box-shadow: none;
+    border-color: #6765E8;
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(103, 101, 232, 0.15);
 }
 
 ::placeholder{
@@ -138,7 +151,7 @@ body {
 
 .form-card  .btn-submit {
     width: 100%;
-    padding: 20px;
+    padding: 15px 20px;
     background-color: #252484;
     color: #ffffff;
     border: none;
@@ -149,8 +162,14 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.form-card .btn-submit:hover {
+.form-card .btn-submit:hover,
+.form-card .btn-cancel:hover {
     background-color: #6765e8;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.form-card .btn-cancel:hover{
+    color: #fff;
 }
 
 .form-card .otp-info {
@@ -179,25 +198,148 @@ body {
 .form-card .signin-text {
     text-align: center;
     margin-top: 20px;
-    font-size: 16px;
+    font-size: 14px;
     color: #4B5563;
     margin-bottom: 0;
 }
 
-.form-card .signin-text a {
+.form-card .signin-text a,
+.bottom-text a,
+.MPIN-link {
     color: #252484;
     text-decoration: none;
     font-weight: 500;
+    font-size: 14px;
+}
+
+.MPIN-link:hover{
+    text-decoration: underline !important;
+}
+
+.bottom-text{
+    text-align: center;
+    margin: 20px 0 0;
+    font-size: 14px;
+}
+
+.form-card .form-group i.fa-eye{
+    position: absolute;
+    bottom: 18px;
+    right: 10px;
+    color: #ADAEBC;
+    font-size: 12px;
+}
+
+ .form-card .icon-circle {
+    background: #E0E7FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 28px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+ }
+
+  .form-card .icon-circle i{
+    color: #4F46E5;
+    font-size: 20px;
+  }
+
+ .form-card .mpin-box,
+ .form-card .otp-inputs .otp-digit {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 22px;
+    border: 1.5px solid #ccc;
+}
+
+.form-card .btn-cancel{
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px 20px;
+    background: transparent;
+    color: #252484;
+    border: 1px solid #252484;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-card .mpin-req-box{
+        padding: 20px;
+    background: #EEF2FF;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.form-card  .timer-section p{
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+.form-card #timer {
+    color: #ff3b3b;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.form-card #resend {
+    color: #2563EB;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.form-card .change-number {
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.form-card .security-note {
+    margin-top: 25px;
+    background-color: #f6f9ff;
+    border: 1px solid #d8e2ff;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-size: 12px;
+    color: #555;
+}
+
+.form-card  .extra-links{
+    margin-top: 20px;
+}
+
+.text-danger{
+    font-size: 14px;
 }
 
 @media (max-width: 767px) {
     .left-section h3,
     .form-card h3 {
-        font-size: 22px !important;
+        font-size: 20px !important;
     }
     .left-section img{
         height: 40px;
     }
+    .form-card .mpin-box,
+    .form-card .otp-inputs .otp-digit{
+        width: 35px;
+        height: 35px;
+     }
+     .form-card .form-group label,
+     .pin-box label{
+        font-size: 14px;
+     }
+     .form-card .btn-submit,
+     .form-card .btn-cancel{
+        font-size: 14px;
+     }
 }
 
 @media (max-width: 991px) {
@@ -207,6 +349,7 @@ body {
     .left-section h3{
         font-size: 26px;
     }
+    .left-section,
     .form-card{
         padding: 20px;
     }
@@ -218,5 +361,21 @@ body {
     }
     .left-section::before, .left-section::after{
       display: none;
+    }
+     .left-section,
+    .form-card{
+        width: 100%;
+    }
+    .form-container-wrapper{
+        display: block;
+    }
+}
+
+@media (min-width:1360px){
+    .container {
+        max-width: 990px !important;
+    }
+    .login-page-wrapper .container {
+        max-width: 800px !important;
     }
 }
