@@ -35,20 +35,6 @@ body.verification-card {
     font-weight: 700;
 }
 
-.text-header {
-    font-size: 1.15rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-.text-subheader {
-    font-size: 0.9rem;
-    color: #777;
-    line-height: 1.4;
-    margin-bottom: 25px;
-}
-
 .verification-label {
     background-color: #f1fff4;
     color: #38b47a;

@@ -67,7 +67,7 @@ body.verifications-page {
     margin-bottom: 6px;
 }
 
-.verifications-input-container {
+/* .verifications-input-container {
     position: relative;
 }
 
@@ -81,7 +81,7 @@ body.verifications-page {
     background: white;
     text-transform: uppercase;
     letter-spacing: 0.8px;
-}
+} */
 
 .verifications-input-container input:focus {
     outline: none;

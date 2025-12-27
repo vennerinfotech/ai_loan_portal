@@ -97,11 +97,11 @@ class PancardController extends Controller
             try {
                 $cibilService = new CibilScoreService();
                 $cibilData = $cibilService->fetchCibilScore($validated['pan_card_number']);
-                
+
                 if ($cibilData['success']) {
                     $document->cibil_score = $cibilData['data']['cibil_score'];
                     $document->save();
-                    
+
                     Log::info('CIBIL Score updated for PAN:', [
                         'pan' => $validated['pan_card_number'],
                         'score' => $document->cibil_score
@@ -168,7 +168,7 @@ class PancardController extends Controller
                 $panExtractionService = new PanExtractionService();
                 // Use Storage::path() to get the correct absolute path based on the disk configuration
                 $fullPath = Storage::disk('local')->path($path);
-                
+
                 $extractedData = $panExtractionService->extractFromImage($fullPath);
 
                 if ($extractedData && !empty($extractedData['pan_number'])) {
@@ -220,10 +220,10 @@ class PancardController extends Controller
                      $document->pan_card_number = $panNumber;
                  }
             }
-            
+
             $document->pan_card_image = $filename;
             $document->save(); // Save immediately
-            
+
             // Save other extracted details if available (Temporarily saving to customer_name for review display)
             if ($extractedData) {
                 if (!empty($extractedData['name'])) {
@@ -348,7 +348,7 @@ class PancardController extends Controller
                 try {
                     $cibilService = new CibilScoreService();
                     $cibilData = $cibilService->fetchCibilScore($panNumber);
-                    
+
                     if ($cibilData['success']) {
                         $document->cibil_score = $cibilData['data']['cibil_score'];
                         $document->save(); // Save again with score
@@ -420,7 +420,7 @@ class PancardController extends Controller
             'father_name' => $sessionData['father_name'] ?? 'N/A', // OCR might provide this
         ];
 
-        // Format DOB if it comes from DB (YYYY-MM-DD from user->customer) 
+        // Format DOB if it comes from DB (YYYY-MM-DD from user->customer)
         // Session DOB is usually already DD/MM/YYYY from OCR
         if (empty($sessionData['date_of_birth']) && $data['dob'] !== 'N/A' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['dob'])) {
              try {
@@ -434,7 +434,7 @@ class PancardController extends Controller
         //     $lastName = end($parts);
         //     $data['father_name'] = 'Ram ' . $lastName;
         // }
-        
+
         return view('pan_data_review', $data);
     }
 
@@ -490,13 +490,13 @@ class PancardController extends Controller
         // Fetch User details
         $customer = $user->customer;
         $panNumber = $user->pan_card_number ?? ($customer->pan_card_number ?? 'N/A');
-        
+
         // Fetch or simulate Score
         $score = 750;
         // Try to get stored score first
         // $doc = Document::where('user_id', $user->id)->whereNotNull('cibil_score')->latest()->first();
         // if ($doc) { $score = $doc->cibil_score; }
-        
+
         // Or re-fetch based on simple logic (simulate free API consistency)
         if ($panNumber && $panNumber !== 'N/A') {
              $service = new CibilScoreService();
@@ -533,7 +533,7 @@ class PancardController extends Controller
         ];
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('cibil_report_pdf', $data);
-        
+
         return $pdf->download('Official_CIBIL_Report_' . $panNumber . '.pdf');
     }
 }

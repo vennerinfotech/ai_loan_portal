@@ -13,7 +13,6 @@ body.aadhaar {
 /* Main Card Container */
 .upload-card {
     width: 100%;
-    max-width: 400px;
     background: #fff;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
@@ -42,7 +41,7 @@ body.aadhaar {
     justify-content: center;
     align-items: center;
     font-size: 24px;
-    color: #ff5a2b;
+    color: #4F46E5;
 }
 
 .upload-card h5 {
@@ -259,4 +258,10 @@ body.aadhaar {
     color: red;
     font-size: 12px;
     margin-top: 5px;
+}
+
+@media (max-width:480px){
+    .upload-card{
+        padding: 20px;
+    }
 }

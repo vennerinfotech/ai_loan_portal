@@ -1,16 +1,4 @@
-/* Base Styles */
-body.uploads {
-    font-family: 'Inter', sans-serif;
-    background: #eef3ff;
-    margin-top: 4.4rem;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 50px 15px;
-}
 
-/* Main Card Container */
 .pan-upload-card {
     width: 100%;
     max-width: 400px;
@@ -27,32 +15,6 @@ body.uploads {
     border-radius: 12px;
     padding: 16px;
     margin-bottom: 24px;
-}
-
-
-/* Header Icon Box */
-.pan-icon-box {
-    height: 48px;
-    width: 48px;
-    border-radius: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    color: #ff5a2b;
-    background-color: #E8E8FD;
-}
-
-.pan-upload-card h5 {
-    font-size: 24px;
-    font-weight: 700;
-    font-family: "Poppins", sans-serif;
-}
-
-/* Upload Text/Description */
-.pan-upload-description {
-    color: #6c757d;
-    font-size: 14px;
 }
 
 /* Dashed Upload Area */
@@ -94,6 +56,10 @@ body.uploads {
     color: white;
 }
 
+.pan-btn-primary:hover{
+    border-color: #0d6efd !important;
+}
+
 .pan-btn-light {
     background-color: #f8f9fa !important;
     border-color: #ced4da !important;
@@ -101,6 +67,10 @@ body.uploads {
     border-radius: 10px;
     padding: 10px 16px;
     font-size: 14px;
+}
+
+.pan-btn-light:hover{
+    color: #fff !important;
 }
 
 /* --- Instructions Styles --- */

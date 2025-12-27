@@ -12,27 +12,22 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100dvh;
+    min-height: 100dvh;
     padding: 20px;
     position: relative;
     background: linear-gradient(to bottom left, #c7e1f8, #f5f5f5);
 }
 
-.container {
-    display: flex;
-
-    max-width: 1200px;
-    width: 100%;
-}
-
 .form-container {
     display: flex;
     width: 100%;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 1100px;
+    background-color: #ffffff;
     border-radius: 20px;
     overflow: hidden;
-    z-index: 1;
-    background-color: #ffffff;
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .left-section {
@@ -89,9 +84,28 @@ body {
     margin-bottom: 20px;
 }
 
+.left-section .info{
+        background: #6765D3;
+    padding: 25px 20px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #8e8cdc;
+}
+
+.left-section .info h4{
+        font-size: 24px;
+    margin-bottom: 20px;
+    line-height: 34px;
+}
+
 .left-section p {
     font-size: 18px;
     margin-bottom: 30px;
+}
+
+.left-section .info p{
+    margin-bottom: 0px;
+    font-size: 16px;
 }
 
 .left-section ul {
@@ -112,7 +126,7 @@ body {
 }
 
 .form-card h3 {
- font-size: 30px;
+ font-size: 28px;
     margin-bottom: 20px;
     color: #111827;
     font-weight: 600;
@@ -149,7 +163,7 @@ body {
     text-transform: capitalize;
 }
 
-.form-card  .btn-submit {
+.form-card .btn-submit {
     width: 100%;
     padding: 15px 20px;
     background-color: #252484;
@@ -166,6 +180,14 @@ body {
 .form-card .btn-cancel:hover {
     background-color: #6765e8;
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.form-card a.btn-submit,
+.form-card a.btn-cancel{
+    width: 100%;
+    display: block;
+    text-align: center;
+    text-decoration: none;
 }
 
 .form-card .btn-cancel:hover{
@@ -248,7 +270,8 @@ body {
   }
 
  .form-card .mpin-box,
- .form-card .otp-inputs .otp-digit {
+ .form-card .otp-inputs .otp-digit,
+ .otp-box {
     width: 45px;
     height: 45px;
     border-radius: 8px;
@@ -319,13 +342,156 @@ body {
     font-size: 14px;
 }
 
+.aadhaar-input-container{
+    position: relative;
+}
+
+.aadhaar-toggle-visibility {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: color 0.2s ease;
+}
+
+.aadhaar-toggle-visibility:hover {
+    color: #374151;
+}
+
+.aadhaar-security-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(107, 114, 128, 1);
+    padding-top: 1px;
+    margin-bottom: 24px;
+}
+
+.resend-link {
+    font-size: 13px;
+    color: #6366f1;
+    font-weight: 600;
+    pointer-events: none;
+    opacity: 0.5;
+    text-decoration: none;
+}
+
+.verification-label {
+    background-color: #f1fff4;
+    color: #38b47a;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 25px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.verification-label .bi-question-circle-fill {
+    font-size: 1rem;
+    margin-right: 8px;
+    color: #38b47a;
+}
+
+.security-info {
+    margin-bottom: 30px;
+}
+
+.security-info-content {
+    text-align: left;
+    padding: 0;
+    font-size: 0.75rem;
+    color: #777;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+}
+
+.security-info .bi-lock-fill {
+    color: #8c8c8c;
+    font-size: 0.9rem;
+    margin-right: 8px;
+    margin-top: 1px;
+    min-width: 0.9rem;
+}
+
+.btn-download-receipt {
+    background-color: #f9f9f9;
+    border: none;
+    padding: 10px 20px;
+    font-weight: 500;
+    width: 100%;
+    font-size: 0.95rem;
+    margin-top: 10px;
+    text-decoration: none;
+}
+
+.btn-download-receipt i {
+    margin-right: 5px;
+    font-size: 1rem;
+}
+
+.help-footer {
+    margin-top: 25px;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.help-footer a {
+    color: #6a82fb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.input-help-text {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 4px;
+    margin-left: 1px;
+}
+
+.verifications-input-container .input-info-tooltip {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: #6b7280;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
 @media (max-width: 767px) {
     .left-section h3,
-    .form-card h3 {
+    .form-card h3,
+    .left-section .info h4 {
         font-size: 20px !important;
     }
     .left-section img{
         height: 40px;
+    }
+    .left-section p,
+    .form-card p {
+        font-size: 14px;
     }
     .form-card .mpin-box,
     .form-card .otp-inputs .otp-digit{
@@ -340,21 +506,23 @@ body {
      .form-card .btn-cancel{
         font-size: 14px;
      }
+      .form-container {
+        flex-direction: column;
+        min-height: auto;
+        border-radius: 16px;
+    }
+    .form-container-wrapper{
+        padding: 30px 10px;
+    }
 }
 
 @media (max-width: 991px) {
-    .form-container{
-        display: block;
-    }
     .left-section h3{
         font-size: 26px;
     }
     .left-section,
     .form-card{
         padding: 20px;
-    }
-    .form-container-wrapper{
-        padding: 10px;
     }
     .form-card h3 {
     font-size: 24px;
@@ -366,14 +534,12 @@ body {
     .form-card{
         width: 100%;
     }
-    .form-container-wrapper{
-        display: block;
-    }
 }
 
 @media (min-width:1360px){
-    .container {
+    .form-container {
         max-width: 990px !important;
+        margin: 0 auto;
     }
     .login-page-wrapper .container {
         max-width: 800px !important;

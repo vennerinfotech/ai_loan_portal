@@ -1,26 +1,33 @@
 @extends('layouts.app')
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('css/pan.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 @endsection
 
-@section('body-class', 'verifications-page')
-
 @section('content')
-    <div class="verifications-container">
-        <div class="verifications-card">
-            <div class="verifications-header">
-                <div class="verifications-icon">
-                    {{-- Using a generic user/identity icon to match the screenshot's concept --}}
-                    <div class="icon">
-                        <img src="{{ asset('images/aadhaar-icon.png') }}" alt="User Icon">
+    <div class="form-container-wrapper">
+        <div class="container">
+            <div class="form-container">
+                <div class="left-section">
+                    <div class="content">
+                        <img src="{{ asset('images/logo-1.png') }}" alt="Logo" class="logo-image">
+                        <div class="info">
+                            <h4>Secure Verification</h4>
+                            <p>Your PAN details are encrypted with industry-standard protocols ensuring complete privacy
+                                and security.</p>
+                        </div>
+
                     </div>
                 </div>
-                <h1>Enter Your PAN Number</h1>
-                <p class="verifications-subtitle">We need to verify your identity to proceed with your loan application</p>
-            </div>
-
-            <form class="verifications-form" id="panForm" method="POST" action="{{ route('pancard.store') }}">
+                <div class="form-card">
+                    <div class="mb-4">
+                            <div class="icon-circle">
+                                <i class="fa-solid fa-address-card"></i>
+                            </div>
+                            <h3 class="mt-4">Enter Your PAN Number</h3>
+                            <p>We need to verify your identity to proceed with your loan application</p>
+                        </div>
+                        <form class="verifications-form" id="panForm" method="POST" action="{{ route('pancard.store') }}">
                 @csrf
 
                 <!-- Success and Error Messages -->
@@ -36,11 +43,11 @@
                     </div>
                 @endif
 
-                <div class="verifications-input-group">
+                <div class="form-group">
                     <label for="pan">PAN Number</label>
                     <div class="verifications-input-container">
                         {{-- Input field for PAN Number --}}
-                        <input type="text" id="pan" name="pan_card_image" placeholder="ABCDE1234F" maxlength="10"
+                        <input type="text" id="pan" name="pan_card_image" placeholder="ABCDE1234F" maxlength="10" class="form-control"
                             autocomplete="off">
                         {{-- Info icon matching the screenshot --}}
                         <div class="input-info-tooltip"
@@ -54,41 +61,14 @@
                         10-digit PAN number as shown on your PAN card</p>
                 </div>
 
-                {{-- Security Box matching the screenshot --}}
-                <div class="verifications-security-box">
-                    <div class="icon">
-                        <img src="{{ asset('images/lock.png') }}" alt="Lock Icon" style="width: 16px; height: 16px;">
-                    </div>
-                    <div>
-                        <strong>Secure & Encrypted</strong>
-                        <p>Your information is protected with bank-grade security</p>
-                    </div>
-                </div>
+                <button type="submit" class="btn-submit" id="continueBtn">Continue &rarr;</button>
 
-                <button type="submit" class="verifications-continue-btn" id="continueBtn">Continue &rarr;</button>
-
-                <div class="verifications-help-link">
-                    <i class="bi bi-question-circle-fill" style="color: #4285f4;"></i>
-                    <a href="#" id="helpLink">Need Help?</a>
-                </div>
             </form>
-        </div>
-
-        <div class="verifications-process-card">
-            <div class="process-step checked current">
-                <div class="step-check"><i class="bi bi-check2"></i></div>
-                <span>PAN Number verifications</span>
-            </div>
-            <div class="process-step">
-                <div class="step-number">2</div>
-                <span>Income verifications</span>
-            </div>
-            <div class="process-step">
-                <div class="step-number">3</div>
-                <span>Loan Approval</span>
+                </div>
             </div>
         </div>
     </div>
+
 @endsection
 
 @push('scripts')
