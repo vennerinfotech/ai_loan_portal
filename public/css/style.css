@@ -25,8 +25,7 @@ body {
     background-color: #ffffff;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow:
-        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
         0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
@@ -79,21 +78,21 @@ body {
     line-height: normal;
 }
 
-.left-section i{
+.left-section i {
     font-size: 60px;
     margin-bottom: 20px;
 }
 
-.left-section .info{
-        background: #6765D3;
+.left-section .info {
+    background: #6765d3;
     padding: 25px 20px;
     border-radius: 10px;
     text-align: center;
     border: 1px solid #8e8cdc;
 }
 
-.left-section .info h4{
-        font-size: 24px;
+.left-section .info h4 {
+    font-size: 24px;
     margin-bottom: 20px;
     line-height: 34px;
 }
@@ -103,7 +102,7 @@ body {
     margin-bottom: 30px;
 }
 
-.left-section .info p{
+.left-section .info p {
     margin-bottom: 0px;
     font-size: 16px;
 }
@@ -119,14 +118,13 @@ body {
 }
 
 .form-card {
-
     padding: 40px;
     background-color: #ffffff;
     width: 50%;
 }
 
 .form-card h3 {
- font-size: 28px;
+    font-size: 28px;
     margin-bottom: 20px;
     color: #111827;
     font-weight: 600;
@@ -138,28 +136,28 @@ body {
 }
 
 .form-card .form-group label {
-     font-size: 16px;
+    font-size: 16px;
     font-weight: 600;
     margin-bottom: 5px;
     color: #374151;
 }
 
-.form-card .form-group .form-control{
-    border: 1px solid #E5E7EB;
+.form-card .form-group .form-control {
+    border: 1px solid #e5e7eb;
     height: 50px;
-    color: #ADAEBC;
-        transition: all 0.3s ease;
+    color: #adaebc;
+    transition: all 0.3s ease;
 }
 
 .form-card .form-group .form-control:focus {
-    border-color: #6765E8;
+    border-color: #6765e8;
     background: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(103, 101, 232, 0.15);
 }
 
-::placeholder{
-    color: #ADAEBC !important;
+::placeholder {
+    color: #adaebc !important;
     text-transform: capitalize;
 }
 
@@ -183,14 +181,14 @@ body {
 }
 
 .form-card a.btn-submit,
-.form-card a.btn-cancel{
+.form-card a.btn-cancel {
     width: 100%;
     display: block;
     text-align: center;
     text-decoration: none;
 }
 
-.form-card .btn-cancel:hover{
+.form-card .btn-cancel:hover {
     color: #fff;
 }
 
@@ -207,7 +205,7 @@ body {
     color: #252484;
 }
 
-.form-card .otp-info ul{
+.form-card .otp-info ul {
     margin-bottom: 0px;
 }
 
@@ -221,7 +219,7 @@ body {
     text-align: center;
     margin-top: 20px;
     font-size: 14px;
-    color: #4B5563;
+    color: #4b5563;
     margin-bottom: 0;
 }
 
@@ -234,26 +232,26 @@ body {
     font-size: 14px;
 }
 
-.MPIN-link:hover{
+.MPIN-link:hover {
     text-decoration: underline !important;
 }
 
-.bottom-text{
+.bottom-text {
     text-align: center;
     margin: 20px 0 0;
     font-size: 14px;
 }
 
-.form-card .form-group i.fa-eye{
+.form-card .form-group i.fa-eye {
     position: absolute;
     bottom: 18px;
     right: 10px;
-    color: #ADAEBC;
+    color: #adaebc;
     font-size: 12px;
 }
 
- .form-card .icon-circle {
-    background: #E0E7FF;
+.form-card .icon-circle {
+    background: #e0e7ff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -262,16 +260,16 @@ body {
     width: 50px;
     height: 50px;
     border-radius: 50px;
- }
+}
 
-  .form-card .icon-circle i{
-    color: #4F46E5;
+.form-card .icon-circle i {
+    color: #4f46e5;
     font-size: 20px;
-  }
+}
 
- .form-card .mpin-box,
- .form-card .otp-inputs .otp-digit,
- .otp-box {
+.form-card .mpin-box,
+.form-card .otp-inputs .otp-digit,
+.otp-box {
     width: 45px;
     height: 45px;
     border-radius: 8px;
@@ -280,7 +278,17 @@ body {
     border: 1.5px solid #ccc;
 }
 
-.form-card .btn-cancel{
+.form-card .mpin-box:focus-visible,
+.form-card .otp-inputs .otp-digit:focus-visible,
+.otp-box:focus-visible {
+    border-color: #6765e8;
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(103, 101, 232, 0.15);
+    outline: none !important;
+}
+
+.form-card .btn-cancel {
     margin-top: 20px;
     width: 100%;
     padding: 15px 20px;
@@ -294,14 +302,14 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.form-card .mpin-req-box{
-        padding: 20px;
-    background: #EEF2FF;
+.form-card .mpin-req-box {
+    padding: 20px;
+    background: #eef2ff;
     border-radius: 10px;
     margin: 20px 0;
 }
 
-.form-card  .timer-section p{
+.form-card .timer-section p {
     font-size: 16px;
     margin-top: 15px;
 }
@@ -313,7 +321,7 @@ body {
 }
 
 .form-card #resend {
-    color: #2563EB;
+    color: #2563eb;
     text-decoration: none;
     font-weight: 600;
 }
@@ -334,15 +342,15 @@ body {
     color: #555;
 }
 
-.form-card  .extra-links{
+.form-card .extra-links {
     margin-top: 20px;
 }
 
-.text-danger{
+.text-danger {
     font-size: 14px;
 }
 
-.aadhaar-input-container{
+.aadhaar-input-container {
     position: relative;
 }
 
@@ -480,63 +488,167 @@ body {
     transition: background 0.2s;
 }
 
+.pan-check-icon-wrapper .pan-check-badge {
+    background-color: #dcfce7;
+    color: #16a34a;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 15px;
+    position: absolute;
+    bottom: -5px;
+    right: 0px;
+}
+
+.credit-score-list .list-unstyled li {
+    font-size: 16px;
+    color: #334155;
+    font-weight: 400;
+    margin-bottom: 10px;
+    padding-left: 0px;
+}
+
+.credit-score-list .list-unstyled li:last-child {
+    margin-bottom: 0;
+}
+
+.credit-score-list .list-unstyled li i {
+    background: #f0fdf4;
+    color: #16a34a;
+    height: 40px;
+    width: 40px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    margin-right: 8px;
+}
+
+.form-card .credit-score{
+    margin: 30px 0px;
+}
+
+.form-card .credit-score h4{
+    font-weight: 700;
+    color: #4F46E5;
+    font-size: 72px;
+}
+.form-card .credit-score span{
+        font-size: 26px;
+    color: #94A3B8;
+    font-weight: 500;
+}
+
+.form-card .credit-details-row {
+    margin: 30px 0 20px;
+}
+
+.form-card .credit-details-row >div{
+    display: flex;
+    gap: 30px;
+}
+
+.form-card .credit-details-row i{
+    color: #6366F1;
+    font-size: 16px;
+    margin-right: 8px;
+}
+
+.form-card .credit-details-row h6{
+        font-size: 16px;
+    color: #475569;
+    font-weight: 400;
+
+}
+
+.form-card .credit-details-row p{
+    font-size: 16px;
+    color: #1E293B;
+    font-weight: 600;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 @media (max-width: 767px) {
     .left-section h3,
     .form-card h3,
     .left-section .info h4 {
         font-size: 20px !important;
     }
-    .left-section img{
+    .left-section img {
         height: 40px;
     }
     .left-section p,
-    .form-card p {
+    .form-card p,
+    .form-card .credit-details-row h6,
+    .form-card .credit-details-row p {
         font-size: 14px;
     }
     .form-card .mpin-box,
-    .form-card .otp-inputs .otp-digit{
+    .form-card .otp-inputs .otp-digit {
         width: 35px;
         height: 35px;
-     }
-     .form-card .form-group label,
-     .pin-box label{
+    }
+    .form-card .credit-score h4{
+        font-size: 34px;
+    }
+    .form-card .credit-score p{
+        font-size: 20px;
+    }
+    .form-card .form-group label,
+    .pin-box label {
         font-size: 14px;
-     }
-     .form-card .btn-submit,
-     .form-card .btn-cancel{
+    }
+    .form-card .btn-submit,
+    .form-card .btn-cancel {
         font-size: 14px;
-     }
-      .form-container {
+    }
+    .form-container {
         flex-direction: column;
         min-height: auto;
         border-radius: 16px;
     }
-    .form-container-wrapper{
+    .form-container-wrapper {
         padding: 30px 10px;
     }
 }
 
 @media (max-width: 991px) {
-    .left-section h3{
+    .left-section h3 {
         font-size: 26px;
     }
     .left-section,
-    .form-card{
+    .form-card {
         padding: 20px;
     }
     .form-card h3 {
-    font-size: 24px;
+        font-size: 24px;
     }
-    .left-section::before, .left-section::after{
-      display: none;
+    .left-section::before,
+    .left-section::after {
+        display: none;
     }
-     .left-section,
-    .form-card{
+    .left-section,
+    .form-card {
         width: 100%;
     }
 }
 
-@media (min-width:1360px){
+@media (min-width: 1360px) {
     .form-container {
         max-width: 990px !important;
         margin: 0 auto;

@@ -1,24 +1,5 @@
 /* Define Custom Colors */
-:root {
-    --custom-blue: #0A66FF;
-    --custom-light-blue: #E8F0FF;
-    --custom-green: #2ecc71;
-    --custom-light-green: #E8FFEF;
-    --custom-grey-text: #6c757d;
-    --custom-dark-grey: #333333;
-    --custom-footer-blue: #007bff;
-    --custom-footer-green: #28a745;
-    --custom-footer-yellow: #ffc107;
-    --custom-blue: #0A66FF;
-    --gradient-start: rgba(29, 78, 216, 1);
-    --gradient-end: rgba(37, 99, 235, 1);
-}
-
-
-body {
-    margin: 0;
-    padding: 0;
-    font-family: "Rubik", sans-serif;
+ font-family: "Rubik", sans-serif;
 }
 
 .full-page-overlay {

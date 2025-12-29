@@ -24,6 +24,11 @@ class AadhaarController extends Controller
         //
     }
 
+     public function applicant()
+    {
+        return view('applicant_detail');
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -149,7 +154,7 @@ class AadhaarController extends Controller
             $path = $file->storeAs('private_uploads/aadhar_card', $filename);
 
             // Get the Aadhaar number from request or latest document
-            $aadhaarNumber = $request->input('aadhaar_number') ?? 
+            $aadhaarNumber = $request->input('aadhaar_number') ??
                            Document::whereNotNull('aadhar_card_number')
                                    ->latest()
                                    ->value('aadhar_card_number');
@@ -178,7 +183,7 @@ class AadhaarController extends Controller
 
             $document->aadhar_card_image = $filename;  // Store only the image name in the database
             $document->save(); // Save immediately to ensure image is linked
-            
+
             // Get full path to uploaded image for extraction
             // Check both possible storage paths
             $aadhaarImagePath = storage_path('app/private_uploads/aadhar_card/'.$filename);
@@ -230,7 +235,7 @@ class AadhaarController extends Controller
                     $panDocument->user_id = $resolvedUserId ?? ($accounts['user']->id ?? null);
                     $panDocument->customer_id = $accounts['customer']->id;
                     $panDocument->customer_name = $accounts['user']->name;
-                    $panDocument->aadhar_card_number = $aadhaarNumber; 
+                    $panDocument->aadhar_card_number = $aadhaarNumber;
                     $panDocument->save();
                 }
             } else {
@@ -372,7 +377,7 @@ class AadhaarController extends Controller
         try {
             // Get the latest Aadhaar document for the current user or latest uploaded
             $document = null;
-            
+
             if (Auth::check()) {
                 $document = Document::where('user_id', Auth::id())
                     ->whereNotNull('aadhar_card_number')
@@ -380,7 +385,7 @@ class AadhaarController extends Controller
                     ->latest()
                     ->first();
             }
-            
+
             // If no document found for user, get latest
             if (!$document) {
                 $document = Document::whereNotNull('aadhar_card_number')

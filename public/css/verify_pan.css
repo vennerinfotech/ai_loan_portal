@@ -197,7 +197,7 @@ body.verification-processing-page {
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-left: 170px;
-    margin-bottom: 22px;
+    margin: 0 auto 20px;
 }
 
 .checklist-item.processing span {

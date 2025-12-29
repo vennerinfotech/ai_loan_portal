@@ -51,5 +51,5 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = redirectURL;
         });
 
-    }, initialHoldTime); // Executes after 5 seconds of initial hold
+    }, initialHoldTime);
 });

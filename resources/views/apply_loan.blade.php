@@ -1,343 +1,312 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose Your Loan Type - LoanHub</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+@extends('layouts.app')
 
-    <style>
-        /* General Body and Container Styling */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ffffff; /* White background */
-            padding-top: 20px;
-        }
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('css/apply_loan.css') }}">
+@endsection
 
-        .container {
-            max-width: 1200px;
-        }
+@section('content')
+<section class="header-wrapper">
+        <div class="container">
+            <header class="header-inner">
+                <h2 class="logo-text">LoanHub</h2>
+                <div class="header-right">
+                    <div class="notification">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-bell-fill" viewBox="0 0 16 16">
+                            <path
+                                d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
+                        </svg>
+                        <span class="dot"></span>
+                    </div>
+                    {{-- <div class="profile">
+                <img src="https://i.pravatar.cc/40" alt="User">
+                <span class="user-name">{{ $userName }}</span>
+            </div> --}}
+                    <div class="profile-dropdown">
+                        <div class="profile-toggle">
+                            <img src="https://i.pravatar.cc/40" alt="User">
+                            <span class="user-name"></span>
+                            <i class="fas fa-caret-down"></i>
+                        </div>
+                        <div class="profile-menu">
+                            <a href="#">Profile</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit">Logout</button>
+                            </form>
+                        </div>
+                    </div>
 
-        /* Header Styling */
-        .page-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+                </div>
+            </header>
+        </div>
+    </section>
+    <div class="hero-section">
+        <div class="container">
+            <div class="hero-grid">
+                <!-- Left Content -->
+                <div class="hero-content">
+                    <div class="text-center">
+                        <p class="trust-text">Trusted by 50,000+ customers</p>
+                    </div>
+                    <h1 class="hero-title">
+                        Find Your Perfect<br>
+                        <span class="hero-title-accent">Loan Solution</span>
+                    </h1>
 
-        .page-header h1 {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #333;
-        }
+                    <p class="hero-description">
+                        Compare rates, calculate payments, and get approved faster. From home loans to business financing,
+                        we've got you covered.
+                    </p>
 
-        .page-header p {
-            font-size: 1rem;
-            color: #6c757d;
-        }
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary">
+                            Explore Loans
+                        </button>
+                        <button class="btn btn-secondary">
+                            📊 Calculate EMI
+                        </button>
+                    </div>
 
-        /* Navbar Styling */
-        .navbar {
-            padding: 1rem 3rem;
-        }
-        .navbar-brand {
-            font-weight: 600;
-        }
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value">3.5%</div>
+                            <div class="stat-label">Interest rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">24hrs</div>
+                            <div class="stat-label">Quick Approval</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">₹5M+</div>
+                            <div class="stat-label">Loan Disbursed</div>
+                        </div>
+                    </div>
+                </div>
 
-        .user-info .fa-bell {
-            color: #ffc107; /* Yellow alert icon */
-        }
-        .user-info img {
-            width: 30px;
-            height: 30px;
-            object-fit: cover;
-        }
+                <!-- Quick Estimate Calculator -->
+                <div class="calculator-card">
+                    <div class="calculator-header">
+                        <h3>Quick Estimate</h3>
+                        <button class="icon-btn">📊</button>
+                    </div>
 
-        /* Card Base Styling */
-        .loan-card {
-            border: none;
-            border-radius: 8px; /* Slightly rounded corners */
-            padding: 20px;
-            margin-bottom: 20px; /* Space between rows */
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-        }
+                    <div class="form-group">
+                        <label>Loan Amount</label>
+                        <input type="number" id="loanAmount" value="50000" class="form-input">
+                    </div>
 
-        .loan-card h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 5px;
-        }
+                    <div class="form-group">
+                        <label>Loan Term</label>
+                        <select id="loanTerm" class="form-input">
+                            <option value="12">12 months</option>
+                            <option value="24">24 months</option>
+                            <option value="36">36 months</option>
+                            <option value="48">48 months</option>
+                        </select>
+                    </div>
 
-        .loan-card p {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 20px;
-        }
+                    <div class="payment-display">
+                        <div class="payment-label">Monthly Payment</div>
+                        <div class="payment-value" id="monthlyPayment">₹4,350</div>
+                    </div>
 
-        /* Feature List Styling */
-        .loan-features {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 30px;
-        }
-
-        .loan-features li {
-            font-size: 0.9rem;
-            color: #fff;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-        }
-
-        .loan-features i {
-            margin-right: 10px;
-            font-size: 0.8rem;
-        }
-
-        /* Specific Loan Card Styles */
-
-        /* Home Loan (Green) */
-        .home-loan {
-            background-color: #28a745;
-        }
-        .home-loan .fa-home { color: #fff; }
-        .home-loan .fa-check-circle { color: #fff; }
-        .home-loan .badge { background-color: #ffc107 !important; color: #fff; } /* Yellow Star */
-        .home-loan .btn-apply {
-            background-color: #28a745;
-            border-color: #28a745;
-            color: #fff;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Personal Loan (Blue) */
-        .personal-loan {
-            background-color: #007bff;
-        }
-        .personal-loan .fa-user { color: #fff; }
-        .personal-loan .fa-check-circle { color: #fff; }
-        .personal-loan .badge { background-color: #007bff !important; color: #fff; } /* Blue Lightning */
-        .personal-loan .btn-apply {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: #fff;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Business Loan (Purple) */
-        .business-loan {
-            background-color: #6f42c1;
-        }
-        .business-loan .fa-briefcase { color: #fff; }
-        .business-loan .fa-check-circle { color: #fff; }
-        .business-loan .badge { background-color: #6f42c1 !important; color: #fff; } /* Purple Chart */
-        .business-loan .btn-apply {
-            background-color: #6f42c1;
-            border-color: #6f42c1;
-            color: #fff;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Loan Against Property (Orange) */
-        .lap-loan {
-            background-color: #fd7e14;
-        }
-        .lap-loan .fa-building { color: #fff; }
-        .lap-loan .fa-check-circle { color: #fff; }
-        .lap-loan .badge { background-color: #fd7e14 !important; color: #fff; } /* Orange Shield */
-        .lap-loan .btn-apply {
-            background-color: #fd7e14;
-            border-color: #fd7e14;
-            color: #fff;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Education Loan (Dark Blue) */
-        .education-loan {
-            background-color: #5d5dff; /* Using a darker blue close to the image */
-        }
-        .education-loan .fa-user-graduate { color: #fff; }
-        .education-loan .fa-check-circle { color: #fff; }
-        .education-loan .badge { background-color: #5d5dff !important; color: #fff; } /* Dark Blue Book */
-        .education-loan .btn-apply {
-            background-color: #5d5dff;
-            border-color: #5d5dff;
-            color: #fff;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Icon Wrapper and Badge Placement */
-        .icon-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-        .icon-wrapper i {
-            font-size: 1.5rem;
-        }
-        .icon-wrapper .badge {
-            font-size: 1rem;
-            padding: .3em .6em;
-            border-radius: .25rem;
-        }
-
-        /* Match the specific icon colors/styling from the image */
-        .home-loan .fa-home { background-color: #28a745; border-radius: 5px; padding: 5px; }
-        .personal-loan .fa-user { background-color: #007bff; border-radius: 5px; padding: 5px; }
-        .business-loan .fa-briefcase { background-color: #6f42c1; border-radius: 5px; padding: 5px; }
-        .lap-loan .fa-building { background-color: #fd7e14; border-radius: 5px; padding: 5px; }
-        .education-loan .fa-user-graduate { background-color: #5d5dff; border-radius: 5px; padding: 5px; }
-
-    </style>
-</head>
-<body>
-
-<nav class="navbar navbar-light bg-white border-bottom">
-    <a class="navbar-brand text-dark" href="#">LoanHub</a>
-    <div class="user-info d-flex align-items-center">
-        <i class="fas fa-bell me-3"></i>
-        <span class="text-dark me-2">John Doe</span>
-        <img src="https://via.placeholder.com/30/808080/FFFFFF?text=JD" class="rounded-circle" alt="User Avatar">
+                    <button class="btn btn-dark btn-full">
+                        Apply Now
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-</nav>
 
-<div class="container py-5">
+    <!-- Loan Types Section -->
+    <div class="loan-types-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Choose Your Loan Type</h2>
+                <p class="section-description">
+                    Flexible financing options tailored to your needs
+                </p>
+            </div>
 
-    <header class="page-header">
-        <h1>Choose Your Loan Type</h1>
-        <p>Select the loan option that best fits your requirements and start your application journey</p>
-    </header>
-
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-
-        <div class="col">
-            <div class="card loan-card home-loan">
-                <div class="icon-wrapper">
-                    <i class="fas fa-home"></i>
-                    <span class="badge"><i class="fas fa-star"></i></span>
+            <div class="loan-grid">
+                <!-- Home Loan -->
+                <div class="loan-card">
+                    <div class="loan-icon icon-blue">
+                        <i class="fa-solid fa-home"></i>
+                    </div>
+                    <h3 class="loan-title">Home Loan</h3>
+                    <p class="loan-description">Make your dream home a reality with competitive rates starting from 3.5% and
+                        flexible repayment</p>
+                    <ul class="loan-features">
+                        <li><span class="check">✓</span> Up to ₹1,00,00,000</li>
+                        <li><span class="check">✓</span> 30-year terms available</li>
+                        <li><span class="check">✓</span> Low down payment</li>
+                    </ul>
+                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-blue btn-full">Learn More</a>
                 </div>
-                <h3>Home Loan</h3>
-                <p>Make your dream home a reality</p>
 
-                <ul class="loan-features">
-                    <li><i class="fas fa-check-circle"></i> Up to 90% financing</li>
-                    <li><i class="fas fa-check-circle"></i> Competitive interest rates</li>
-                    <li><i class="fas fa-check-circle"></i> Flexible tenure options</li>
-                </ul>
+                <!-- Personal Loan -->
+                <div class="loan-card">
+                    <div class="loan-icon icon-purple">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <h3 class="loan-title">Personal Loan</h3>
+                    <p class="loan-description">Quick funding for your personal needs. No collateral required with rates
+                        starting from 8.5%</p>
+                    <ul class="loan-features">
+                        <li><span class="check">✓</span> Up to ₹10,00,000</li>
+                        <li><span class="check">✓</span> Same day approval</li>
+                        <li><span class="check">✓</span> Flexible use of funds</li>
+                    </ul>
+                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-purple btn-full">Learn More</a>
+                </div>
 
-                <a href="#" class="btn btn-apply w-100">Apply Now</a>
+                <!-- Business Loan -->
+                <div class="loan-card">
+                    <div class="loan-icon icon-green">
+                        <i class="fa-solid fa-business-time"></i>
+                    </div>
+                    <h3 class="loan-title">Business Loan</h3>
+                    <p class="loan-description">Fuel your business growth with tailored financing solutions and competitive
+                        rates starting from 7%</p>
+                    <ul class="loan-features">
+                        <li><span class="check">✓</span> Up to ₹5,00,00,000</li>
+                        <li><span class="check">✓</span> Working capital support</li>
+                        <li><span class="check">✓</span> Dedicated support</li>
+                    </ul>
+                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-green btn-full">Learn More</a>
+                </div>
+
+                <!-- Mortgage Loan -->
+                <div class="loan-card">
+                    <div class="loan-icon icon-orange">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+                    <h3 class="loan-title">Mortgage Loan</h3>
+                    <p class="loan-description">Refinance or purchase property with our comprehensive mortgage solutions at
+                        best rates</p>
+                    <ul class="loan-features">
+                        <li><span class="check">✓</span> Fixed & variable rates</li>
+                        <li><span class="check">✓</span> Pre-approval available</li>
+                        <li><span class="check">✓</span> Expert guidance</li>
+                    </ul>
+                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-orange btn-full">Learn More</a>
+                </div>
+
+                <!-- Car Loan -->
+                <div class="loan-card">
+                    <div class="loan-icon icon-red">
+                        <i class="fa-solid fa-car"></i>
+                    </div>
+                    <h3 class="loan-title">Car Loan</h3>
+                    <p class="loan-description">Drive away in your dream car with affordable financing options and deals
+                        starting from 6.5%</p>
+                    <ul class="loan-features">
+                        <li><span class="check">✓</span> Up to ₹15,00,000</li>
+                        <li><span class="check">✓</span> New & used vehicles</li>
+                        <li><span class="check">✓</span> Fast processing</li>
+                    </ul>
+                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-red btn-full">Learn More</a>
+                </div>
+
+                <!-- Other Loan -->
+                <div class="loan-card">
+                    <div class="loan-icon icon-pink">
+                        <i class="fa-solid fa-pen-nib"></i>
+                    </div>
+                    <h3 class="loan-title">Other Loan</h3>
+                    <p class="loan-description">Custom loan solutions for education, medical, travel, and other unique
+                        financing needs</p>
+                    <ul class="loan-features">
+                        <li><span class="check">✓</span> Customized terms</li>
+                        <li><span class="check">✓</span> Multiple purposes</li>
+                        <li><span class="check">✓</span> Personalized rates</li>
+                    </ul>
+                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-pink btn-full">Learn More</a>
+                </div>
             </div>
         </div>
-
-        <div class="col">
-            <div class="card loan-card personal-loan">
-                <div class="icon-wrapper">
-                    <i class="fas fa-user"></i>
-                    <span class="badge"><i class="fas fa-bolt"></i></span>
-                </div>
-                <h3>Personal Loan</h3>
-                <p>For your personal financial needs</p>
-
-                <ul class="loan-features">
-                    <li><i class="fas fa-check-circle"></i> Quick approval process</li>
-                    <li><i class="fas fa-check-circle"></i> No collateral required</li>
-                    <li><i class="fas fa-check-circle"></i> Instant disbursement</li>
-                </ul>
-
-                <a href="#" class="btn btn-apply w-100">Apply Now</a>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card loan-card business-loan">
-                <div class="icon-wrapper">
-                    <i class="fas fa-briefcase"></i>
-                    <span class="badge"><i class="fas fa-chart-line"></i></span>
-                </div>
-                <h3>Business Loan</h3>
-                <p>Fuel your business growth</p>
-
-                <ul class="loan-features">
-                    <li><i class="fas fa-check-circle"></i> High loan amounts</li>
-                    <li><i class="fas fa-check-circle"></i> Flexible repayment terms</li>
-                    <li><i class="fas fa-check-circle"></i> Business-friendly rates</li>
-                </ul>
-
-                <a href="#" class="btn btn-apply w-100">Apply Now</a>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card loan-card lap-loan">
-                <div class="icon-wrapper">
-                    <i class="fas fa-building"></i>
-                    <span class="badge"><i class="fas fa-shield-alt"></i></span>
-                </div>
-                <h3>Loan Against Property</h3>
-                <p>Leverage your property value</p>
-
-                <ul class="loan-features">
-                    <li><i class="fas fa-check-circle"></i> Lower interest rates</li>
-                    <li><i class="fas fa-check-circle"></i> Higher loan amounts</li>
-                    <li><i class="fas fa-check-circle"></i> Longer tenure options</li>
-                </ul>
-
-                <a href="#" class="btn btn-apply w-100">Apply Now</a>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card loan-card education-loan">
-                <div class="icon-wrapper">
-                    <i class="fas fa-user-graduate"></i>
-                    <span class="badge"><i class="fas fa-book"></i></span>
-                </div>
-                <h3>Education Loan</h3>
-                <p>Invest in your future</p>
-
-                <ul class="loan-features">
-                    <li><i class="fas fa-check-circle"></i> Cover full education costs</li>
-                    <li><i class="fas fa-check-circle"></i> Flexible repayment</li>
-                    <li><i class="fas fa-check-circle"></i> Student-friendly terms</li>
-                </ul>
-
-                <a href="#" class="btn btn-apply w-100">Apply Now</a>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card loan-card business-loan" style="background-color: #17a2b8;">
-                 <div class="icon-wrapper">
-                    <i class="fas fa-car" style="background-color: #17a2b8;"></i>
-                    <span class="badge" style="background-color: #17a2b8 !important;"><i class="fas fa-tag"></i></span>
-                </div>
-                <h3>Vehicle Loan</h3>
-                <p>Get your dream vehicle today</p>
-
-                <ul class="loan-features">
-                    <li><i class="fas fa-check-circle"></i> Competitive rates</li>
-                    <li><i class="fas fa-check-circle"></i> Quick documentation</li>
-                    <li><i class="fas fa-check-circle"></i> Low processing fees</li>
-                </ul>
-
-                <a href="#" class="btn btn-apply w-100" style="background-color: #17a2b8; border-color: #17a2b8;">Apply Now</a>
-            </div>
-        </div>
-
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Why Choose Section -->
+    <div class="why-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose LoanHub?</h2>
+                <p class="section-description">
+                    Experience hassle-free lending with industry-leading benefits
+                </p>
+            </div>
 
-</body>
-</html>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Quick Approval</h3>
+                    <p class="feature-description">Get approved in as little as 24 hours</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🛡️</div>
+                    <h3 class="feature-title">100% Secure</h3>
+                    <p class="feature-description">Industry-leading security of data</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">📉</div>
+                    <h3 class="feature-title">Best Rates</h3>
+                    <p class="feature-description">Competitive interest rates guaranteed</p>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon">🎧</div>
+                    <h3 class="feature-title">24/7 Support</h3>
+                    <p class="feature-description">Expert assistance anytime you need</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+@endsection
+
+@push('scripts')
+    <script>
+        // EMI Calculator
+        function calculateEMI() {
+            const amount = parseFloat(document.getElementById('loanAmount').value);
+            const months = parseInt(document.getElementById('loanTerm').value);
+            const rate = 0.035; // 3.5% annual rate
+            const monthlyRate = rate / 12;
+
+            const payment = amount * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate,
+                months) - 1);
+
+            document.getElementById('monthlyPayment').textContent = '₹' + Math.round(payment).toLocaleString();
+        }
+
+        // Add event listeners
+        document.getElementById('loanAmount').addEventListener('input', calculateEMI);
+        document.getElementById('loanTerm').addEventListener('change', calculateEMI);
+
+        // Initial calculation
+        calculateEMI();
+
+
+         document.addEventListener('DOMContentLoaded', function() {
+                const profileToggle = document.querySelector('.profile-toggle');
+                const profileMenu = document.querySelector('.profile-menu');
+
+                if (profileToggle) {
+                    profileToggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        profileMenu.classList.toggle('show');
+                    });
+
+                    document.addEventListener('click', function() {
+                        profileMenu.classList.remove('show');
+                    });
+                }
+            });
+    </script>
+@endpush

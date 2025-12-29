@@ -44,6 +44,8 @@ route::get('/aadhaar_verification_completed', [AadhaarController::class, 'aadhaa
 // Route to download Aadhaar verification receipt
 Route::get('/download-verification-receipt', [AadhaarController::class, 'downloadReceipt'])->name('aadhaar.downloadReceipt');
 
+Route::get('/applicant_detail', [AadhaarController::class, 'applicant'])->name('applicant_detail');
+
 // Test OCR Route (for testing only)
 Route::get('/test-ocr', function () {
     return view('test_ocr');
