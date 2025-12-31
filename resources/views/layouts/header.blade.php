@@ -40,6 +40,11 @@
           position: relative;
       }
 
+      nav a:hover{
+          color: #fff;
+          text-decoration: none
+      }
+
       nav a:before {
           content: '';
           position: absolute;
@@ -54,6 +59,10 @@
 
       nav a:hover:before {
           transform: scaleX(1);
+      }
+
+      nav a.apply-btn:hover:before {
+          transform: scaleX(0);
       }
 
       .apply-btn {
@@ -148,7 +157,7 @@
                   <a href="#collaborator">Collaborator</a>
                   <a href="#team">Meet the team</a>
                   <a href="#contact">Contact Us</a>
-                  <button class="apply-btn">Apply Now</button>
+                  <a href="{{ route('login') }}" class="apply-btn">Apply Now</a>
               </nav>
 
               <button class="menu-toggle" id="menuToggle">

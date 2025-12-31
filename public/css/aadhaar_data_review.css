@@ -10,7 +10,7 @@
     margin: 0 auto 15px;
 }
 
-.form-label {
+/* .form-label {
     font-size: 0.9rem;
     color: #6c757d;
     margin-bottom: 5px;
@@ -32,7 +32,7 @@
     box-shadow: none;
     border-color: #dee2e6;
     background-color: #f8f9fa;
-}
+} */
 
 .input-group-field {
     position: relative;
@@ -43,7 +43,7 @@
     right: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #6c757d;
+    color: #adaebc;
     pointer-events: none;
     z-index: 2;
 }

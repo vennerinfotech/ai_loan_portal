@@ -24,7 +24,7 @@
                     <div class="review-container w-100">
                         <div class="text-center mb-4" id="formHeader">
                              <div class="icon-circle mx-auto">
-                            <i class="bi bi-file-earmark-person-fill" style="font-size: 1.5rem;"></i>
+                            <i class="fa-solid fa-address-card"></i>
                         </div>
 
                             <h3 class="mt-3">Review Your Aadhaar Details</h3>
@@ -116,7 +116,7 @@
                                         <div class="input-group-field">
                                             <input type="text" class="form-control" id="fullName"
                                                 value="{{ $fullName }}" readonly>
-                                            <i class="bi bi-person input-icon"></i>
+                                            <i class="fa-solid fa-user input-icon"></i>
                                         </div>
                                     </div>
 
@@ -125,7 +125,7 @@
                                         <div class="input-group-field">
                                             <input type="text" class="form-control" id="dob"
                                                 value="{{ $dobFormatted }}" readonly>
-                                            <i class="bi bi-calendar input-icon"></i>
+                                            <i class="fa-solid fa-calendar input-icon"></i>
                                         </div>
                                     </div>
 
@@ -133,7 +133,7 @@
                                         <label for="address" class="form-label">Address</label>
                                         <div class="input-group-field">
                                             <textarea class="form-control" id="address" rows="3" readonly>{{ $address }}</textarea>
-                                            <i class="bi bi-geo-alt input-icon textarea-icon"></i>
+                                            <i class="fa-solid fa-location input-icon textarea-icon"></i>
                                         </div>
                                     </div>
 
@@ -158,7 +158,7 @@
                                         <div class="input-group-field">
                                             <input type="text" class="form-control" id="phone"
                                                 value="{{ $phone }}" readonly>
-                                            <i class="bi bi-phone input-icon"></i>
+                                            <i class="fa-solid fa-phone input-icon"></i>
                                         </div>
                                     </div>
 
@@ -167,7 +167,7 @@
                                         <div class="input-group-field">
                                             <input type="email" class="form-control" id="email"
                                                 value="{{ $email }}" readonly>
-                                            <i class="bi bi-envelope input-icon"></i>
+                                            <i class="fa-solid fa-envelope input-icon"></i>
                                         </div>
                                     </div>
 
@@ -176,7 +176,7 @@
                                         <div class="input-group-field">
                                             <input type="text" class="form-control" id="aadhaar"
                                                 value="{{ $maskedAadhaar }}" readonly>
-                                            <i class="bi bi-lock input-icon"></i>
+                                            <i class="fa-solid fa-lock input-icon"></i>
                                         </div>
                                         <small class="text-muted mt-1 d-block" style="font-size: 0.8rem;">Aadhaar number
                                             is masked for

@@ -313,12 +313,7 @@ body {
 }
 
 .footer {
-       background: linear-gradient(
-        to right,
-        #6765e8 0%,
-        #6765e8 50%,
-        #252484 100%
-    );
+    background: #6765e8;
 }
 
 .footer-top {

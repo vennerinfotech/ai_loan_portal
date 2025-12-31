@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="form-card">
-                    <div class="card-body">
+                    <div class="">
                         <div class="text-center mb-5">
                             <h2 style="font-weight: 600;">LOGO</h2>
                             <h6>Login to continue to your account</h6>
@@ -34,10 +34,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="password" class="form-label">Enter MPIN</label>
-                                <input type="password" class="form-control" id="password" name="mpin"
+                                <label for="mpin" class="form-label">Enter MPIN</label>
+                                <input type="password" class="form-control" id="mpin" name="mpin" inputmode="numeric"
                                     placeholder="6 Digit Security MPIN">
-                                    <i class="fa-solid fa-eye"></i>
+                                    <i class="fa-solid fa-eye toggle-mpin" id="toggleMpin"></i>
                                 </span>
                                 @error('mpin')
                                     <div class="error-message text-danger">{{ $message }}</div>

@@ -73,21 +73,21 @@
         <div class="container">
             <div class="feature-card">
                 <div class="card-info">
-                    <div class="card-icon blue"><i class="bi bi-calendar4"></i></div>
+                    <div class="card-icon blue"><i class="fa-regular fa-calendar"></i></div>
                     <h3>Free CIBIL Score</h3>
                     <p>Get your latest credit report instantly and understand your financial health.</p>
                     <a href="{{ route('enter-aadhaar') }}" class="card-link">Check Now →</a>
                 </div>
 
                 <div class="card-info">
-                    <div class="card-icon green"><i class="bi bi-card-list"></i></div>
+                    <div class="card-icon green"><i class="fa-regular fa-credit-card"></i></div>
                     <h3>Loan Eligibility</h3>
                     <p>Find out how much you can borrow in just 2 minutes with our simple checker.</p>
                     <a href="#" class="card-link">Calculate Now →</a>
                 </div>
 
                 <div class="card-info">
-                    <div class="card-icon purple"><i class="bi bi-person"></i></div>
+                    <div class="card-icon purple"><i class="fa-regular fa-user"></i></div>
                     <h3>Create Account</h3>
                     <p>Join us to unlock personalized offers and manage your applications with ease.</p>
                     <a href="{{ route('register.create') }}" class="card-link">Sign Up Today →</a>
@@ -106,7 +106,7 @@
                 <div class="step">
                     <span class="step-number">1</span>
                     <div class="icon blue">
-                        <i class="bi bi-file-earmark-text"></i>
+                        <i class="fa-regular fa-file"></i>
                     </div>
                     <h4>Apply Online</h4>
                     <p>
@@ -119,7 +119,7 @@
                 <div class="step">
                     <span class="step-number">2</span>
                     <div class="icon green">
-                        <i class="bi bi-check-circle"></i>
+                        <i class="fa-solid fa-check"></i>
                     </div>
                     <h4>Get Approved</h4>
                     <p>
@@ -132,7 +132,7 @@
                 <div class="step">
                     <span class="step-number">3</span>
                     <div class="icon purple">
-                        <i class="bi bi-cash-coin"></i>
+                        <i class="fa-solid fa-indian-rupee-sign"></i>
                     </div>
                     <h4>Receive Funds</h4>
                     <p>
@@ -143,7 +143,7 @@
             </div>
 
             <div class="cta">
-                <a href="#" class="btn-primary">Start Your Application</a>
+                <a href="{{ route('login') }}" class="btn-primary">Start Your Application</a>
             </div>
         </div>
     </section>
@@ -167,10 +167,10 @@
                 </div>
 
                 <div class="footer-center">
-                    <a href="#"><i class="bi bi-facebook"></i></a>
-                    <a href="#"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#"><i class="bi bi-linkedin"></i></a>
-                    <a href="#"><i class="bi bi-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
                 </div>
 
                 <div class="footer-right">
