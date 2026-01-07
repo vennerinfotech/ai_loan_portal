@@ -8,7 +8,6 @@
     padding: 24px;
 }
 
-/* Secondary Card Styling (For Upload Box and Instructions/Sample) */
 .pan-secondary-card {
     background-color: rgba(255, 255, 255, 1);
     border: 1px solid rgba(229, 231, 235, 1);
@@ -17,7 +16,6 @@
     margin-bottom: 24px;
 }
 
-/* Dashed Upload Area */
 .pan-upload-area {
     border: 1.5px dashed #cfcfcf;
     padding: 30px 10px;
@@ -46,34 +44,6 @@
     line-height: 1.4;
 }
 
-/* Upload Buttons */
-.pan-btn-primary {
-    background: #0d6efd;
-    border-color: #0d6efd;
-    border-radius: 10px;
-    padding: 10px 16px;
-    font-size: 14px;
-    color: white;
-}
-
-.pan-btn-primary:hover{
-    border-color: #0d6efd !important;
-}
-
-.pan-btn-light {
-    background-color: #f8f9fa !important;
-    border-color: #ced4da !important;
-    color: #212529 !important;
-    border-radius: 10px;
-    padding: 10px 16px;
-    font-size: 14px;
-}
-
-.pan-btn-light:hover{
-    color: #fff !important;
-}
-
-/* --- Instructions Styles --- */
 
 .pan-instructions h6 i {
     color: #0d6efd;
@@ -93,7 +63,7 @@
     list-style: none;
 }
 
-/* Custom checkmark icon */
+
 .pan-instructions ul li::before {
     content: "\2713";
     position: absolute;
@@ -103,7 +73,6 @@
     font-weight: 900;
 }
 
-/* --- Sample Photo Styles --- */
 .pan-sample-box {
     background: rgba(239, 246, 255, 1);
     border-radius: 12px;
@@ -132,8 +101,6 @@
     color: rgba(30, 58, 138, 1);
 }
 
-
-/* --- Format and Size Info --- */
 .pan-format-info p {
     font-size: 14px;
     color: #212529;
@@ -148,8 +115,6 @@
     color: #0cab66;
 }
 
-
-/* --- Secure Upload Box --- */
 .pan-secure-box {
     background: #fff8e6;
     border: 1px solid #f7b325;
@@ -175,7 +140,6 @@
     margin-right: 5px;
 }
 
-/* --- Footer Buttons --- */
 .pan-btn-success {
     background-color: #0cab66 !important;
     border-color: #0cab66 !important;
@@ -185,7 +149,6 @@
     color: white !important;
 }
 
-/* Error styles */
 .pan-upload-area.error {
     border: 1px solid red;
 }
@@ -201,20 +164,19 @@
     margin-top: 10px;
 }
 
-/* Success styles */
+
 .success-message {
     color: green;
     font-size: 14px;
     margin-top: 10px;
 }
 
-/* Preview image */
+
 .pan-upload-area img {
     max-width: 100%;
     margin-top: 10px;
 }
 
-/* Red border and shake effect for invalid input */
 .pan-upload-area.shake {
     animation: shake 0.5s ease;
 }
@@ -225,7 +187,4 @@
     50% { transform: translateX(5px); }
     75% { transform: translateX(-5px); }
     100% { transform: translateX(0); }
-}
-#galleryButton:hover {
-    background-color: #207ad4ce !important;
 }

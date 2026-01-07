@@ -42,11 +42,9 @@
                                     <p>Tap to take photo<br>or upload from gallery</p>
                                 </div>
 
-                                <div class="d-flex gap-2">
-                                    <button type="button" class="btn btn-primary w-50" id="takePhotoBtn"><i
-                                            class="bi bi-camera-fill me-1"></i>Take Photo</button>
-                                    <button type="button" class="btn btn-light w-50" id="uploadFromGalleryBtn"><i
-                                            class="bi bi-folder-fill me-1"></i>Gallery</button>
+                                <div class="upload-buttons">
+                                    <button type="button" class="btn-take-photo" id="takePhotoBtn"><i class="fa-regular fa-camera pr-1"></i>Take Photo</button>
+                                    <button type="button" class="btn-gallery" id="uploadFromGalleryBtn"><i class="fa-regular fa-folder pr-1"></i>Gallery</button>
                                     <!-- Hidden File Input for Gallery Upload -->
                                     <input type="file" name="aadhaar_card_image" id="fileInput"
                                         accept="image/*,application/pdf" style="display:none" />

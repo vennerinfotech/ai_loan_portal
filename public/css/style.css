@@ -8,6 +8,10 @@ body {
     font-family: "Poppins", sans-serif;
 }
 
+button:focus{
+    outline: none !important;
+}
+
 .form-container-wrapper {
     display: flex;
     justify-content: center;
@@ -153,7 +157,7 @@ body {
 .form-card .form-group .form-control {
     border: 1px solid #e5e7eb;
     height: 50px;
-    color: #adaebc;
+    color: #374151;
     transition: all 0.3s ease;
 }
 
@@ -180,7 +184,7 @@ body {
     padding: 15px 20px;
     background-color: #252484;
     color: #ffffff;
-    border: none;
+    border: 1px solid #252484;
     border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
@@ -589,6 +593,11 @@ body {
     font-weight: 600;
 }
 
+.form-card .aadhar-otp-box{
+    display: flex;
+    gap: 5px;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -596,6 +605,49 @@ body {
 
     100% {
         transform: rotate(360deg);
+    }
+}
+
+.upload-buttons{
+    display: flex;
+    gap: 10px;
+}
+
+.form-card .btn-take-photo{
+    padding: 10px 15px;
+    background-color: #252484;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    width: -webkit-fill-available;
+}
+
+.form-card .btn-gallery{
+    padding: 10px 15px;
+    background-color: #F3F4F6;
+    color: #374151;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    width: -webkit-fill-available;
+}
+
+.form-card .icon-circle.warning {
+    background: #FEF2F2;
+}
+
+.form-card .icon-circle.warning i{
+    color: #EF4444;
+}
+
+@media (max-width:450px){
+    .upload-buttons{
+        flex-direction: column;
     }
 }
 
@@ -615,7 +667,8 @@ body {
         font-size: 14px;
     }
     .form-card .mpin-box,
-    .form-card .otp-inputs .otp-digit {
+    .form-card .otp-inputs .otp-digit,
+    .aadhar-otp-box .otp-box {
         width: 35px;
         height: 35px;
     }

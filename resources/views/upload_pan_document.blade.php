@@ -36,11 +36,9 @@
                                     <p>Tap to take photo<br>or upload from gallery</p>
                                 </div>
 
-                                <div class="d-flex gap-2">
-                                    <button class="btn pan-btn-primary w-50"><i class="bi bi-camera-fill me-1"></i>Take
-                                        Photo</button>
-                                    <button class="btn pan-btn-light w-50" id="galleryButton"><i
-                                            class="bi bi-folder-fill me-1"></i>Gallery</button>
+                                <div class="upload-buttons">
+                                    <button class="btn-take-photo"><i class="fa-regular fa-camera pr-1"></i>Take Photo</button>
+                                    <button class="btn-gallery" id="galleryButton"><i class="fa-regular fa-folder pr-1"></i>Gallery</button>
                                     <!-- Hidden File Input for Gallery Upload -->
                                     <input type="file" name="pan_card_image" id="fileInput"
                                         accept="image/*,application/pdf" style="display:none" />

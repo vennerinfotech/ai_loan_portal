@@ -1,16 +1,3 @@
-/* Base Styles */
-body.aadhaar {
-    font-family: 'Inter', sans-serif;
-    background: #eef3ff;
-    margin-top: 4.4rem;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 50px 15px;
-}
-
-/* Main Card Container */
 .upload-card {
     width: 100%;
     background: #fff;
@@ -19,19 +6,15 @@ body.aadhaar {
     padding: 24px;
 }
 
-/* Secondary Card Styling (For Upload Box and Instructions/Sample) */
 .secondary-card {
     background-color: rgba(255, 255, 255, 1);
-    /* Light grey background to distinguish sections */
     border: 1px solid rgba(229, 231, 235, 1);
-    /* Light border */
     border-radius: 12px;
     padding: 16px;
     margin-bottom: 24px;
 }
 
 
-/* Header Icon Box */
 .icon-box {
     height: 48px;
     width: 48px;
@@ -44,19 +27,6 @@ body.aadhaar {
     color: #4F46E5;
 }
 
-.upload-card h5 {
-    font-size: 24px;
-    font-weight: 700;
-    font-family: "Poppins", sans-serif;
-}
-
-/* Upload Text/Description */
-.upload-description {
-    color: #6c757d;
-    font-size: 14px;
-}
-
-/* Dashed Upload Area */
 .upload-area {
     border: 1.5px dashed #cfcfcf;
     padding: 30px 10px;
@@ -121,10 +91,9 @@ body.aadhaar {
     color: #343a40;
     margin-bottom: 8px;
     list-style: none;
-    /* Remove default bullet */
 }
 
-/* Custom checkmark icon */
+
 .instructions ul li::before {
     content: "\2713";
     position: absolute;
@@ -134,13 +103,10 @@ body.aadhaar {
     font-weight: 900;
 }
 
-/* --- Sample Photo Styles --- */
 .sample-box {
     background: rgba(239, 246, 255, 1);
-    /* border: 1px solid #dde6ff; */
     border-radius: 12px;
     padding: 12px;
-    /* Smaller padding inside the sample box */
 }
 
 .sample-box h4 {
@@ -166,7 +132,6 @@ body.aadhaar {
 }
 
 
-/* --- Format and Size Info --- */
 .format-info p {
     font-size: 14px;
     color: #212529;
@@ -181,8 +146,6 @@ body.aadhaar {
     color: #0cab66;
 }
 
-
-/* --- Secure Upload Box --- */
 .secure-box {
     background: #fff8e6;
     border: 1px solid #f7b325;
@@ -208,7 +171,6 @@ body.aadhaar {
     margin-right: 5px;
 }
 
-/* --- Footer Buttons --- */
 .btn-success {
     background-color: #0cab66 !important;
     border-color: #0cab66 !important;
@@ -240,16 +202,9 @@ body.aadhaar {
     cursor: pointer;
     color: red;
     background-color: rgba(255, 255, 255, 0.6);
-    /* padding: 5px; */
     border-radius: 50%;
-    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); */
 }
 
-#uploadFromGalleryBtn:hover {
-    background-color: #207ad4ce !important;
-}
-
-/* Add this to your CSS file */
 .upload-area.error {
     border: 1px solid red;
 }

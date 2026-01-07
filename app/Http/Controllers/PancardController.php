@@ -23,6 +23,11 @@ class PancardController extends Controller
         //
     }
 
+       public function pan_not_linked()
+    {
+        return view('pan_not_linked');
+    }
+
     /**
      * Show the form for creating a new resource.
      */

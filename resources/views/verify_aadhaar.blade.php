@@ -32,7 +32,7 @@
                         @csrf
 
                         <!-- OTP Boxes -->
-                        <div class="d-flex gap-2 my-3">
+                        <div class="aadhar-otp-box mb-4">
                             @for ($i = 0; $i < 6; $i++)
                                 <input type="text" maxlength="1" name="otp[]" class="otp-box text-center" required>
                             @endfor

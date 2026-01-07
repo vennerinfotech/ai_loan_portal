@@ -41,6 +41,8 @@ Route::post('/upload-aadhaar', [AadhaarController::class, 'uploadAadhaarDocument
 route::get('/aadhaar_data_review', [AadhaarController::class, 'aadhaar_data_review'])->name('aadhaar1');
 route::get('/aadhaar_verification_completed', [AadhaarController::class, 'aadhaar_verification_form'])->name('aadhaar_verification_comp');
 
+route::get('/aadhar_not_linked', [AadhaarController::class, 'aadhar_not_linked'])->name('aadhar_not_linked');
+
 // Route to download Aadhaar verification receipt
 Route::get('/download-verification-receipt', [AadhaarController::class, 'downloadReceipt'])->name('aadhaar.downloadReceipt');
 
@@ -79,6 +81,7 @@ Route::post('/store-pan-card', [PancardController::class, 'store'])->name('panca
 route::get('/verify_pan_number', [PancardController::class, 'Verify_pancard_form'])->name('Verify_pan');
 route::get('/pan_data_review', [PancardController::class, 'pan_data_reviewform'])->name('pan_data_review');
 route::get('/pan_verification_completed', [PancardController::class, 'pan_verification_comp'])->name('pan_verification_comp');
+route::get('/pan_not_linked', [PancardController::class, 'pan_not_linked'])->name('pan_not_linked');
 
 // Route::get('/register', function () {
 //     return view('auth.register');
@@ -222,7 +225,7 @@ Route::get('/final_confirmation', action: function () {
 })->name('cibil_crif');
 
 // apply for loan
-Route::get('/apply_for_loan ', action: function () {
+Route::get('/apply_for_loan', action: function () {
     return view('apply_loan');
 })->name('apply_loan');
 

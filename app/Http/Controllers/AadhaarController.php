@@ -24,6 +24,11 @@ class AadhaarController extends Controller
         //
     }
 
+      public function aadhar_not_linked()
+    {
+        return view('aadhar_not_linked');
+    }
+
      public function applicant()
     {
         return view('applicant_detail');
