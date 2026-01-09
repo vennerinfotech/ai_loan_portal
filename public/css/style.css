@@ -8,7 +8,7 @@ body {
     font-family: "Poppins", sans-serif;
 }
 
-button:focus{
+button:focus {
     outline: none !important;
 }
 
@@ -20,9 +20,8 @@ button:focus{
     padding: 20px;
     position: relative;
     /* background: linear-gradient(to bottom left, #c7e1f8, #f5f5f5); */
-    background: url('../images/wave.jpg') repeat-x center center/cover;
+    background: url("../images/wave.jpg") repeat-x center center/cover;
 }
-
 
 .form-container {
     display: flex;
@@ -41,28 +40,8 @@ button:focus{
     /* background: linear-gradient(180deg, #6765e8 0%, #6765e8 50%, #252484 100%); */
     position: relative;
     width: 50%;
-     background: url('../images/background.png') no-repeat bottom/cover;
+    background: url("../images/background.png") no-repeat bottom/cover;
 }
-
-/* .left-section::before,
-.left-section::after {
-    position: absolute;
-    content: "";
-    top: -15%;
-    left: -15%;
-    width: 320px;
-    height: 320px;
-    border-radius: 100%;
-    background: #ffffff0a;
-    pointer-events: none;
-}
-
-.left-section::after {
-    right: -15% !important;
-    bottom: -15% !important;
-    top: auto;
-    left: auto;
-} */
 
 .left-section .content {
     display: flex;
@@ -149,8 +128,8 @@ button:focus{
     color: #374151;
 }
 
-.form-card .form-group .optional{
-    color: #9CA3AF;
+.form-card .form-group .optional {
+    color: #9ca3af;
     font-weight: 400;
 }
 
@@ -159,6 +138,7 @@ button:focus{
     height: 50px;
     color: #374151;
     transition: all 0.3s ease;
+        font-size: 14px;
 }
 
 .form-card .form-group .form-control:focus {
@@ -168,7 +148,7 @@ button:focus{
     box-shadow: 0 4px 12px rgba(103, 101, 232, 0.15);
 }
 
-.form-card .form-group .form-control:focus-visible{
+.form-card .form-group .form-control:focus-visible {
     outline: none !important;
     border-color: #6765e8;
     box-shadow: 0 4px 12px rgba(103, 101, 232, 0.15);
@@ -209,29 +189,6 @@ button:focus{
 .form-card .btn-cancel:hover {
     color: #fff;
 }
-
-.form-card .otp-info {
-    background-color: #2524840a;
-    border: 1px solid #2524840a;
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 20px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 14px;
-    color: #252484;
-}
-
-.form-card .otp-info ul {
-    margin-bottom: 0px;
-}
-
-/* .form-card .otp-info .icon img {
-    width: 20px;
-    height: 20px;
-    margin-top: 3px;
-} */
 
 .form-card .signin-text {
     text-align: center;
@@ -550,18 +507,18 @@ button:focus{
     margin-right: 8px;
 }
 
-.form-card .credit-score{
+.form-card .credit-score {
     margin: 30px 0px;
 }
 
-.form-card .credit-score h4{
+.form-card .credit-score h4 {
     font-weight: 700;
-    color: #4F46E5;
+    color: #4f46e5;
     font-size: 72px;
 }
-.form-card .credit-score span{
-        font-size: 26px;
-    color: #94A3B8;
+.form-card .credit-score span {
+    font-size: 26px;
+    color: #94a3b8;
     font-weight: 500;
 }
 
@@ -569,31 +526,30 @@ button:focus{
     margin: 30px 0 20px;
 }
 
-.form-card .credit-details-row >div{
+.form-card .credit-details-row > div {
     display: flex;
     gap: 30px;
 }
 
-.form-card .credit-details-row i{
-    color: #6366F1;
+.form-card .credit-details-row i {
+    color: #6366f1;
     font-size: 16px;
     margin-right: 8px;
 }
 
-.form-card .credit-details-row h6{
-        font-size: 16px;
+.form-card .credit-details-row h6 {
+    font-size: 16px;
     color: #475569;
     font-weight: 400;
-
 }
 
-.form-card .credit-details-row p{
+.form-card .credit-details-row p {
     font-size: 16px;
-    color: #1E293B;
+    color: #1e293b;
     font-weight: 600;
 }
 
-.form-card .aadhar-otp-box{
+.form-card .aadhar-otp-box {
     display: flex;
     gap: 5px;
 }
@@ -608,12 +564,12 @@ button:focus{
     }
 }
 
-.upload-buttons{
+.upload-buttons {
     display: flex;
     gap: 10px;
 }
 
-.form-card .btn-take-photo{
+.form-card .btn-take-photo {
     padding: 10px 15px;
     background-color: #252484;
     color: #ffffff;
@@ -625,9 +581,9 @@ button:focus{
     width: -webkit-fill-available;
 }
 
-.form-card .btn-gallery{
+.form-card .btn-gallery {
     padding: 10px 15px;
-    background-color: #F3F4F6;
+    background-color: #f3f4f6;
     color: #374151;
     border: none;
     border-radius: 8px;
@@ -638,16 +594,67 @@ button:focus{
 }
 
 .form-card .icon-circle.warning {
-    background: #FEF2F2;
+    background: #fef2f2;
 }
 
-.form-card .icon-circle.warning i{
-    color: #EF4444;
+.form-card .icon-circle.warning i {
+    color: #ef4444;
 }
 
-@media (max-width:450px){
-    .upload-buttons{
+.form-card .loan-input-select {
+    margin-bottom: 30px;
+}
+
+.form-card .loan-input-select i {
+    font-size: 14px;
+    padding-right: 5px;
+    color: #374151;
+}
+
+.form-card .loan-input-select .btn-select {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #fff;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    width: -webkit-fill-available;
+    text-align: center;
+}
+
+.form-card .loan-input-select .btn-select:hover {
+    border-color: #6765e8;
+    background: white;
+    box-shadow: 0 4px 12px rgba(103, 101, 232, 0.15);
+    color: #374151;
+}
+
+.form-card .loan-input-select,
+.form-card .loan-input-btn {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.form-card .loan-input-select .btn-cancel,
+.form-card .loan-input-btn .btn-cancel {
+    margin-top: 0px;
+}
+
+@media (max-width: 450px) {
+    .upload-buttons {
         flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-card .loan-input-select,
+    .form-card .loan-input-btn {
+        flex-wrap: wrap;
     }
 }
 
@@ -672,10 +679,10 @@ button:focus{
         width: 35px;
         height: 35px;
     }
-    .form-card .credit-score h4{
+    .form-card .credit-score h4 {
         font-size: 34px;
     }
-    .form-card .credit-score p{
+    .form-card .credit-score p {
         font-size: 20px;
     }
     .form-card .form-group label,
@@ -700,7 +707,11 @@ button:focus{
     .left-section h3 {
         font-size: 26px;
     }
-    .left-section,
+
+    .left-section{
+        padding: 30px;
+    }
+
     .form-card {
         padding: 20px;
     }

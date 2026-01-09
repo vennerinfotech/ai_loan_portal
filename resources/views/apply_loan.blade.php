@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<section class="header-wrapper">
+    <section class="header-wrapper">
         <div class="container">
             <header class="header-inner">
                 <h2 class="logo-text">LoanHub</h2>
@@ -41,83 +41,12 @@
             </header>
         </div>
     </section>
-    <div class="hero-section">
-        <div class="container">
-            <div class="hero-grid">
-                <!-- Left Content -->
-                <div class="hero-content">
-                    <div class="text-center">
-                        <p class="trust-text">Trusted by 50,000+ customers</p>
-                    </div>
-                    <h1 class="hero-title">
-                        Find Your Perfect<br>
-                        <span class="hero-title-accent">Loan Solution</span>
-                    </h1>
 
-                    <p class="hero-description">
-                        Compare rates, calculate payments, and get approved faster. From home loans to business financing,
-                        we've got you covered.
-                    </p>
-
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary">
-                            Explore Loans
-                        </button>
-                        <button class="btn btn-secondary">
-                            📊 Calculate EMI
-                        </button>
-                    </div>
-
-                    <div class="stats">
-                        <div class="stat-item">
-                            <div class="stat-value">3.5%</div>
-                            <div class="stat-label">Interest rate</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">24hrs</div>
-                            <div class="stat-label">Quick Approval</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">₹5M+</div>
-                            <div class="stat-label">Loan Disbursed</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Estimate Calculator -->
-                <div class="calculator-card">
-                    <div class="calculator-header">
-                        <h3>Quick Estimate</h3>
-                        <button class="icon-btn">📊</button>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Loan Amount</label>
-                        <input type="number" id="loanAmount" value="50000" class="form-input">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Loan Term</label>
-                        <select id="loanTerm" class="form-input">
-                            <option value="12">12 months</option>
-                            <option value="24">24 months</option>
-                            <option value="36">36 months</option>
-                            <option value="48">48 months</option>
-                        </select>
-                    </div>
-
-                    <div class="payment-display">
-                        <div class="payment-label">Monthly Payment</div>
-                        <div class="payment-value" id="monthlyPayment">₹4,350</div>
-                    </div>
-
-                    <button class="btn btn-dark btn-full">
-                        Apply Now
-                    </button>
-                </div>
-            </div>
+    <section class="banner-wrapper">
+        <div class="banner-image">
+            <img src="../images/apply_loan.jpg" alt="Loan Banner" class="img-fluid">
         </div>
-    </div>
+    </section>
 
     <!-- Loan Types Section -->
     <div class="loan-types-section">
@@ -143,7 +72,7 @@
                         <li><span class="check">✓</span> 30-year terms available</li>
                         <li><span class="check">✓</span> Low down payment</li>
                     </ul>
-                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-blue btn-full">Learn More</a>
+                    <a href="{{ route('input_loan_amount') }}" target="_blank" class="btn btn-blue btn-full">Learn More</a>
                 </div>
 
                 <!-- Personal Loan -->
@@ -159,7 +88,7 @@
                         <li><span class="check">✓</span> Same day approval</li>
                         <li><span class="check">✓</span> Flexible use of funds</li>
                     </ul>
-                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-purple btn-full">Learn More</a>
+                    <a href="{{ route('input_loan_amount') }}" target="_blank" class="btn btn-purple btn-full">Learn More</a>
                 </div>
 
                 <!-- Business Loan -->
@@ -175,7 +104,7 @@
                         <li><span class="check">✓</span> Working capital support</li>
                         <li><span class="check">✓</span> Dedicated support</li>
                     </ul>
-                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-green btn-full">Learn More</a>
+                    <a href="{{ route('input_loan_amount') }}" target="_blank" class="btn btn-green btn-full">Learn More</a>
                 </div>
 
                 <!-- Mortgage Loan -->
@@ -191,7 +120,7 @@
                         <li><span class="check">✓</span> Pre-approval available</li>
                         <li><span class="check">✓</span> Expert guidance</li>
                     </ul>
-                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-orange btn-full">Learn More</a>
+                    <a href="{{ route('input_loan_amount') }}" target="_blank" class="btn btn-orange btn-full">Learn More</a>
                 </div>
 
                 <!-- Car Loan -->
@@ -207,7 +136,7 @@
                         <li><span class="check">✓</span> New & used vehicles</li>
                         <li><span class="check">✓</span> Fast processing</li>
                     </ul>
-                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-red btn-full">Learn More</a>
+                    <a href="{{ route('input_loan_amount') }}" target="_blank" class="btn btn-red btn-full">Learn More</a>
                 </div>
 
                 <!-- Other Loan -->
@@ -223,7 +152,8 @@
                         <li><span class="check">✓</span> Multiple purposes</li>
                         <li><span class="check">✓</span> Personalized rates</li>
                     </ul>
-                    <a href="{{ route('applicant_detail') }}" target="_blank" class="btn btn-pink btn-full">Learn More</a>
+                    <a href="{{ route('input_loan_amount') }}" target="_blank" class="btn btn-pink btn-full">Learn
+                        More</a>
                 </div>
             </div>
         </div>
@@ -266,8 +196,6 @@
             </div>
         </div>
     </div>
-
-
 @endsection
 
 @push('scripts')
@@ -293,20 +221,20 @@
         calculateEMI();
 
 
-         document.addEventListener('DOMContentLoaded', function() {
-                const profileToggle = document.querySelector('.profile-toggle');
-                const profileMenu = document.querySelector('.profile-menu');
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileToggle = document.querySelector('.profile-toggle');
+            const profileMenu = document.querySelector('.profile-menu');
 
-                if (profileToggle) {
-                    profileToggle.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        profileMenu.classList.toggle('show');
-                    });
+            if (profileToggle) {
+                profileToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    profileMenu.classList.toggle('show');
+                });
 
-                    document.addEventListener('click', function() {
-                        profileMenu.classList.remove('show');
-                    });
-                }
-            });
+                document.addEventListener('click', function() {
+                    profileMenu.classList.remove('show');
+                });
+            }
+        });
     </script>
 @endpush

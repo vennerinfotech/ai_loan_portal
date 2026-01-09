@@ -45,6 +45,84 @@
         </div>
     </section>
 
+    <div class="hero-section">
+        <div class="container">
+            <div class="hero-grid">
+                <!-- Left Content -->
+                <div class="hero-content">
+                    <div class="text-center">
+                        <p class="trust-text">Trusted by 50,000+ customers</p>
+                    </div>
+                    <h1 class="hero-title">
+                        Find Your Perfect<br>
+                        <span class="hero-title-accent">Loan Solution</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        Compare rates, calculate payments, and get approved faster. From home loans to business financing,
+                        we've got you covered.
+                    </p>
+
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary">
+                            Explore Loans
+                        </button>
+                        <button class="btn btn-secondary">
+                            📊 Calculate EMI
+                        </button>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-value">3.5%</div>
+                            <div class="stat-label">Interest rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">24hrs</div>
+                            <div class="stat-label">Quick Approval</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">₹5M+</div>
+                            <div class="stat-label">Loan Disbursed</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Estimate Calculator -->
+                <div class="calculator-card">
+                    <div class="calculator-header">
+                        <h3>Quick Estimate</h3>
+                        <button class="icon-btn">📊</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Loan Amount</label>
+                        <input type="number" id="loanAmount" value="50000" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Loan Term</label>
+                        <select id="loanTerm" class="form-input">
+                            <option value="12">12 months</option>
+                            <option value="24">24 months</option>
+                            <option value="36">36 months</option>
+                            <option value="48">48 months</option>
+                        </select>
+                    </div>
+
+                    <div class="payment-display">
+                        <div class="payment-label">Monthly Payment</div>
+                        <div class="payment-value" id="monthlyPayment">₹4,350</div>
+                    </div>
+
+                    <button class="btn btn-dark btn-full">
+                        Apply Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="dashboard-container">
         <div class="container">
             <header class="dashboard-header">
@@ -136,5 +214,44 @@
                     });
                 }
             });
+
         </script>
+            <script>
+        // EMI Calculator
+        function calculateEMI() {
+            const amount = parseFloat(document.getElementById('loanAmount').value);
+            const months = parseInt(document.getElementById('loanTerm').value);
+            const rate = 0.035; // 3.5% annual rate
+            const monthlyRate = rate / 12;
+
+            const payment = amount * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate,
+                months) - 1);
+
+            document.getElementById('monthlyPayment').textContent = '₹' + Math.round(payment).toLocaleString();
+        }
+
+        // Add event listeners
+        document.getElementById('loanAmount').addEventListener('input', calculateEMI);
+        document.getElementById('loanTerm').addEventListener('change', calculateEMI);
+
+        // Initial calculation
+        calculateEMI();
+
+
+         document.addEventListener('DOMContentLoaded', function() {
+                const profileToggle = document.querySelector('.profile-toggle');
+                const profileMenu = document.querySelector('.profile-menu');
+
+                if (profileToggle) {
+                    profileToggle.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        profileMenu.classList.toggle('show');
+                    });
+
+                    document.addEventListener('click', function() {
+                        profileMenu.classList.remove('show');
+                    });
+                }
+            });
+    </script>
     @endpush

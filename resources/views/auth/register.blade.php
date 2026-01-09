@@ -16,6 +16,7 @@
                 </div>
                 <div class="form-card">
                     <h3 class="form-title">Create Account</h3>
+                    <p>Fill in your details to get started with secure verification</p>
                     <form class="register-form" method="POST" action="{{ route('register.store') }}" id="registerForm">
                         @csrf
                         <div class="form-group">
@@ -37,19 +38,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Email Address</label>
+                            <label>Email Address <span class="optional">(Optional)</span></label>
                             <input type="email" name="email" id="email" class="form-control" placeholder="Enter email address"
                                 value="{{ old('email') }}" required>
                             @error('email')
-                                <div class="error-message">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
-                            <label>PAN Number <span class="optional">(Optional)</span></label>
-                            <input type="text" name="pan_card_number" id="panNumber" class="form-control" placeholder="Enter PAN number"
-                                value="{{ old('pan_card_number') }}">
-                            @error('pan_card_number')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
                         </div>
@@ -65,17 +57,6 @@
 
                         <button type="submit" class="btn-submit" id="form-submit">Continue with OTP
                             Verification</button>
-
-                        <div class="otp-info">
-                            <div class="icon"><img src="{{ asset('images/Vector.png') }}" alt="Vector Logo"></div>
-                            <div class="opt-info-text">
-                                <strong>OTP Verification Options</strong>
-                                <ul>
-                                    <li>Aadhaar linked mobile (Instant verification)</li>
-                                    <li>General mobile verification</li>
-                                </ul>
-                            </div>
-                        </div>
 
                         <p class="signin-text">Already have an account? <a href="{{ route('login') }}">Sign In</a></p>
                     </form>

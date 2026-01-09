@@ -98,10 +98,12 @@
                             <div class="dropdown-menu-custom">
                                 <a href="{{ route('enter-aadhaar') }}">Co-Applicant 1</a>
                                 <a href="{{ route('enter-aadhaar') }}">Co-Applicant 2</a>
+                                <a href="{{ route('enter-aadhaar') }}">Co-Applicant 3</a>
+                                <a href="{{ route('enter-aadhaar') }}">Co-Applicant 4</a>
+                                <a href="{{ route('enter-aadhaar') }}">Co-Applicant 5</a>
+                                <a href="{{ route('enter-aadhaar') }}">Guarantor</a>
                             </div>
                         </div>
-
-                        <a href="{{ route('enter-aadhaar') }}" class="btn btn-primary">Guarantor</a>
                     </div>
 
                 </header>

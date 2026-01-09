@@ -48,6 +48,8 @@ Route::get('/download-verification-receipt', [AadhaarController::class, 'downloa
 
 Route::get('/applicant_detail', [AadhaarController::class, 'applicant'])->name('applicant_detail');
 
+Route::get('/input_loan_amount', [AadhaarController::class, 'inputloan'])->name('input_loan_amount');
+
 // Test OCR Route (for testing only)
 Route::get('/test-ocr', function () {
     return view('test_ocr');
