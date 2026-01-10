@@ -51,14 +51,6 @@
                                             placeholder="Enter Loan Amount" autocomplete="off" class="form-control"
                                             value="">
 
-
-                                        <!-- Show validation error for aadhaar_number field -->
-                                        @error('aadhaar_number')
-                                            <div class="alert alert-danger mt-2">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-
                                         <button type="button" class="aadhaar-toggle-visibility" id="toggleBtn">
                                             <i class="bi bi-shield-shaded"></i>
                                         </button>
@@ -71,7 +63,7 @@
                                 </div>
                                 <div class="loan-input-btn">
                                     <a href="{{ route('apply_loan') }}" class="btn-cancel" id=""><i class="fa-solid fa-arrow-left pr-2"></i>Back</a>
-                                    <button type="submit" class="btn-submit" id="continueBtn">Continue</button>
+                                    <a href="{{ route('enter-aadhaar') }}" class="btn-submit" id="">Continue</a>
                                 </div>
 
                             </form>
