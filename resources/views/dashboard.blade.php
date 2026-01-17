@@ -32,7 +32,7 @@
                             <i class="fas fa-caret-down"></i>
                         </div>
                         <div class="profile-menu">
-                            <a href="#">Setting</a>
+                            <a href="{{ route('user_setting') }}" target="_blank">Setting</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit">Logout</button>

@@ -4,6 +4,7 @@ use App\Http\Controllers\AadhaarController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PancardController;
+use App\Http\Controllers\UserSettingController;
 use App\Http\Controllers\HeaderController;
 use Illuminate\Support\Facades\Route;
 
@@ -84,6 +85,8 @@ route::get('/verify_pan_number', [PancardController::class, 'Verify_pancard_form
 route::get('/pan_data_review', [PancardController::class, 'pan_data_reviewform'])->name('pan_data_review');
 route::get('/pan_verification_completed', [PancardController::class, 'pan_verification_comp'])->name('pan_verification_comp');
 route::get('/pan_not_linked', [PancardController::class, 'pan_not_linked'])->name('pan_not_linked');
+
+route::get('/user_setting', [UserSettingController::class, 'user_setting'])->name('user_setting');
 
 // Route::get('/register', function () {
 //     return view('auth.register');
