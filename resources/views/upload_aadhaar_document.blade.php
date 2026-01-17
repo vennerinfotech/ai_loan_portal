@@ -22,7 +22,7 @@
 
                     </div>
                 </div>
-                <div class="form-card">
+                <div class="form-card fix-height">
                     <div class="upload-card aadhaar">
                         <div class="text-center mb-4">
                             <div class="icon-box mx-auto mb-4">
@@ -98,8 +98,6 @@
                                     security to protect
                                     your information.</p>
                             </div>
-
-
                                 <button type="submit" class="btn-submit">
                                     Submit
                                 </button>
