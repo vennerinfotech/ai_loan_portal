@@ -234,11 +234,6 @@ Route::get('/apply_for_loan', action: function () {
     return view('apply_loan');
 })->name('apply_loan');
 
-// Loan Offers Page
-Route::get('/loan_offers', function () {
-    return view('loan_offers');
-})->name('loan.offers');
-
 Route::get('/aa', function () {
     return view('aa');
 })->name('aa');

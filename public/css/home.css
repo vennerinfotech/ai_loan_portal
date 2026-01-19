@@ -18,12 +18,7 @@ body {
 }
 
 .carousel-wrapper {
-    background: linear-gradient(
-        to right,
-        #6765e8 0%,
-        #6765e8 50%,
-        #252484 100%
-    );
+    background:#252484;
     position: relative;
 }
 
@@ -67,7 +62,7 @@ body {
 }
 
 .slide-buttons .btn {
-    background: #7675ea;
+    background: #4f4ea56e;
     color: #fff;
     padding: 20px;
     width: 50%;
@@ -92,7 +87,7 @@ body {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: #7675ea;
+    background: #4f4ea56e;
     border: none;
     font-size: 26px;
     width: 50px;
@@ -313,7 +308,7 @@ body {
 }
 
 .footer {
-    background: #6765e8;
+    background: #252484;
 }
 
 .footer-top {
