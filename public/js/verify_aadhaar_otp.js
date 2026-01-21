@@ -125,29 +125,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = '/upload_aadhaar_document'; // Change to your next route
             });
         } else {
-            // Custom Invalid OTP Popup
-            const popupHtml = `
-                <div class="aadhaar-popup text-center p-4">
-                    <div class="icon mb-3">
-                        <i class="bi bi-exclamation-triangle-fill text-danger fs-2"></i>
-                    </div>
-                    <h5 class="fw-semibold">Aadhaar Not Linked with Mobile</h5>
-                    <p class="text-muted small">We could not send OTP. Please upload your Aadhaar card for manual verification.</p>
-                    <button id="upload-aadhaar-btn" class="button upload-aadhaar-btn w-100 mb-2">Upload Aadhaar</button>
-                    <button id="cancel-btn" class="button cancel-btn w-100">Cancel</button>
-                </div>`;
-
-            const popupDiv = document.createElement('div');
-            popupDiv.classList.add('aadhaar-popup-wrapper');
-            popupDiv.innerHTML = popupHtml;
-            document.body.appendChild(popupDiv);
-
-            // Handle button clicks
-            document.getElementById('upload-aadhaar-btn').addEventListener('click', () => {
-                window.location.href = '/upload_aadhaar_document'; // Your upload page
-            });
-            document.getElementById('cancel-btn').addEventListener('click', () => {
-                popupDiv.remove();
+            Swal.fire({
+                title: 'Aadhaar Not Linked with Mobile',
+                text: 'We could not send OTP. Please upload your Aadhaar card for manual verification.',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'Cancel',
+                confirmButtonText: 'Upload Aadhaar Card',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'http://127.0.0.1:8000/upload_aadhaar_document';
+                }
             });
         }
     }

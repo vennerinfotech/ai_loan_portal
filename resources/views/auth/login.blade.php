@@ -25,10 +25,10 @@
                         <form id="loginForm" action="{{ route('login.authenticate') }}" method="POST">
                             @csrf
                             <div class="form-group">
-                                <label for="email" class="form-label">Email Address</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                    placeholder="Enter your email">
-                                    @error('email')
+                                <label for="phone" class="form-label">Mobile Number</label>
+                                <input type="text" class="form-control" id="phone" name="phone"
+                                    placeholder="Enter your mobile number" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                    @error('phone')
                                         <div class="error-message text-danger">{{ $message }}</div>
                                     @enderror
                             </div>

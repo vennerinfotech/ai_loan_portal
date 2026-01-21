@@ -26,11 +26,11 @@ document.getElementById('form-submit').addEventListener('click', function (e) {
         showError(phone, "Please enter a valid 10-digit phone number.");
     }
 
-    // Validate Email (required field)
+    // Validate Email (Optional)
     const email = document.getElementById('email');
-    if (!email.value.trim()) {
-        isValid = false;
-        showError(email, "Email is required.");
+    if (email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+         isValid = false;
+         showError(email, "Please enter a valid email address.");
     }
 
     // Validate PAN Card Number (ABCDE1234F format)

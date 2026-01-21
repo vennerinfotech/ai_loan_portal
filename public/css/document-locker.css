@@ -231,9 +231,10 @@ body {
 }
 
 .empty-state i {
-    font-size: 4rem;
-    color: #cbd5e0;
-    margin-bottom: 1.5rem;
+       font-size: 1rem;
+    color: #ffffff;
+    margin-bottom: 0;
+    padding-right: 8px;
 }
 
 .empty-state h3 {
@@ -314,6 +315,7 @@ body {
 @media (max-width: 768px) {
     .locker-header {
         padding: 20px;
+        justify-content: center;
     }
 
     .locker-header h1 {

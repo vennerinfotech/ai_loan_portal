@@ -138,7 +138,7 @@ button:focus {
     height: 50px;
     color: #374151;
     transition: all 0.3s ease;
-        font-size: 14px;
+    font-size: 14px;
 }
 
 .form-card .form-group .form-control:focus {
@@ -645,6 +645,57 @@ button:focus {
     margin-top: 0px;
 }
 
+.swal2-title {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #111827;
+    font-weight: 600;
+}
+
+.swal2-html-container {
+    font-size: 16px;
+    color: #000;
+    padding: 0;
+}
+
+.swal2-cancel {
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px 20px;
+    background: transparent;
+    color: #252484;
+    border: 1px solid #252484;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.swal2-cancel:hover {
+    background-color: #6765e8;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    color: #fff;
+}
+
+.swal2-confirm {
+    padding: 15px 20px;
+    background-color: #252484;
+    color: #ffffff;
+    border: 1px solid #252484;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.swal2-confirm:hover {
+    background-color: #6765e8;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
 @media (max-width: 450px) {
     .upload-buttons {
         flex-direction: column;
@@ -708,7 +759,7 @@ button:focus {
         font-size: 26px;
     }
 
-    .left-section{
+    .left-section {
         padding: 30px;
     }
 
@@ -736,4 +787,10 @@ button:focus {
     .login-page-wrapper .container {
         max-width: 990px !important;
     }
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
 }

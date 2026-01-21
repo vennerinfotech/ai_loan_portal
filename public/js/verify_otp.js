@@ -4,13 +4,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const timerElement = document.querySelector("#timer");
     const resendLink = document.querySelector("#resend");
     const mobileDisplay = document.querySelector("#mobileDisplay");
+    
+    // CSRF Token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-    // Show mobile number from localStorage
-    const mobile = localStorage.getItem("mobile");
-    if (mobile) mobileDisplay.textContent = mobile;
+    // Show mobile number from localStorage if present (fallback)
+    // But mostly relying on server-rendered value now.
+    // const mobile = localStorage.getItem("mobile");
+    // if (mobile) mobileDisplay.textContent = mobile;
 
     // Focus first box
-    otpInputs[0].focus();
+    if(otpInputs.length > 0) otpInputs[0].focus();
 
     // Handle input typing and movement
     otpInputs.forEach((input, index) => {
@@ -38,28 +42,37 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Countdown Timer (2 minutes)
-    let timeLeft = 120;
-    const timerInterval = setInterval(() => {
-        if (timeLeft <= 0) {
+    // Server-synced Countdown Timer
+    const expiresMeta = document.querySelector('meta[name="otp-expires-at"]');
+    // If meta exists, use it. Else default to 2 mins from now (fallback)
+    let expiresAt = expiresMeta ? new Date(expiresMeta.content).getTime() : new Date().getTime() + 120000;
+    let timerInterval;
+
+    function startTimer() {
+        clearInterval(timerInterval); // Clear any existing
+        updateTimerDisplay(); // Immediate update
+        
+        timerInterval = setInterval(updateTimerDisplay, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const now = new Date().getTime();
+        const distance = expiresAt - now;
+
+        if (distance < 0) {
             clearInterval(timerInterval);
             timerElement.textContent = "Expired";
             otpInputs.forEach(i => (i.disabled = true));
-
-            Swal.fire({
-                icon: "error",
-                title: "OTP Expired",
-                text: "Your OTP has expired. Please resend to get a new code.",
-                confirmButtonColor: "#3085d6"
-            });
+            // Optional: Auto-expire UI?
             return;
         }
 
-        const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
-        const seconds = String(timeLeft % 60).padStart(2, "0");
-        timerElement.textContent = `${minutes}:${seconds}`;
-        timeLeft--;
-    }, 1000);
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        timerElement.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }
+
+    startTimer();
 
     // Manual verify
     form.addEventListener("submit", (e) => {
@@ -67,63 +80,100 @@ document.addEventListener("DOMContentLoaded", () => {
         submitOtp();
     });
 
-    // OTP Verification
+    // OTP Verification (Server-Side)
     function submitOtp() {
         const enteredOtp = Array.from(otpInputs).map(i => i.value).join("");
-        const storedOtp = localStorage.getItem("otp");
-
+        
         if (enteredOtp.length < 6) {
-            Swal.fire({
-                icon: "warning",
-                title: "Incomplete Code",
-                text: "Please enter all 6 digits of your OTP.",
-                confirmButtonColor: "#3085d6"
-            });
-            return;
+            // Only warn if manually submitted, not on auto-fill
+            return; 
         }
 
-        if (enteredOtp === storedOtp) {
-            Swal.fire({
-                icon: "success",
-                title: "OTP Verified Successfully!",
-                text: "Redirecting to your MPIN setup...",
-                confirmButtonColor: "#28a745",
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => {
-                localStorage.removeItem("otp");
-                window.location.href = "/MPIN";
-            });
-        } else {
-            //  Invalid OTP — show message but DO NOT clear inputs
-            Swal.fire({
-                icon: "error",
-                title: "Invalid OTP",
-                text: "The code you entered is incorrect. Please check and try again.",
-                confirmButtonColor: "#d33"
-            }).then(() => {
-                // Keep existing OTP digits visible
-                otpInputs[5].focus(); // Focus last input for quick edit
-            });
-        }
+        fetch('/verify-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ otp: enteredOtp })
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+                return { success: true };
+            }
+            return response.json().catch(() => ({}));
+        })
+        .then(data => {
+            if (data.success) {
+                if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                     // Fallback check if redirected via fetch properties earlier
+                     // (handled by response.redirected check above if generic)
+                }
+            } else if (data.errors) {
+                 Swal.fire({
+                    icon: "error",
+                    title: "Invalid OTP",
+                    text: data.errors.otp || data.errors.error || "Invalid OTP",
+                    confirmButtonColor: "#d33"
+                });
+                otpInputs[5].focus();
+            } else if (data.message && !data.success) {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: data.message,
+                    confirmButtonColor: "#d33"
+                });
+            }
+        })
+        .catch(err => console.error(err));
     }
 
-    // Resend OTP
+    // Resend OTP (Server-Side)
     resendLink.addEventListener("click", (e) => {
         e.preventDefault();
 
-        Swal.fire({
-            icon: "info",
-            title: "OTP Resent",
-            html: "A new OTP has been sent to your registered number.<br><b>(Use 111111 for local testing)</b>",
-            confirmButtonColor: "#3085d6"
-        });
+        fetch('/resend-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Update expiry
+                expiresAt = new Date(data.expires_at).getTime();
+                
+                // Reset inputs
+                otpInputs.forEach(i => {
+                    i.value = "";
+                    i.disabled = false;
+                });
+                otpInputs[0].focus();
+                
+                // Restart timer
+                startTimer();
 
-        localStorage.setItem("otp", "111111");
-        timeLeft = 120;
-        otpInputs.forEach(i => {
-            i.disabled = false;
+                Swal.fire({
+                    icon: "info",
+                    title: "OTP Resent",
+                    // Use server provided OTP for dev display
+                    html: `A new OTP has been sent to your registered number.<br><b>(Local Dev Mode: OTP is ${data.otp})</b>`,
+                    confirmButtonColor: "#3085d6"
+                });
+            } else {
+                 Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: data.message,
+                    confirmButtonColor: "#d33"
+                });
+            }
         });
-        otpInputs[0].focus();
     });
 });

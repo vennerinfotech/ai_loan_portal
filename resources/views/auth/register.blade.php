@@ -31,7 +31,7 @@
                         <div class="form-group">
                             <label>Mobile Number</label>
                             <input type="tel" name="phone" id="mobileNumber" class="form-control" placeholder="Enter mobile number"
-                                value="{{ old('phone') }}" required>
+                                value="{{ old('phone') }}" required maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
                             @error('phone')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
@@ -40,7 +40,7 @@
                         <div class="form-group">
                             <label>Email Address <span class="optional">(Optional)</span></label>
                             <input type="email" name="email" id="email" class="form-control" placeholder="Enter email address"
-                                value="{{ old('email') }}" required>
+                                value="{{ old('email') }}">
                             @error('email')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror

@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\AadhaarController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\PancardController;
+use App\Http\Controllers\AadhaarController;
 use App\Http\Controllers\HeaderController;
+use App\Http\Controllers\PancardController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -13,15 +13,16 @@ Route::get('/', function () {
 
 Route::get('/register', [RegisterController::class, 'create'])->name('register.create');
 Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+Route::get('/change-number', [RegisterController::class, 'changeNumber'])->name('register.change_number');
 
 route::get('/verify_otp', [RegisterController::class, 'show_verify_otp'])->name('verify.otp');
 Route::post('/verify-otp', [RegisterController::class, 'verifyOtp'])->name('otp.verify');
+Route::post('/resend-otp', [RegisterController::class, 'resendOtp'])->name('otp.resend');
 
 route::get('/MPIN', [RegisterController::class, 'show_mpin'])->name('mpin');
 Route::post('/mpin', [RegisterController::class, 'store_mpin'])->name('mpin.store');
 
 Route::get('/Forgot_MPIN', [RegisterController::class, 'forgot_mpin'])->name('forgot_mpin');
-
 
 Route::get('/dashboard', [RegisterController::class, 'showDashboard'])->name('dashboard');
 
@@ -188,7 +189,7 @@ Route::get('/cibil_credit_score_report', action: function () {
         }
     }
 
-    $score = 750; // Default fallback
+    $score = 750;  // Default fallback
     $provider = 'CIBIL';
     $reportDate = now()->format('M d, Y');
 

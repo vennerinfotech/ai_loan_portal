@@ -74,14 +74,14 @@ class LoginController extends Controller
      */
     public function authenticate(Request $request)
     {
-        // Validate email and MPIN fields
+        // Validate phone and MPIN fields
         $request->validate([
-            'email' => 'required|email',
+            'phone' => 'required|digits:10',
             'mpin' => 'required|digits:6',  // MPIN should be exactly 6 digits
         ]);
 
-        // Find customer by email
-        $customer = Customer::where('email', $request->email)->first();
+        // Find customer by phone
+        $customer = Customer::where('phone', $request->phone)->first();
 
         // Check if customer exists and the MPIN matches
         if ($customer && Hash::check($request->mpin, $customer->m_pin)) {
@@ -96,9 +96,12 @@ class LoginController extends Controller
         return back()->with('error', 'Invalid credentials. Please try again.');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();  // Log out the authenticated user
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return Redirect::route('login');  // Redirect to the login page after logout
     }

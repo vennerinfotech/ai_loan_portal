@@ -87,8 +87,8 @@
                             Generate MPIN
                         </button>
 
-                        <button class="btn-cancel">
-                            Cancel
+                        <button type="button" class="btn-cancel" onclick="window.history.back()">
+                            Back
                         </button>
                     </form>
                 </div>

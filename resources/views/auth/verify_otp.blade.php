@@ -2,6 +2,10 @@
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    @if (isset($expiresAt))
+        <meta name="otp-expires-at" content="{{ $expiresAt->toIso8601String() }}">
+    @endif
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
 
 @section('content')
@@ -23,7 +27,7 @@
                         <h3 class="mt-3">Verify Your Account</h3>
                         <p class="otp-subtitle">
                             We've sent a 6-digit code to <br>
-                            <strong id="mobileDisplay">+1 (555) 123-4567</strong>
+                            <strong id="mobileDisplay">{{ $phone }}</strong>
                         </p>
 
                         <form class="otp-form" id="otpForm">
@@ -37,15 +41,15 @@
                             </div>
 
                             <div class="timer-section">
-                                <p>Code expires in <br> <span id="timer">02:00</span></p>
+                                <p>Code expires in <br> <span id="timer"></span></p>
                             </div>
 
                             <button type="submit" class="btn-submit">Verify Code</button>
 
                             <div class="extra-links">
                                 <p>Didn’t receive the code? <a href="#" id="resend"> Resend Code</a></p>
-                                <a href="/" class="change-number"><img src="{{ asset('images/pencil.png') }}"
-                                        alt="Vector Logo">
+                                <a href="{{ route('register.change_number') }}" class="change-number"><img
+                                        src="{{ asset('images/pencil.png') }}" alt="Vector Logo">
                                     Change phone number</a>
                             </div>
 
