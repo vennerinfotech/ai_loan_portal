@@ -15,7 +15,7 @@
             margin-bottom: 2rem;
             font-size: 0.95rem;
         }
-        
+
         .breadcrumb-nav a {
             color: #4a5568;
             text-decoration: none;
@@ -179,12 +179,12 @@
                 object-fit: contain !important;
                 visibility: visible !important;
             }
-            
+
             /* Re-hide specific elements that might be inside the containers we displayed */
             .breadcrumb-nav, .info-section, .locker-header, header.main-header, .sidebar, .no-image-placeholder {
                 display: none !important;
             }
-            
+
             /* Ensure the image section is the only thing taking up space */
             .image-section {
                 position: fixed;
@@ -221,7 +221,7 @@
                     <i class="fas fa-caret-down"></i>
                 </div>
                 <div class="profile-menu">
-                    <a href="#">Profile</a>
+                    <a href="{{ route('user_setting') }}">Profile</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit">Logout</button>
@@ -293,7 +293,7 @@
                     <label>Last Updated</label>
                     <p>{{ $data['updated_at']->format('d M, Y h:i A') }}</p>
                 </div>
-                
+
                 <div class="info-item">
                      <label>Uploaded On</label>
                     <p>{{ $data['created_at']->format('d M, Y') }}</p>

@@ -77,8 +77,8 @@
       }
 
       .apply-btn:hover {
-          background-color: #6765e8;
-          color: #ffffff;
+        color: #fff;
+        background-color: #4f4ea56e;
           transition: all 0.5s ease-in-out;
       }
 
@@ -153,7 +153,7 @@
 
               <nav>
                   <a href="#home">Home</a>
-                  <a href="#customers">Customers</a>
+                  <a href="#customers">About Us</a>
                   <a href="#collaborator">Collaborator</a>
                   <a href="#team">Meet the team</a>
                   <a href="#contact">Contact Us</a>
@@ -169,7 +169,7 @@
 
           <div class="mobile-menu" id="mobileMenu">
               <a href="#home">Home</a>
-              <a href="#customers">Customers</a>
+              <a href="#customers">About Us</a>
               <a href="#collaborator">Collaborator</a>
               <a href="#team">Meet the team</a>
               <a href="#contact">Contact Us</a>

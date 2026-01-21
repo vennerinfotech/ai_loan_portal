@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\AadhaarController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\AadhaarController;
-use App\Http\Controllers\HeaderController;
 use App\Http\Controllers\PancardController;
 use Illuminate\Support\Facades\Route;
 
@@ -62,10 +61,10 @@ Route::post('/test-ocr', function (\Illuminate\Http\Request $request) {
 
     if ($request->hasFile('aadhaar_image')) {
         $file = $request->file('aadhaar_image');
-        $filename = 'test_aadhaar_' . time() . '.' . $file->getClientOriginalExtension();
+        $filename = 'test_aadhaar_'.time().'.'.$file->getClientOriginalExtension();
         $path = $file->storeAs('private_uploads/aadhar_card', $filename);
 
-        $imagePath = storage_path('app/private_uploads/aadhar_card/' . $filename);
+        $imagePath = storage_path('app/private_uploads/aadhar_card/'.$filename);
 
         $service = new \App\Services\AadhaarExtractionService;
         $result = $service->extractFromImage($imagePath);
@@ -85,6 +84,8 @@ route::get('/verify_pan_number', [PancardController::class, 'Verify_pancard_form
 route::get('/pan_data_review', [PancardController::class, 'pan_data_reviewform'])->name('pan_data_review');
 route::get('/pan_verification_completed', [PancardController::class, 'pan_verification_comp'])->name('pan_verification_comp');
 route::get('/pan_not_linked', [PancardController::class, 'pan_not_linked'])->name('pan_not_linked');
+
+route::get('/user_setting', [UserSettingController::class, 'user_setting'])->name('user_setting');
 
 // Route::get('/register', function () {
 //     return view('auth.register');
@@ -163,7 +164,7 @@ Route::get('/cibil_credit_report', action: function () {
     $panNumber = $user->pan_card_number ?? ($user->customer->pan_card_number ?? 'N/A');
 
     // If not in DB, check session (optional fallback)
-    if ($panNumber === 'N/A' || !$panNumber) {
+    if ($panNumber === 'N/A' || ! $panNumber) {
         $sessionData = session('pan_extracted_data');
         if (isset($sessionData['pan_number'])) {
             $panNumber = $sessionData['pan_number'];
@@ -182,7 +183,7 @@ Route::get('/cibil_credit_score_report', action: function () {
     $panNumber = $user->pan_card_number ?? ($user->customer->pan_card_number ?? 'N/A');
 
     // Fallback to session if N/A
-    if ($panNumber === 'N/A' || !$panNumber) {
+    if ($panNumber === 'N/A' || ! $panNumber) {
         $sessionData = session('pan_extracted_data');
         if (isset($sessionData['pan_number'])) {
             $panNumber = $sessionData['pan_number'];
@@ -201,7 +202,7 @@ Route::get('/cibil_credit_score_report', action: function () {
             // if ($document && $document->cibil_score) {
             //    $score = $document->cibil_score;
             // } else {
-            $service = new \App\Services\CibilScoreService();
+            $service = new \App\Services\CibilScoreService;
             $result = $service->fetchCibilScore($panNumber);
             if ($result['success']) {
                 $score = $result['data']['cibil_score'];
@@ -217,7 +218,7 @@ Route::get('/cibil_credit_score_report', action: function () {
         'score' => $score,
         'panNumber' => $panNumber,
         'reportDate' => $reportDate,
-        'provider' => $provider
+        'provider' => $provider,
     ]);
 })->name('cibil_credit_score');
 
@@ -231,11 +232,6 @@ Route::get('/final_confirmation', action: function () {
 Route::get('/apply_for_loan', action: function () {
     return view('apply_loan');
 })->name('apply_loan');
-
-// Loan Offers Page
-Route::get('/loan_offers', function () {
-    return view('loan_offers');
-})->name('loan.offers');
 
 Route::get('/aa', function () {
     return view('aa');

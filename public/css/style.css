@@ -65,7 +65,7 @@ button:focus {
 }
 
 .left-section i {
-    font-size: 60px;
+    font-size: 54px;
     margin-bottom: 10px;
 }
 
@@ -706,6 +706,18 @@ button:focus {
     .form-card .loan-input-select,
     .form-card .loan-input-btn {
         flex-wrap: wrap;
+    }
+}
+
+@media (min-width: 768px) {
+    .form-container-wrapper .fix-height {
+        height: calc(100vh - 100px);
+        overflow-y: scroll;
+    }
+
+    .form-container-wrapper .fix-height {
+        scrollbar-width: thin;
+        scrollbar-color: #e2e2e2 transparent;
     }
 }
 

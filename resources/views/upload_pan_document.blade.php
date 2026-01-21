@@ -19,7 +19,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-card">
+                <div class="form-card fix-height">
                     <div class="uploads">
                         <div class="text-center mb-4">
                             <div class="icon-circle mx-auto">

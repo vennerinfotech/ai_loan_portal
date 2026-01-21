@@ -163,7 +163,7 @@
             <!-- Bottom -->
             <div class="footer-bottom">
                 <div class="footer-left">
-                    © 2025 LoanPortal. All rights reserved.
+                    © 2026 LoanPortal. All rights reserved.
                 </div>
 
                 <div class="footer-center">
