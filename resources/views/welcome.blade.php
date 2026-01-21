@@ -148,7 +148,7 @@
         </div>
     </section>
 
-    <footer class="footer section-padding">
+    <footer class="footer">
         <div class="container">
             <!-- Top -->
             <div class="footer-top">
@@ -176,7 +176,6 @@
                 <div class="footer-right">
                     <a href="#">Privacy Policy</a>
                     <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
                 </div>
             </div>
 

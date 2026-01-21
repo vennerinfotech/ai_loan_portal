@@ -309,6 +309,7 @@ body {
 
 .footer {
     background: #252484;
+    padding: 100px 0 30px;
 }
 
 .footer-top {
@@ -433,6 +434,9 @@ body {
 
     .section-padding {
         padding: 50px 0px;
+    }
+    .footer{
+        padding: 50px 0 30px;
     }
     .card-info {
         text-align: center;
