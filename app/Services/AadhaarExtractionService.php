@@ -19,7 +19,7 @@ class AadhaarExtractionService
         try {
             // If the provided path is missing, try common alternate locations
             $resolvedPath = $this->resolveImagePath($imagePath);
-            if (! $resolvedPath) {
+            if (!$resolvedPath) {
                 Log::error('Image file not found for OCR', ['original_path' => $imagePath]);
 
                 return null;
@@ -43,9 +43,8 @@ class AadhaarExtractionService
             $extractedData = $this->extractUsingTesseract($resolvedPath);
 
             return $extractedData;
-
         } catch (\Exception $e) {
-            Log::error('Error extracting Aadhaar data: '.$e->getMessage());
+            Log::error('Error extracting Aadhaar data: ' . $e->getMessage());
 
             return null;
         }
@@ -61,15 +60,15 @@ class AadhaarExtractionService
             // Get API key from config or env (you need to sign up at ocr.space for free API key)
             $apiKey = config('services.ocr_space.api_key', env('OCR_SPACE_API_KEY'));
 
-            if (! $apiKey) {
+            if (!$apiKey) {
                 Log::warning('OCR.space API key not configured');
 
                 return null;
             }
 
             // Read image file
-            if (! file_exists($imagePath)) {
-                Log::error('Image file not found: '.$imagePath);
+            if (!file_exists($imagePath)) {
+                Log::error('Image file not found: ' . $imagePath);
 
                 return null;
             }
@@ -78,7 +77,7 @@ class AadhaarExtractionService
 
             // Log file size to help troubleshoot very large images
             $imageSizeKb = round(strlen($imageData) / 1024, 2);
-            if ($imageSizeKb > 4096) { // >4 MB
+            if ($imageSizeKb > 4096) {  // >4 MB
                 Log::warning('OCR.space: image is large; consider smaller size for faster OCR', [
                     'path' => $imagePath,
                     'size_kb' => $imageSizeKb,
@@ -89,10 +88,10 @@ class AadhaarExtractionService
 
             // Call OCR.space API
             $response = Http::asForm()
-                ->timeout(60) // extend timeout to handle slow uploads/responses
+                ->timeout(120)  // extend timeout to handle slow uploads/responses
                 ->post('https://api.ocr.space/parse/image', [
                     'apikey' => $apiKey,
-                    'base64Image' => 'data:image/jpeg;base64,'.$base64Image,
+                    'base64Image' => 'data:image/jpeg;base64,' . $base64Image,
                     'language' => 'eng',
                     // OCR.space expects string "true"/"false" for this flag
                     'isOverlayRequired' => 'false',
@@ -119,9 +118,8 @@ class AadhaarExtractionService
             }
 
             return null;
-
         } catch (\Exception $e) {
-            Log::error('OCR.space extraction error: '.$e->getMessage());
+            Log::error('OCR.space extraction error: ' . $e->getMessage());
 
             return null;
         }
@@ -136,18 +134,18 @@ class AadhaarExtractionService
         try {
             $apiKey = config('services.google_vision.api_key', env('GOOGLE_VISION_API_KEY'));
 
-            if (! $apiKey) {
+            if (!$apiKey) {
                 return null;
             }
 
-            if (! file_exists($imagePath)) {
+            if (!file_exists($imagePath)) {
                 return null;
             }
 
             $imageData = file_get_contents($imagePath);
             $base64Image = base64_encode($imageData);
 
-            $response = Http::post('https://vision.googleapis.com/v1/images:annotate?key='.$apiKey, [
+            $response = Http::post('https://vision.googleapis.com/v1/images:annotate?key=' . $apiKey, [
                 'requests' => [
                     [
                         'image' => [
@@ -173,9 +171,8 @@ class AadhaarExtractionService
             }
 
             return null;
-
         } catch (\Exception $e) {
-            Log::error('Google Vision extraction error: '.$e->getMessage());
+            Log::error('Google Vision extraction error: ' . $e->getMessage());
 
             return null;
         }
@@ -190,27 +187,26 @@ class AadhaarExtractionService
             // Check if Tesseract is available
             $tesseractPath = config('services.tesseract.path', 'tesseract');
 
-            if (! file_exists($imagePath)) {
+            if (!file_exists($imagePath)) {
                 return null;
             }
 
             // Execute Tesseract command
-            $outputFile = storage_path('app/temp/ocr_output_'.time().'.txt');
-            $command = escapeshellcmd($tesseractPath).' '.escapeshellarg($imagePath).' '.escapeshellarg($outputFile).' 2>&1';
+            $outputFile = storage_path('app/temp/ocr_output_' . time() . '.txt');
+            $command = escapeshellcmd($tesseractPath) . ' ' . escapeshellarg($imagePath) . ' ' . escapeshellarg($outputFile) . ' 2>&1';
 
             exec($command, $output, $returnCode);
 
-            if ($returnCode === 0 && file_exists($outputFile.'.txt')) {
-                $extractedText = file_get_contents($outputFile.'.txt');
-                unlink($outputFile.'.txt'); // Clean up
+            if ($returnCode === 0 && file_exists($outputFile . '.txt')) {
+                $extractedText = file_get_contents($outputFile . '.txt');
+                unlink($outputFile . '.txt');  // Clean up
 
                 return $this->parseAadhaarText($extractedText);
             }
 
             return null;
-
         } catch (\Exception $e) {
-            Log::error('Tesseract extraction error: '.$e->getMessage());
+            Log::error('Tesseract extraction error: ' . $e->getMessage());
 
             return null;
         }
@@ -232,92 +228,126 @@ class AadhaarExtractionService
             'date_of_birth' => null,
             'gender' => null,
             'address' => null,
+            'father_name' => null,  // Added field
         ];
 
-        // Clean text
-        $text = preg_replace('/\s+/', ' ', $text);
-        $text = strtoupper($text);
+        // normalize newlines
+        $text = str_replace(["\r\n", "\r"], "\n", $text);
 
-        // Extract Aadhaar number (12 digits)
-        if (preg_match('/\b(\d{4}\s?\d{4}\s?\d{4})\b/', $text, $matches)) {
+        // Clean text for Regex (keep newlines for line-by-line analysis)
+        $cleanText = preg_replace('/[^\x20-\x7E\n]/', '', $text);
+
+        // --- 1. KEY FIELDS EXTRACTION (Global Regex) ---
+
+        // Aadhaar number (12 digits, spaced or unspaced)
+        if (preg_match('/\b(\d{4}\s?\d{4}\s?\d{4})\b/', $cleanText, $matches)) {
             $data['aadhaar_number'] = preg_replace('/\s+/', '', $matches[1]);
         }
 
-        // Extract phone number (10 digits, may start with +91 or 91)
-        if (preg_match('/\b(\+?91[\s-]?)?([6-9]\d{9})\b/', $text, $matches)) {
+        // Phone number
+        if (preg_match('/\b(\+?91[\s-]?)?([6-9]\d{9})\b/', $cleanText, $matches)) {
             $data['phone'] = preg_replace('/\D/', '', $matches[2]);
         }
 
-        // Extract email (if present on card)
-        if (preg_match('/\b([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})\b/i', $text, $matches)) {
-            $data['email'] = strtolower($matches[1]);
-        }
-
-        // Extract name - Multiple patterns to catch different Aadhaar card formats
-        // Pattern 1: After "GOVERNMENT OF INDIA" or "भारत सरकार"
-        if (preg_match('/(?:GOVERNMENT OF INDIA|भारत सरकार)[\s\n]+([A-Z\s]{5,60})/i', $text, $matches)) {
-            $name = trim($matches[1]);
-            // Clean name - remove common OCR errors
-            $name = preg_replace('/[^A-Za-z\s\.]/', '', $name);
-            $name = preg_replace('/\s+/', ' ', $name);
-            if (strlen($name) >= 3) {
-                $data['name'] = $name;
-            }
-        }
-
-        // Pattern 2: After "Name" or "नाम" label
-        if (! $data['name'] && preg_match('/(?:NAME|नाम)[\s:]*([A-Z\s]{5,60})(?:\s+(?:DOB|Date|जन्म|YEAR|Year))/i', $text, $matches)) {
-            $name = trim($matches[1]);
-            $name = preg_replace('/[^A-Za-z\s\.]/', '', $name);
-            $name = preg_replace('/\s+/', ' ', $name);
-            if (strlen($name) >= 3) {
-                $data['name'] = $name;
-            }
-        }
-
-        // Pattern 3: Between "GOVERNMENT OF INDIA" and "Male/Female" or DOB
-        if (! $data['name'] && preg_match('/GOVERNMENT OF INDIA[\s\n]+([A-Z\s]{5,60})(?:\s+(?:Male|Female|M|F|DOB|Date))/i', $text, $matches)) {
-            $name = trim($matches[1]);
-            $name = preg_replace('/[^A-Za-z\s\.]/', '', $name);
-            $name = preg_replace('/\s+/', ' ', $name);
-            if (strlen($name) >= 3) {
-                $data['name'] = $name;
-            }
-        }
-
-        // Pattern 4: Look for capitalized words (at least 2 words, 3+ chars each)
-        if (! $data['name'] && preg_match('/([A-Z][A-Za-z]{2,}\s+[A-Z][A-Za-z]{2,}(?:\s+[A-Z][A-Za-z]{2,})?)/', $text, $matches)) {
-            $name = trim($matches[1]);
-            // Make sure it's not a common word like "GOVERNMENT" or "INDIA"
-            $excludeWords = ['GOVERNMENT', 'INDIA', 'AADHAAR', 'CARD', 'YEAR', 'DATE', 'MALE', 'FEMALE'];
-            $nameWords = explode(' ', $name);
-            $validName = [];
-            foreach ($nameWords as $word) {
-                if (! in_array(strtoupper($word), $excludeWords) && strlen($word) >= 2) {
-                    $validName[] = $word;
-                }
-            }
-            if (count($validName) >= 2) {
-                $data['name'] = implode(' ', $validName);
-            }
-        }
-
-        // Extract Date of Birth (DD/MM/YYYY or DD-MM-YYYY format)
-        if (preg_match('/(?:DOB|Date of Birth|जन्म)[\s:]*(\d{2}[\/\-]\d{2}[\/\-]\d{4})/i', $text, $matches)) {
-            $data['date_of_birth'] = $matches[1];
-        }
-
-        // Extract Gender (Male/Female/M/F)
-        if (preg_match('/(?:Gender|लिंग)[\s:]*([MF]|MALE|FEMALE)/i', $text, $matches)) {
+        // Gender
+        if (preg_match('/\b(MALE|FEMALE|TRANSGENDER)\b/i', $cleanText, $matches)) {
             $data['gender'] = strtoupper($matches[1]);
         }
 
-        // Extract Address (usually appears after address label)
-        if (preg_match('/(?:Address|पता)[\s:]*([A-Z0-9\s,.\-]{20,200})/i', $text, $matches)) {
-            $data['address'] = trim($matches[1]);
+        // DOB / YYYY
+        $dobIndex = -1;
+        $lines = explode("\n", strtoupper($cleanText));
+
+        // Find DOB Line Index
+        foreach ($lines as $i => $line) {
+            // Full Date DD/MM/YYYY
+            if (preg_match('/\b(\d{2}[\/\-]\d{2}[\/\-]\d{4})\b/', $line, $matches)) {
+                $data['date_of_birth'] = str_replace('-', '/', $matches[1]);
+                $dobIndex = $i;
+                break;
+            }
+            // Year of Birth : YYYY
+            if (preg_match('/YEAR\s*OF\s*BIRTH\s*[:\-]?\s*(\d{4})/', $line, $matches)) {
+                $data['date_of_birth'] = '01/01/' . $matches[1];  // Approximate for YOB
+                $dobIndex = $i;
+                break;
+            }
+        }
+
+        // --- 2. ADDRESS & FATHER NAME (S/O, C/O) ---
+        // Look for 'S/O', 'D/O', 'C/O'
+        foreach ($lines as $line) {
+            if (preg_match('/\b(S\/O|D\/O|C\/O|W\/O)\s*[:\-]?\s*([A-Z\s\.]+)/', $line, $matches)) {
+                $data['father_name'] = trim($matches[2]);
+                // Address usually starts here or next line
+            }
+            if (preg_match('/ADDRESS[:\-]\s*(.*)/', $line, $matches)) {
+                $data['address'] = trim($matches[1]);
+            }
+        }
+
+        // --- 3. NAME EXTRACTION (Context Aware) ---
+        // Strategy A: English "Name" Label? (Rare on Card, but check)
+        // Strategy B: Lines below "GOVT OF INDIA"
+        // Strategy C: Lines *ABOVE* DOB (Best heuristic)
+
+        if (!$data['name'] && $dobIndex > 0) {
+            // Check 1-2 lines above DOB
+            // Line immediately above DOB is often the Name in simple cards
+            // But sometimes it's "Father Name" if S/O is not used explicitly on front
+
+            $candidate = trim($lines[$dobIndex - 1] ?? '');
+
+            // If candidate is not noise
+            if ($this->isValidName($candidate)) {
+                $data['name'] = $candidate;
+            } else {
+                // Try one more line up (maybe line above was 'DOB:' label on separate line)
+                $candidate2 = trim($lines[$dobIndex - 2] ?? '');
+                if ($this->isValidName($candidate2)) {
+                    $data['name'] = $candidate2;
+                }
+            }
+        }
+
+        // Strategy D: Classic "GOVT OF INDIA" flow
+        if (!$data['name']) {
+            foreach ($lines as $i => $line) {
+                if (str_contains($line, 'GOVT') && str_contains($line, 'INDIA')) {
+                    // Next non-empty line is likely Name
+                    $next = trim($lines[$i + 1] ?? '');
+                    if ($this->isValidName($next)) {
+                        $data['name'] = $next;
+                        break;
+                    }
+                }
+            }
         }
 
         return $data;
+    }
+
+    private function isValidName($text)
+    {
+        if (strlen($text) < 3)
+            return false;
+        if (preg_match('/\d/', $text))
+            return false;
+        if (str_contains($text, 'GOVT'))
+            return false;
+        if (str_contains($text, 'INDIA'))
+            return false;
+        if (str_contains($text, 'DOB'))
+            return false;
+        if (str_contains($text, 'YEAR'))
+            return false;
+        if (str_contains($text, 'MALE'))
+            return false;
+        if (str_contains($text, 'FEMALE'))
+            return false;
+        if (str_contains($text, 'AADHAAR'))
+            return false;
+        return true;
     }
 
     /**
@@ -331,9 +361,9 @@ class AadhaarExtractionService
 
         $basename = basename($imagePath);
         $candidates = [
-            storage_path('app/private_uploads/aadhar_card/'.$basename),
-            storage_path('app/private/private_uploads/aadhar_card/'.$basename),
-            storage_path('app/storage/private_uploads/aadhar_card/'.$basename),
+            storage_path('app/private_uploads/aadhar_card/' . $basename),
+            storage_path('app/private/private_uploads/aadhar_card/' . $basename),
+            storage_path('app/storage/private_uploads/aadhar_card/' . $basename),
         ];
 
         foreach ($candidates as $candidate) {
@@ -355,9 +385,9 @@ class AadhaarExtractionService
     {
         // Try different possible storage paths
         $possiblePaths = [
-            storage_path('app/private_uploads/aadhar_card/'.$imageFilename),
-            storage_path('app/private/private_uploads/aadhar_card/'.$imageFilename),
-            storage_path('app/storage/private_uploads/aadhar_card/'.$imageFilename),
+            storage_path('app/private_uploads/aadhar_card/' . $imageFilename),
+            storage_path('app/private/private_uploads/aadhar_card/' . $imageFilename),
+            storage_path('app/storage/private_uploads/aadhar_card/' . $imageFilename),
         ];
 
         foreach ($possiblePaths as $imagePath) {
@@ -366,7 +396,7 @@ class AadhaarExtractionService
             }
         }
 
-        Log::error('Aadhaar image not found in any expected location: '.$imageFilename);
+        Log::error('Aadhaar image not found in any expected location: ' . $imageFilename);
 
         return null;
     }

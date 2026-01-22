@@ -28,11 +28,13 @@ function updateRequirements() {
     updateIcon('req-length', lengthValid);
 
     // 2. Sequential Requirement (Avoid sequential)
-    const sequentialValid = !isSequential(mpin);
+    // Only valid if length is 6 AND not sequential
+    const sequentialValid = mpin.length === 6 && !isSequential(mpin);
     updateIcon('req-sequential', sequentialValid);
 
     // 3. Repeated Requirement (Avoid repeated)
-    const repeatedValid = !isRepeated(mpin);
+    // Only valid if length is 6 AND not repeated
+    const repeatedValid = mpin.length === 6 && !isRepeated(mpin);
     updateIcon('req-repeated', repeatedValid);
 }
 

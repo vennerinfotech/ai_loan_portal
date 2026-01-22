@@ -54,37 +54,22 @@
                                 <form id="aadhaarForm">
 
                                     @php
-                                        // Get real data from user/customer or extracted data
-                                        $fullName =
-                                            $user->name ??
-                                            (null ??
-                                                ($customer->name ?? (null ?? ($extracted['name'] ?? (null ?? 'N/A')))));
-                                        $dob =
-                                            $user->date_of_birth ??
-                                            (null ??
-                                                ($customer->date_of_birth ??
-                                                    (null ?? ($extracted['date_of_birth'] ?? (null ?? 'N/A')))));
-                                        $address =
-                                            $user->address ??
-                                            (null ??
-                                                ($customer->address ??
-                                                    (null ?? ($extracted['address'] ?? (null ?? 'N/A')))));
-                                        $gender =
-                                            $user->gender ??
-                                            (null ??
-                                                ($customer->gender ??
-                                                    (null ?? ($extracted['gender'] ?? (null ?? 'N/A')))));
-                                        $phone =
-                                            $user->phone ??
-                                            (null ??
-                                                ($customer->phone ??
-                                                    (null ?? ($extracted['phone'] ?? (null ?? 'N/A')))));
-                                        $email =
-                                            $user->email ??
-                                            (null ??
-                                                ($customer->email ??
-                                                    (null ?? ($extracted['email'] ?? (null ?? 'N/A')))));
-                                        $aadhaarNumber = $document->aadhar_card_number ?? (null ?? 'N/A');
+                                        // PRIORITIZE Extracted Data for Review
+                                        // The user wants to see what was scanned from the card
+                                        
+                                        $fullName = $extracted['name'] ?? ($user->name ?? ($customer->name ?? 'N/A'));
+                                        
+                                        $dob = $extracted['date_of_birth'] ?? ($user->date_of_birth ?? ($customer->date_of_birth ?? 'N/A'));
+                                        
+                                        $address = $extracted['address'] ?? ($user->address ?? ($customer->address ?? 'N/A'));
+                                        
+                                        $gender = $extracted['gender'] ?? ($user->gender ?? ($customer->gender ?? 'N/A'));
+                                        
+                                        $phone = $extracted['phone'] ?? ($user->phone ?? ($customer->phone ?? 'N/A'));
+                                        
+                                        $email = $extracted['email'] ?? ($user->email ?? ($customer->email ?? 'N/A'));
+                                        
+                                        $aadhaarNumber = $extracted['aadhaar_number'] ?? ($document->aadhar_card_number ?? 'N/A');
 
                                         // Format Aadhaar number (mask it)
                                         $maskedAadhaar = 'N/A';
@@ -139,18 +124,11 @@
 
                                     <div class="form-group">
                                         <label for="gender" class="form-label">Gender</label>
-                                        <select class="form-select" id="gender" disabled>
-                                            <option value="Male"
-                                                {{ $gender == 'Male' || $gender == 'M' || $gender == 'MALE' ? 'selected' : '' }}>
-                                                Male
-                                            </option>
-                                            <option value="Female"
-                                                {{ $gender == 'Female' || $gender == 'F' || $gender == 'FEMALE' ? 'selected' : '' }}>
-                                                Female</option>
-                                            <option value="Other"
-                                                {{ $gender != 'Male' && $gender != 'Female' && $gender != 'M' && $gender != 'F' && $gender != 'MALE' && $gender != 'FEMALE' && $gender != 'N/A' ? 'selected' : '' }}>
-                                                Other</option>
-                                        </select>
+                                        <div class="input-group-field">
+                                            <input type="text" class="form-control" id="gender"
+                                                value="{{ $gender }}" readonly>
+                                            <i class="fa-solid fa-venus-mars input-icon"></i>
+                                        </div>
                                     </div>
 
                                     <div class="form-group">

@@ -45,8 +45,8 @@ class RegisterController extends Controller
             if ($existingCustomer && $existingUser) {
                 // Update mode: Ignore current IDs in uniqueness check
                 // Note: We use $existingUser->id for users table check to be safe
-                $rules['phone'] = 'required|string|regex:/^[0-9]{10}$/|unique:customers,phone,'.$existingCustomer->id.'|unique:users,phone,'.$existingUser->id;
-                $rules['email'] = 'nullable|email|unique:customers,email,'.$existingCustomer->id.'|unique:users,email,'.$existingUser->id;
+                $rules['phone'] = 'required|string|regex:/^[0-9]{10}$/|unique:customers,phone,' . $existingCustomer->id . '|unique:users,phone,' . $existingUser->id;
+                $rules['email'] = 'nullable|email|unique:customers,email,' . $existingCustomer->id . '|unique:users,email,' . $existingUser->id;
             } else {
                 // Create mode: Standard checks
                 $rules['phone'] = 'required|string|regex:/^[0-9]{10}$/|unique:customers,phone|unique:users,phone';
@@ -134,7 +134,7 @@ class RegisterController extends Controller
             return redirect()->route('verify.otp');  // Redirect to OTP verification route
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error during customer creation/update: '.$e->getMessage(), [
+            Log::error('Error during customer creation/update: ' . $e->getMessage(), [
                 'stack' => $e->getTraceAsString(),
             ]);
 
@@ -184,7 +184,7 @@ class RegisterController extends Controller
         $otpExpiresAt = Session::get('otp_expires_at');
 
         // Check if OTP exists in session and if it has expired
-        if (! $sessionOtp || Carbon::now()->greaterThan($otpExpiresAt)) {
+        if (!$sessionOtp || Carbon::now()->greaterThan($otpExpiresAt)) {
             if ($request->wantsJson()) {
                 return response()->json(['success' => false, 'errors' => ['otp' => 'OTP has expired or is invalid. Please request a new one.']]);
             }
@@ -241,7 +241,7 @@ class RegisterController extends Controller
     public function resendOtp()
     {
         $customerId = Session::get('customer_id');
-        if (! $customerId) {
+        if (!$customerId) {
             return response()->json(['success' => false, 'message' => 'Session expired']);
         }
 
@@ -339,7 +339,7 @@ class RegisterController extends Controller
         // Retrieve the customer using the session ID
         $customer = Customer::find(Session::get('customer_id'));
 
-        if (! $customer) {
+        if (!$customer) {
             return redirect()->back()->withErrors(['customer' => 'Customer not found']);
         }
 
@@ -419,5 +419,164 @@ class RegisterController extends Controller
         }
 
         return redirect()->route('register.create');
+    }
+
+    // --- Forgot MPIN Logic ---
+
+    // 1. Send OTP
+    public function sendForgotMpinOtp(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|digits:10|exists:customers,phone',
+        ], [
+            'phone.exists' => 'This mobile number is not registered.',
+        ]);
+
+        $customer = Customer::where('phone', $request->phone)->first();
+
+        // Generate OTP
+        $otp = rand(100000, 999999);
+        $otpExpiresAt = now()->addMinutes(2);
+
+        // Update DB
+        $customer->update([
+            'otp' => $otp,
+            'otp_expires_at' => $otpExpiresAt
+        ]);
+
+        // Keep relevant data in session
+        Session::put('forgot_mpin_customer_id', $customer->id);
+        Session::put('forgot_mpin_phone', $customer->phone);
+        Session::put('forgot_mpin_otp', $otp);
+        Session::put('forgot_mpin_otp_expires_at', $otpExpiresAt);
+
+        Log::info('Forgot MPIN OTP Sent:', ['phone' => $customer->phone, 'otp' => $otp]);
+
+        return redirect()->route('forgot_mpin.verify_otp');
+    }
+
+    // 2. Show Verify OTP Page
+    public function showForgotMpinVerifyOtp()
+    {
+        $phone = Session::get('forgot_mpin_phone');
+        $expiresAt = Session::get('forgot_mpin_otp_expires_at');
+
+        if (!$phone) {
+            return redirect()->route('forgot_mpin');
+        }
+
+        return view('auth.forgot_mpin_verify_otp', compact('phone', 'expiresAt'));
+    }
+
+    // 3. Verify OTP
+    public function verifyForgotMpinOtp(Request $request)
+    {
+        $sessionOtp = Session::get('forgot_mpin_otp');
+        $otpExpiresAt = Session::get('forgot_mpin_otp_expires_at');
+
+        if (!$sessionOtp || Carbon::now()->greaterThan($otpExpiresAt)) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'errors' => ['otp' => 'OTP has expired. Please request a new one.']]);
+            }
+            return back()->withErrors(['error' => 'OTP has expired. Please request a new one.']);
+        }
+
+        $request->validate(['otp' => 'required|numeric|digits:6']);
+
+        if ($request->otp == $sessionOtp) {
+            // Success
+            Session::forget('forgot_mpin_otp');  // Clear OTP
+            Session::put('forgot_mpin_verified', true);  // Mark as verified
+
+            if ($request->wantsJson()) {
+                return response()->json(['success' => true, 'redirect_url' => route('reset.mpin.view')]);
+            }
+            return redirect()->route('reset.mpin.view');
+        } else {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'errors' => ['otp' => 'Invalid OTP.']]);
+            }
+            return back()->withErrors(['error' => 'Invalid OTP.']);
+        }
+    }
+
+    // 4. Resend OTP
+    public function resendForgotMpinOtp()
+    {
+        $customerId = Session::get('forgot_mpin_customer_id');
+        $customer = Customer::find($customerId);
+
+        if (!$customer) {
+            return response()->json(['success' => false, 'message' => 'User not found or session expired.']);
+        }
+
+        $otp = rand(100000, 999999);
+        $otpExpiresAt = now()->addMinutes(2);
+
+        $customer->update([
+            'otp' => $otp,
+            'otp_expires_at' => $otpExpiresAt
+        ]);
+
+        Session::put('forgot_mpin_otp', $otp);
+        Session::put('forgot_mpin_otp_expires_at', $otpExpiresAt);
+
+        return response()->json([
+            'success' => true,
+            'expires_at' => $otpExpiresAt->toIso8601String(),
+            'otp' => $otp,
+            'message' => 'OTP Resent Successfully'
+        ]);
+    }
+
+    // 5. Show Reset MPIN Page
+    public function showResetMpin()
+    {
+        if (!Session::get('forgot_mpin_verified')) {
+            return redirect()->route('forgot_mpin');
+        }
+        return view('auth.reset_mpin');
+    }
+
+    // 6. Store New MPIN
+    public function storeNewMpin(Request $request)
+    {
+        if (!Session::get('forgot_mpin_verified')) {
+            return redirect()->route('forgot_mpin');
+        }
+
+        $request->validate([
+            'mpin' => 'required|array|size:6',
+            'mpin.*' => 'required|numeric|digits:1',
+            'cmpin' => 'required|array|size:6',
+            'cmpin.*' => 'required|numeric|digits:1',
+        ]);
+
+        $mpin = implode('', $request->input('mpin'));
+        $confirmMpin = implode('', $request->input('cmpin'));
+
+        if ($mpin !== $confirmMpin) {
+            return redirect()->back()->withErrors(['cmpin' => 'The MPIN and Confirm MPIN do not match!']);
+        }
+
+        $customerId = Session::get('forgot_mpin_customer_id');
+        $customer = Customer::find($customerId);
+
+        if ($customer) {
+            $customer->m_pin = Hash::make($mpin);
+            $customer->save();
+
+            // Also update user table if needed
+            $user = User::where('phone', $customer->phone)->first();
+            if ($user) {
+                $user->m_pin = $mpin;  // Or hashed if user table stores hashed
+                $user->save();
+            }
+        }
+
+        // Cleanup Session
+        Session::forget(['forgot_mpin_customer_id', 'forgot_mpin_phone', 'forgot_mpin_otp', 'forgot_mpin_otp_expires_at', 'forgot_mpin_verified']);
+
+        return redirect()->route('login')->with('success', 'MPIN Reset Successfully. Please login.');
     }
 }

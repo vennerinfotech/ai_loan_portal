@@ -1,12 +1,16 @@
 <?php
 
-use App\Http\Controllers\AadhaarController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\AadhaarController;
 use App\Http\Controllers\PancardController;
+use App\Http\Controllers\UserSettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    if (Illuminate\Support\Facades\Auth::check()) {
+        return redirect()->route('dashboard');
+    }
     return view('welcome', ['showHeader' => true]);
 });
 
@@ -22,6 +26,12 @@ route::get('/MPIN', [RegisterController::class, 'show_mpin'])->name('mpin');
 Route::post('/mpin', [RegisterController::class, 'store_mpin'])->name('mpin.store');
 
 Route::get('/Forgot_MPIN', [RegisterController::class, 'forgot_mpin'])->name('forgot_mpin');
+Route::post('/forgot-mpin-otp', [RegisterController::class, 'sendForgotMpinOtp'])->name('forgot_mpin.send_otp');
+Route::get('/forgot-mpin-verify', [RegisterController::class, 'showForgotMpinVerifyOtp'])->name('forgot_mpin.verify_otp');
+Route::post('/forgot-mpin-verify', [RegisterController::class, 'verifyForgotMpinOtp'])->name('forgot_mpin.verify_otp.post');
+Route::post('/forgot-mpin-resend', [RegisterController::class, 'resendForgotMpinOtp'])->name('forgot_mpin.resend_otp');
+Route::get('/reset-mpin', [RegisterController::class, 'showResetMpin'])->name('reset.mpin.view');
+Route::post('/reset-mpin', [RegisterController::class, 'storeNewMpin'])->name('reset.mpin.store');
 
 Route::get('/dashboard', [RegisterController::class, 'showDashboard'])->name('dashboard');
 
@@ -61,10 +71,10 @@ Route::post('/test-ocr', function (\Illuminate\Http\Request $request) {
 
     if ($request->hasFile('aadhaar_image')) {
         $file = $request->file('aadhaar_image');
-        $filename = 'test_aadhaar_'.time().'.'.$file->getClientOriginalExtension();
+        $filename = 'test_aadhaar_' . time() . '.' . $file->getClientOriginalExtension();
         $path = $file->storeAs('private_uploads/aadhar_card', $filename);
 
-        $imagePath = storage_path('app/private_uploads/aadhar_card/'.$filename);
+        $imagePath = storage_path('app/private_uploads/aadhar_card/' . $filename);
 
         $service = new \App\Services\AadhaarExtractionService;
         $result = $service->extractFromImage($imagePath);
@@ -86,6 +96,10 @@ route::get('/pan_verification_completed', [PancardController::class, 'pan_verifi
 route::get('/pan_not_linked', [PancardController::class, 'pan_not_linked'])->name('pan_not_linked');
 
 route::get('/user_setting', [UserSettingController::class, 'user_setting'])->name('user_setting');
+Route::get('/change-mpin', [UserSettingController::class, 'showChangeMpin'])->name('change.mpin');
+Route::post('/change-mpin', [UserSettingController::class, 'updateMpin'])->name('change.mpin.store');
+Route::post('/update-profile-photo', [UserSettingController::class, 'updateProfilePhoto'])->name('update.profile.photo');
+Route::post('/update-personal-info', [UserSettingController::class, 'updatePersonalInfo'])->name('update.personal.info');
 
 // Route::get('/register', function () {
 //     return view('auth.register');
@@ -164,7 +178,7 @@ Route::get('/cibil_credit_report', action: function () {
     $panNumber = $user->pan_card_number ?? ($user->customer->pan_card_number ?? 'N/A');
 
     // If not in DB, check session (optional fallback)
-    if ($panNumber === 'N/A' || ! $panNumber) {
+    if ($panNumber === 'N/A' || !$panNumber) {
         $sessionData = session('pan_extracted_data');
         if (isset($sessionData['pan_number'])) {
             $panNumber = $sessionData['pan_number'];
@@ -183,7 +197,7 @@ Route::get('/cibil_credit_score_report', action: function () {
     $panNumber = $user->pan_card_number ?? ($user->customer->pan_card_number ?? 'N/A');
 
     // Fallback to session if N/A
-    if ($panNumber === 'N/A' || ! $panNumber) {
+    if ($panNumber === 'N/A' || !$panNumber) {
         $sessionData = session('pan_extracted_data');
         if (isset($sessionData['pan_number'])) {
             $panNumber = $sessionData['pan_number'];
