@@ -23,7 +23,7 @@ class PancardController extends Controller
         //
     }
 
-       public function pan_not_linked()
+    public function pan_not_linked()
     {
         return view('pan_not_linked');
     }
@@ -47,7 +47,7 @@ class PancardController extends Controller
 
         // Validate the PAN card number with the required format
         $validated = $request->validate([
-            'pan_card_number' => 'required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/', // PAN format: XXXXX1234X
+            'pan_card_number' => 'required|regex:/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/',  // PAN format: XXXXX1234X
         ]);
 
         // Log validated data for debugging
@@ -68,8 +68,8 @@ class PancardController extends Controller
             // Try to find existing document to merge with (Prioritize Logged In User)
             if (Auth::check()) {
                 $document = Document::where('user_id', Auth::id())
-                                    ->latest()
-                                    ->first();
+                    ->latest()
+                    ->first();
             }
 
             // If no user doc, maybe try finding by just-verified Aadhaar in Session? (Optional, but let's stick to Auth or New)
@@ -90,7 +90,7 @@ class PancardController extends Controller
             }
 
             // Attempt to save the document record
-            if (! $document->save()) {
+            if (!$document->save()) {
                 // Log error if saving fails
                 Log::error('Failed to save PAN card data:', [
                     'pan_card_number' => $validated['pan_card_number'],
@@ -129,13 +129,12 @@ class PancardController extends Controller
 
             // Return success response as JSON
             return response()->json(['success' => true, 'message' => 'PAN card number stored successfully. OTP sent for verification.']);
-
         } catch (\Exception $e) {
             // Rollback the transaction in case of an error
             DB::rollback();
 
             // Log the error message
-            Log::error('Error during PAN card processing: '.$e->getMessage(), [
+            Log::error('Error during PAN card processing: ' . $e->getMessage(), [
                 'stack' => $e->getTraceAsString(),
             ]);
 
@@ -149,7 +148,7 @@ class PancardController extends Controller
         // dd('uploadPanDocument called', $request->all());
         // Validate the uploaded file
         $validated = $request->validate([
-            'pan_card_image' => 'required|mimes:jpg,png,pdf|max:10240', // Max size 10MB
+            'pan_card_image' => 'required|mimes:jpg,png,pdf|max:10240',  // Max size 10MB
         ]);
 
         // Handle the file upload
@@ -157,7 +156,7 @@ class PancardController extends Controller
             $file = $request->file('pan_card_image');
 
             // Generate a unique filename with the current timestamp
-            $filename = 'pan_card_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $filename = 'pan_card_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
 
             // Store the file in the 'private_uploads/pan_card' folder inside 'storage/app'
             $path = $file->storeAs('private_uploads/pan_card', $filename);
@@ -182,7 +181,7 @@ class PancardController extends Controller
                         $panNumber = $extractedData['pan_number'];
                         Log::info('PAN Number extracted via OCR:', ['pan' => $panNumber]);
                     } else {
-                         Log::info('PAN Number present in request, OCR used for verification/metadata:', ['pan_request' => $panNumber, 'pan_ocr' => $extractedData['pan_number']]);
+                        Log::info('PAN Number present in request, OCR used for verification/metadata:', ['pan_request' => $panNumber, 'pan_ocr' => $extractedData['pan_number']]);
                     }
                 }
             } catch (\Exception $e) {
@@ -192,8 +191,8 @@ class PancardController extends Controller
             // Fallback to existing logic if still no PAN
             if (!$panNumber) {
                 $panNumber = Document::whereNotNull('pan_card_number')
-                                ->latest()
-                                ->value('pan_card_number');
+                    ->latest()
+                    ->value('pan_card_number');
             }
 
             if (!$panNumber) {
@@ -204,15 +203,15 @@ class PancardController extends Controller
             $document = null;
             if (Auth::check()) {
                 $document = Document::where('user_id', Auth::id())
-                                    ->latest()
-                                    ->first();
+                    ->latest()
+                    ->first();
             }
 
             // If not found by ID (maybe session expired?), find by PAN Number if we just saved it in OTP step
             if (!$document && $panNumber) {
                 $document = Document::where('pan_card_number', $panNumber)
-                                    ->latest()
-                                    ->first();
+                    ->latest()
+                    ->first();
             }
 
             if (!$document) {
@@ -220,14 +219,14 @@ class PancardController extends Controller
                 $document = new Document;
                 $document->pan_card_number = $panNumber;
             } else {
-                 // Ensure PAN number is consistent
-                 if (!$document->pan_card_number) {
-                     $document->pan_card_number = $panNumber;
-                 }
+                // Ensure PAN number is consistent
+                if (!$document->pan_card_number) {
+                    $document->pan_card_number = $panNumber;
+                }
             }
 
             $document->pan_card_image = $filename;
-            $document->save(); // Save immediately
+            $document->save();  // Save immediately
 
             // Save other extracted details if available (Temporarily saving to customer_name for review display)
             if ($extractedData) {
@@ -284,7 +283,7 @@ class PancardController extends Controller
                 // Both Aadhaar and PAN exist, create or get accounts (and merge PAN if needed)
                 $accounts = $accountService->createOrGetAccountsFromAadhaar(
                     $aadhaarDocument->aadhar_card_number,
-                    $panNumber // Pass PAN number to update existing account
+                    $panNumber  // Pass PAN number to update existing account
                 );
 
                 if ($accounts) {
@@ -292,7 +291,7 @@ class PancardController extends Controller
                     $document->user_id = Auth::check() ? Auth::id() : ($accounts['user']->id ?? null);
                     $document->customer_id = $accounts['customer']->id;
                     $document->customer_name = $accounts['user']->name;
-                    $document->aadhar_card_number = $aadhaarDocument->aadhar_card_number; // Link Aadhaar to PAN document
+                    $document->aadhar_card_number = $aadhaarDocument->aadhar_card_number;  // Link Aadhaar to PAN document
                     $document->save();
 
                     Log::info('PAN document saved and accounts linked', [
@@ -315,10 +314,10 @@ class PancardController extends Controller
                 // Only PAN uploaded
                 // If user is logged in, we should still try to link this PAN to them nicely
                 if (Auth::check()) {
-                     $user = Auth::user();
-                     if ($user->aadhaar_card_number) {
-                         // They have aadhaar, so we can run the merge logic
-                         $accounts = $accountService->createOrGetAccountsFromAadhaar(
+                    $user = Auth::user();
+                    if ($user->aadhaar_card_number) {
+                        // They have aadhaar, so we can run the merge logic
+                        $accounts = $accountService->createOrGetAccountsFromAadhaar(
                             $user->aadhaar_card_number,
                             $panNumber
                         );
@@ -328,22 +327,22 @@ class PancardController extends Controller
                             $document->customer_name = $accounts['user']->name;
                             $document->aadhar_card_number = $accounts['user']->aadhaar_card_number;
                         } else {
-                             $document->user_id = $user->id;
+                            $document->user_id = $user->id;
                         }
-                     } else {
-                         // No aadhaar yet, just link to user
-                         $document->user_id = $user->id;
-                         // Optionally update user's pan directly here if needed, but service does it better
-                         $user->pan_card_number = $panNumber;
-                         $user->save();
-                         if ($user->customer) {
-                             $user->customer->pan_card_number = $panNumber;
-                             $user->customer->save();
-                         }
-                     }
+                    } else {
+                        // No aadhaar yet, just link to user
+                        $document->user_id = $user->id;
+                        // Optionally update user's pan directly here if needed, but service does it better
+                        $user->pan_card_number = $panNumber;
+                        $user->save();
+                        if ($user->customer) {
+                            $user->customer->pan_card_number = $panNumber;
+                            $user->customer->save();
+                        }
+                    }
                 } else {
-                     // Not logged in, no Aadhaar doc found... just save doc
-                     $document->user_id = null;
+                    // Not logged in, no Aadhaar doc found... just save doc
+                    $document->user_id = null;
                 }
                 $document->save();
             }
@@ -356,7 +355,7 @@ class PancardController extends Controller
 
                     if ($cibilData['success']) {
                         $document->cibil_score = $cibilData['data']['cibil_score'];
-                        $document->save(); // Save again with score
+                        $document->save();  // Save again with score
                     }
                 } catch (\Exception $e) {
                     Log::error('Failed to fetch CIBIL score in upload: ' . $e->getMessage());
@@ -422,15 +421,16 @@ class PancardController extends Controller
             'pan_number' => $sessionData['pan_number'] ?? $document->pan_card_number,
             'full_name' => $sessionData['name'] ?? $document->customer_name ?? $user->name ?? 'N/A',
             'dob' => $sessionData['date_of_birth'] ?? $user->customer->date_of_birth ?? 'N/A',
-            'father_name' => $sessionData['father_name'] ?? 'N/A', // OCR might provide this
+            'father_name' => $sessionData['father_name'] ?? 'N/A',  // OCR might provide this
         ];
 
         // Format DOB if it comes from DB (YYYY-MM-DD from user->customer)
         // Session DOB is usually already DD/MM/YYYY from OCR
         if (empty($sessionData['date_of_birth']) && $data['dob'] !== 'N/A' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['dob'])) {
-             try {
+            try {
                 $data['dob'] = Carbon::parse($data['dob'])->format('d/m/Y');
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         // Simulate Father's Name if missing (for demo "wow" factor)
@@ -482,6 +482,7 @@ class PancardController extends Controller
     {
         //
     }
+
     /**
      * Generate and download the full CIBIL report PDF.
      */
@@ -504,21 +505,21 @@ class PancardController extends Controller
 
         // Or re-fetch based on simple logic (simulate free API consistency)
         if ($panNumber && $panNumber !== 'N/A') {
-             $service = new CibilScoreService();
-             $result = $service->fetchCibilScore($panNumber);
-             if ($result['success']) {
-                 $score = $result['data']['cibil_score'];
-             }
+            $service = new CibilScoreService();
+            $result = $service->fetchCibilScore($panNumber);
+            if ($result['success']) {
+                $score = $result['data']['cibil_score'];
+            }
         }
 
         // Determine Band and Color
-        $scoreColor = '#dc3545'; // Red
+        $scoreColor = '#dc3545';  // Red
         $scoreBand = 'Poor';
         if ($score >= 750) {
-            $scoreColor = '#198754'; // Green
+            $scoreColor = '#198754';  // Green
             $scoreBand = 'Excellent';
         } elseif ($score >= 650) {
-            $scoreColor = '#ffc107'; // Yellow/Orange
+            $scoreColor = '#ffc107';  // Yellow/Orange
             $scoreBand = 'Good';
         }
 
@@ -539,6 +540,8 @@ class PancardController extends Controller
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('cibil_report_pdf', $data);
 
-        return $pdf->download('Official_CIBIL_Report_' . $panNumber . '.pdf');
+        // Sanitize filename to remove invalid characters like '/' (from N/A)
+        $safePan = str_replace(['/', '\\'], '-', $panNumber);
+        return $pdf->download('Official_CIBIL_Report_' . $safePan . '.pdf');
     }
 }

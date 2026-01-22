@@ -19,12 +19,12 @@
                         <div class="icon-circle">
                             <i class="fas fa-lock"></i>
                         </div>
-                        <h3 class="mt-3">Generate Your MPIN</h3>
+                        <h3 class="mt-3">Reset Security MPIN</h3>
                     </div>
-                    <form id="mpin-form" method="POST" action="{{ route('mpin.store') }}">
+                    <form id="mpin-form" method="POST" action="{{ route('reset.mpin.store') }}">
                         @csrf
                         <div class="pin-box">
-                            <label class="fw-semibold mb-1">Enter 6-Digit MPIN</label>
+                            <label class="fw-semibold mb-1">Enter New 6-Digit MPIN</label>
                             <div class="mb-3">
                                 <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-1"
                                     name="mpin[0]">
@@ -62,38 +62,40 @@
                             <h6 class="fw-semibold mb-2"><i class="bi bi-info-circle"></i> MPIN Requirements</h6>
                             <ul class="small list-unstyled m-0">
                                 <li id="req-length">
-                                    <i class="bi bi-x-lg text-danger me-1"></i><span class="text-danger">Must be exactly 6
+                                    <i class="bi bi-x-lg text-danger me-1"></i><span class="text-danger">Must be
+                                        exactly 6
                                         digits</span>
                                 </li>
                                 <li id="req-sequential">
-                                    <i class="bi bi-x-lg text-danger me-1"></i><span class="text-danger">Avoid sequential
-                                        numbers
+                                    <i class="bi bi-x-lg text-danger me-1"></i><span class="text-danger">Avoid
+                                        sequential numbers
                                         (123456)</span>
                                 </li>
                                 <li id="req-repeated">
-                                    <i class="bi bi-x-lg text-danger me-1"></i><span class="text-danger">Avoid repeated
-                                        digits
+                                    <i class="bi bi-x-lg text-danger me-1"></i><span class="text-danger">Avoid
+                                        repeated digits
                                         (111111)</span>
                                 </li>
                                 {{-- <li>
-                                    <i class="bi bi-check-lg text-success me-1"></i><span class="text-success">Keep it
-                                        confidential and memorable</span>
-                                </li> --}}
+                                        <i class="bi bi-check-lg text-success me-1"></i><span class="text-success">Keep it
+                                            confidential and memorable</span>
+                                    </li> --}}
                             </ul>
                         </div>
 
 
                         <button type="button" id="form-submit" class="btn-submit">
-                            Generate MPIN
+                            Reset MPIN
                         </button>
 
                         <button type="button" class="btn-cancel" onclick="window.history.back()">
-                            Back
+                            Cancel
                         </button>
                     </form>
                 </div>
             </div>
         </div>
+
     </div>
 @endsection
 

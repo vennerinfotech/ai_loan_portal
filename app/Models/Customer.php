@@ -32,5 +32,6 @@ class Customer extends Model
         'email_verified_at',
         'password',
         'remember_token',
+        'profile_image',
     ];
 }

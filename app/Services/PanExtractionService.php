@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class PanExtractionService
 {
@@ -28,13 +28,13 @@ class PanExtractionService
                 return $extractedData;
             }
 
-            // 2. Fallback to Mock? 
-            // User requested proper extraction. If valid OCR fails, we should NOT return fake data 
+            // 2. Fallback to Mock?
+            // User requested proper extraction. If valid OCR fails, we should NOT return fake data
             // as it confuses the user. Logging the failure instead.
             Log::warning('Real OCR failed to extract PAN Number. Returning null.');
-            
+
             // Uncomment next line ONLY for demo if you want random data on failure
-            // return $this->extractUsingMock($imagePath); 
+            // return $this->extractUsingMock($imagePath);
 
             return null;
         } catch (\Exception $e) {
@@ -53,7 +53,7 @@ class PanExtractionService
         // Return plausible mock data
         return [
             'pan_number' => 'ABCDE' . rand(1000, 9999) . 'F',
-            'name' => 'RAJESH KUMAR SHARMA', // Standard demo name
+            'name' => 'RAJESH KUMAR SHARMA',  // Standard demo name
             'father_name' => 'MOHAN LAL SHARMA',
             'date_of_birth' => '15/03/1985',
         ];
@@ -72,7 +72,7 @@ class PanExtractionService
             // Check file size (OCR.space free limit is 1MB usually, helloworld is strictly limited)
             $sizeKB = strlen($imageData) / 1024;
             if ($sizeKB > 1024 && $apiKey === 'helloworld') {
-                 Log::warning('Image too large for free OCR key: ' . $sizeKB . 'KB');
+                Log::warning('Image too large for free OCR key: ' . $sizeKB . 'KB');
             }
 
             $base64Image = base64_encode($imageData);
@@ -81,31 +81,31 @@ class PanExtractionService
                 ->timeout(60)
                 ->post('https://api.ocr.space/parse/image', [
                     'apikey' => $apiKey,
-                    'base64Image' => 'data:image/jpeg;base64,'.$base64Image,
+                    'base64Image' => 'data:image/jpeg;base64,' . $base64Image,
                     'language' => 'eng',
-                    'isOverlayRequired' => 'true', 
-                    'detectOrientation' => 'true', // Auto-rotate helps
-                    'scale' => 'true',             // Upscale helps low-res
-                    'OCREngine' => '2',            // Engine 2 is better for numbers/IDs
+                    'isOverlayRequired' => 'true',
+                    'detectOrientation' => 'true',  // Auto-rotate helps
+                    'scale' => 'true',  // Upscale helps low-res
+                    'OCREngine' => '2',  // Engine 2 is better for numbers/IDs
                 ]);
 
             if ($response->successful()) {
                 $result = $response->json();
-                
+
                 // Check if API returned an error message inside 200 OK
                 if (isset($result['IsErroredOnProcessing']) && $result['IsErroredOnProcessing'] === true) {
-                     Log::warning('OCR.space API Processing Error', ['details' => $result['ErrorMessage'] ?? 'Unknown']);
-                     return null;
+                    Log::warning('OCR.space API Processing Error', ['details' => $result['ErrorMessage'] ?? 'Unknown']);
+                    return null;
                 }
 
                 if (isset($result['ParsedResults'][0]['ParsedText'])) {
                     return $this->parsePanText($result['ParsedResults'][0]['ParsedText']);
                 }
             } else {
-                 Log::error('OCR.space API HTTP Error', ['status' => $response->status(), 'body' => $response->body()]);
+                Log::error('OCR.space API HTTP Error', ['status' => $response->status(), 'body' => $response->body()]);
             }
         } catch (\Exception $e) {
-            Log::error('OCR.space PAN extraction error: '.$e->getMessage());
+            Log::error('OCR.space PAN extraction error: ' . $e->getMessage());
         }
 
         return null;
@@ -123,102 +123,103 @@ class PanExtractionService
             'date_of_birth' => null,
         ];
 
-        $cleanedText = strtoupper(trim($text));
-        $lines = explode("\n", $cleanedText);
-        
-        // Filter empty lines
-        $lines = array_values(array_filter($lines, function($line) {
-            return trim($line) !== '';
-        }));
+        // normalize newlines
+        $text = str_replace(["\r\n", "\r"], "\n", $text);
+        $lines = explode("\n", $text);
+
+        // Clean and filter lines
+        $cleanLines = [];
+        foreach ($lines as $line) {
+            $line = trim($line);
+            $line = preg_replace('/[^\x20-\x7E]/', '', $line);  // Remove non-printable chars
+            if (strlen($line) > 2) {  // Ignore very short noise
+                $cleanLines[] = strtoupper($line);
+            }
+        }
+        $lines = $cleanLines;
 
         $panIndex = -1;
         $dobIndex = -1;
-        $govIndex = -1;
+        $headerIndex = -1;
 
+        // 1. First Pass: Locate Anchors (PAN, DOB, Header)
         foreach ($lines as $index => $line) {
-            $line = trim($line);
-            
-            // 1. Extract PAN Number (Regex: 5 chars, 4 digits, 1 char)
+            // PAN regex: 5 chars, 4 digits, 1 char (Strict)
             if (!$data['pan_number'] && preg_match('/\b([A-Z]{5}[0-9]{4}[A-Z])\b/', $line, $matches)) {
                 $data['pan_number'] = $matches[1];
                 $panIndex = $index;
             }
 
-            // 2. Extract DOB (DD/MM/YYYY or DD-MM-YYYY)
-            if (!$data['date_of_birth'] && preg_match('/\b(\d{2}[\/\-]\d{2}[\/\-]\d{4})\b/', $line, $matches)) {
-                $data['date_of_birth'] = $matches[1];
+            // DOB regex: Support /, -, ., and space separators. DD/MM/YYYY
+            if (!$data['date_of_birth'] && preg_match('/\b(\d{2}[\/\-\.\s]\d{2}[\/\-\.\s]\d{4})\b/', $line, $matches)) {
+                // Normalize to DD/MM/YYYY
+                $rawDob = $matches[1];
+                $data['date_of_birth'] = preg_replace('/[\.\s\-]/', '/', $rawDob);
                 $dobIndex = $index;
             }
 
-            // Detect Header
-            if ($govIndex === -1 && (str_contains($line, 'INCOME') || str_contains($line, 'TAX') || str_contains($line, 'GOVT') || str_contains($line, 'INDIA'))) {
-                $govIndex = $index;
+            // Header Detection (Top of card)
+            if ($headerIndex === -1 && ($this->isHeaderLine($line))) {
+                $headerIndex = $index;
             }
         }
 
-        // Strategy A: Header Relative (Existing)
-        if ($govIndex !== -1) {
-            $candidateIndex = $govIndex + 1;
-            
-            // Skip extra header lines if they appear after the detected header
-            while(isset($lines[$candidateIndex])) {
-                $line = trim($lines[$candidateIndex]);
-                if ($this->isHeaderLine($line)) {
-                    $candidateIndex++;
-                } else {
-                    break;
-                }
-            }
+        // 2. Zone Analysis for Names
+        // Ideally, Name and Father Name are BETWEEN Header and DOB
+        // If Header is missing (common in cropped images), assume start of file.
+        // If DOB is missing, assume PAN line as bottom limit.
 
-            // Name is the first valid line after headers
-            if (isset($lines[$candidateIndex])) {
-                $possibleName = trim($lines[$candidateIndex]);
-                if ($this->isValidName($possibleName)) {
-                     $data['name'] = $possibleName;
-                }
-            }
-            
-            // Father's name is usually the next line
-            if (isset($lines[$candidateIndex + 1])) {
-                $possibleFather = trim($lines[$candidateIndex + 1]);
-                 if ($this->isValidName($possibleFather)) {
-                     // Verify it's not the DOB line
-                     if ($candidateIndex + 1 !== $dobIndex) {
-                        $data['father_name'] = $possibleFather;
-                     }
-                }
-            }
+        $startIndex = ($headerIndex !== -1) ? $headerIndex + 1 : 0;
+        $endIndex = ($dobIndex !== -1) ? $dobIndex : ($panIndex !== -1 ? $panIndex : count($lines));
+
+        $candidateLines = [];
+
+        for ($i = $startIndex; $i < $endIndex; $i++) {
+            if (!isset($lines[$i]))
+                continue;
+            $line = $lines[$i];
+
+            // Aggressive Noise Filtering
+            if ($this->isHeaderLine($line))
+                continue;
+            if (str_contains($line, 'GOVT'))
+                continue;
+            if (str_contains($line, 'INDIA'))
+                continue;
+            if (str_contains($line, 'NAME'))
+                continue;  // "Name" label
+            if (str_contains($line, 'FATHER'))
+                continue;  // "Father Name" label
+            if (str_contains($line, 'SIGNATURE'))
+                continue;
+            if (preg_match('/^\d+$/', $line))
+                continue;  // Digits only
+
+            // Must contain at least 2 words (usually) and letters
+            if (str_word_count($line) < 1)
+                continue;
+            if (strlen($line) < 3)
+                continue;
+
+            $candidateLines[] = $line;
         }
 
-        // Strategy B: Fallback (Positional before DOB)
-        // If Name or Father Name is still missing, look at lines BEFORE DOB (and before PAN)
-        if (!$data['name'] || !$data['father_name']) {
-            $limitIndex = ($dobIndex !== -1) ? $dobIndex : ($panIndex !== -1 ? $panIndex : count($lines));
-            $candidates = [];
+        // 3. Assign Candidates
+        // Heuristic: 1st valid line is Name, 2nd is Father's Name
+        if (count($candidateLines) > 0) {
+            $data['name'] = $this->cleanName($candidateLines[0]);
+        }
+        if (count($candidateLines) > 1) {
+            $data['father_name'] = $this->cleanName($candidateLines[1]);
+        }
 
-            for ($i = 0; $i < $limitIndex; $i++) {
-                if ($i === $govIndex) continue; // Skip header
-                
-                $line = trim($lines[$i]);
-                
-                // Skip Header-like lines
-                if ($this->isHeaderLine($line)) continue;
-                // Skip label-like lines
-                if (str_contains($line, 'SIGNATURE')) continue;
-
-                if ($this->isValidName($line)) {
-                    $candidates[] = $line;
-                }
-            }
-
-            // If we have candidates, 1st is Name, 2nd is Father
-            if (!empty($candidates)) {
-                if (!$data['name']) {
-                    $data['name'] = $candidates[0];
-                }
-                if (!$data['father_name'] && isset($candidates[1])) {
-                    $data['father_name'] = $candidates[1];
-                }
+        // Fallback: If no father name found, but we have a bottom-up logic?
+        // Sometimes Father's name is just above DOB.
+        if (!$data['father_name'] && $dobIndex > 0) {
+            // Check line immediately above DOB if not already used
+            $lineAbove = $lines[$dobIndex - 1] ?? '';
+            if ($this->isValidName($lineAbove) && $lineAbove !== ($data['name'] ?? '')) {
+                $data['father_name'] = $this->cleanName($lineAbove);
             }
         }
 
@@ -227,51 +228,29 @@ class PanExtractionService
 
     private function isHeaderLine($line)
     {
-        return (str_contains($line, 'INCOME') || str_contains($line, 'TAX') || str_contains($line, 'GOVT') || str_contains($line, 'INDIA') || str_contains($line, 'PERMANENT') || str_contains($line, 'ACCOUNT') || str_contains($line, 'NUMBER') || str_contains($line, 'CARD') || str_contains($line, 'SIGNATURE'));
+        return (str_contains($line, 'INCOME') || str_contains($line, 'TAX') || str_contains($line, 'DEPARTMENT') || str_contains($line, 'SARKAAR') || str_contains($line, 'GOVT') || str_contains($line, 'INDIA'));
+    }
+
+    private function cleanName($text)
+    {
+        // Remove common labels if they stuck to the name line
+        $text = str_replace(['NAME', 'FATHER', ':', '-', '.'], '', $text);
+        return trim($text);
     }
 
     /**
      * Helper to validate a name string
      */
-    /**
-     * Helper to validate a name string
-     */
     private function isValidName($text)
     {
-        // Must contain letters, assume min length 3
-        if (strlen($text) < 3) return false;
-        // Should not contain digits (usually)
-        if (preg_match('/\d/', $text)) return false;
-        
-        // Common unwanted keywords in UPPERCASE (since text is upper)
-        // Removed 'NAME' and 'FATHER' from generic list to handle them partly specifically
-        $invalidKeywords = ['MOTHER', 'SIGNATURE', 'NUMBER', 'CARD', 'NO.', 'PERMANENT', 'ACCOUNT', 'GOVT', 'INDIA', 'INCOME', 'TAX'];
-        
-        foreach ($invalidKeywords as $keyword) {
-            if (str_contains($text, $keyword)) {
-                // Hard fail for these administrative/label keywords
-                return false;
-            }
-        }
-
-        // Special check for "NAME" label
-        // If line contains "NAME", it must be very long to be a valid person name (e.g. "SURNAME" is rare, "ANAMIKA" is ok)
-        // But "FATHER'S NAME" or "FAT FTER'S NAME" is usually short (< 25)
-        if (str_contains($text, 'NAME')) {
-            // If it matches "NAME" as a whole word at the end of the string, it's likely a label
-            // e.g. "FATHER NAME", "FAT FTER NAME"
-            if (preg_match('/NAME$/', $text)) {
-                 return false;
-            }
-            if (strlen($text) < 25) return false;
-        }
-
-        // Special check for "FATHER" related typos
-        // Check for words starting with F, ending with R or S, followed by NAME
-        if (str_contains($text, 'FATHER') || str_contains($text, 'FTER')) {
-             return false;
-        }
-        
+        if (strlen($text) < 3)
+            return false;
+        if (preg_match('/\d/', $text))
+            return false;  // No numbers in names
+        if ($this->isHeaderLine($text))
+            return false;
+        if (str_contains($text, 'SIGNATURE'))
+            return false;
         return true;
     }
 }

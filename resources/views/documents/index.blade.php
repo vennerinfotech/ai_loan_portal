@@ -169,7 +169,9 @@
                     <h3>No Documents Found</h3>
                     <p>We couldn't find any documents linked to your account. Start by uploading your primary KYC documents.
                     </p>
-                    <a href="{{ route('enter-aadhaar') }}" class="btn">
+                    <a href="{{ route('enter-aadhaar') }}" class="custom-btn"
+                        style="width: max-content;
+    margin: 0 auto;">
                         <i class="fas fa-upload me-2"></i>
                         Start Verification
                     </a>

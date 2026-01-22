@@ -455,3 +455,20 @@ body {
         width: 100%;
     }
 }
+/* SweetAlert Customization */
+.swal2-popup {
+    font-family: "Poppins", sans-serif !important;
+    border-radius: 12px;
+}
+.swal2-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #111827;
+}
+.swal2-confirm {
+    background-color: #252484 !important;
+    box-shadow: none !important;
+}
+.swal2-confirm:hover {
+    background-color: #6765e8 !important;
+}

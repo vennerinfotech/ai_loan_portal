@@ -31,18 +31,19 @@ class AccountCreationService
             // We do this even if user exists, so we can update their details (name, address, etc.)
             $extractionService = new AadhaarExtractionService();
             $extractedData = null;
-            
+
             if ($aadhaarImagePath && file_exists($aadhaarImagePath)) {
-                $maxRetries = 2; // Reduced retries since we might just be updating
+                $maxRetries = 2;  // Reduced retries since we might just be updating
                 $retryCount = 0;
                 while ($retryCount < $maxRetries && !$extractedData) {
                     $retryCount++;
                     try {
-                         $extractedData = $extractionService->extractFromImage($aadhaarImagePath);
+                        $extractedData = $extractionService->extractFromImage($aadhaarImagePath);
                     } catch (\Exception $e) {
                         Log::error('OCR Extraction failed: ' . $e->getMessage());
                     }
-                    if (!$extractedData && $retryCount < $maxRetries) sleep(1);
+                    if (!$extractedData && $retryCount < $maxRetries)
+                        sleep(1);
                 }
             }
 
@@ -59,7 +60,7 @@ class AccountCreationService
                 // Phone (careful with overwrite? let's trust OCR if valid)
                 if (!empty($extractedData['phone']) && preg_match('/^[6-9]\d{9}$/', $extractedData['phone'])) {
                     // Update only if we want to trust OCR phone (User usually manually verifies this, but let's capture it)
-                    // $updateData['phone'] = $extractedData['phone']; 
+                    // $updateData['phone'] = $extractedData['phone'];
                 }
                 // DOB
                 if (!empty($extractedData['date_of_birth'])) {
@@ -82,7 +83,7 @@ class AccountCreationService
             if ($existingUser && $existingCustomer) {
                 // Accounts already exist, update PAN and extracted details
                 $updated = false;
-                
+
                 // Update PAN
                 if ($panNumber) {
                     if ($existingUser->pan_card_number !== $panNumber) {
@@ -98,15 +99,15 @@ class AccountCreationService
                 // Update extracted details (Name, DOB, Address, Gender)
                 if (!empty($updateData)) {
                     foreach ($updateData as $key => $value) {
-                         // Only update if value is different and not null
-                         if ($value && $existingUser->$key !== $value) {
-                             $existingUser->$key = $value;
-                             $updated = true;
-                         }
-                         if ($value && $existingCustomer->$key !== $value) {
-                             $existingCustomer->$key = $value;
-                             $existingCustomer->save();
-                         }
+                        // Only update if value is different and not null
+                        if ($value && $existingUser->$key !== $value) {
+                            $existingUser->$key = $value;
+                            $updated = true;
+                        }
+                        if ($value && $existingCustomer->$key !== $value) {
+                            $existingCustomer->$key = $value;
+                            $existingCustomer->save();
+                        }
                     }
                 }
 
@@ -162,23 +163,22 @@ class AccountCreationService
 
             // No existing accounts, create new ones
             // MANDATORY: Check if we have extracted data from the top
-            
+
             if (!$extractedData) {
                 // If we reached here without extracted data, and no accounts exist, we failed.
                 // Re-check image path just to be sure we didn't skip extraction by mistake
-                 if (!$aadhaarImagePath || !file_exists($aadhaarImagePath)) {
+                if (!$aadhaarImagePath || !file_exists($aadhaarImagePath)) {
                     DB::rollback();
                     Log::error('Aadhaar image not found for extraction', [
                         'image_path' => $aadhaarImagePath,
                     ]);
                     throw new \Exception('Aadhaar card image is required to extract your information. Please upload a clear image and try again.');
                 }
-                
+
                 // If we have image path but $extractedData is null, it means extraction failed silently above (or max retries reached)
                 DB::rollback();
                 throw new \Exception('Failed to extract information from Aadhaar card. Please ensure the image is clear and try again.');
             }
-
 
             // Extract and validate data from API response
             // ONLY use data extracted from API - NO generation allowed
@@ -192,8 +192,8 @@ class AccountCreationService
                 // Clean name: remove special characters, keep only letters, spaces, and dots
                 $name = preg_replace('/[^A-Za-z\s\.]/', '', $name);
                 $name = preg_replace('/\s+/', ' ', $name);
-                $name = ucwords(strtolower($name)); // Proper case
-                
+                $name = ucwords(strtolower($name));  // Proper case
+
                 // Validate name length
                 if (strlen($name) < 3) {
                     $name = null;
@@ -203,17 +203,17 @@ class AccountCreationService
 
             // Extract PHONE from API data
             if (!empty($extractedData['phone']) && $extractedData['phone'] !== 'N/A' && $extractedData['phone'] !== null) {
-                $phone = preg_replace('/\D/', '', $extractedData['phone']); // Remove non-digits
-                
+                $phone = preg_replace('/\D/', '', $extractedData['phone']);  // Remove non-digits
+
                 // Handle +91 or 91 prefix
                 if (strlen($phone) > 10) {
                     if (substr($phone, 0, 2) == '91') {
                         $phone = substr($phone, 2);
                     } else {
-                        $phone = substr($phone, -10); // Take last 10 digits
+                        $phone = substr($phone, -10);  // Take last 10 digits
                     }
                 }
-                
+
                 // Validate Indian mobile number (10 digits, starts with 6-9)
                 if (strlen($phone) == 10 && preg_match('/^[6-9]\d{9}$/', $phone)) {
                     // Valid phone number
@@ -234,16 +234,19 @@ class AccountCreationService
             }
 
             // FINAL VALIDATION: We MUST have name and phone from API
-            // If missing, we CANNOT create account - throw error
-            if (!$name || !$phone) {
-                DB::rollback();
-                Log::error('CRITICAL: Required data missing from OCR API extraction', [
-                    'has_name' => !empty($name),
-                    'has_phone' => !empty($phone),
-                    'has_email' => !empty($email),
-                    'extracted_data' => $extractedData,
-                ]);
-                throw new \Exception('Could not extract required information (Name and Phone) from your Aadhaar card. Please ensure the image is clear and all text is visible. Try uploading again with better lighting.');
+            // BUT for the "Review Page" requirement, we will ALLOW missing data
+            // and use placeholders so the user can verify/edit later.
+
+            if (!$name) {
+                // Determine name fallback
+                $name = 'Applicant ' . substr($aadhaarNumber, -4);
+                Log::warning('Name missing in OCR, using placeholder', ['placeholder' => $name]);
+            }
+
+            if (!$phone) {
+                // Determine phone fallback (Dummy 10 digit)
+                $phone = '0000000000';
+                Log::warning('Phone missing in OCR, using placeholder', ['placeholder' => $phone]);
             }
 
             // Email is optional (Aadhaar cards usually don't have email)
@@ -256,18 +259,18 @@ class AccountCreationService
                     // If name is too short, use first 3 letters of name + last 4 digits of Aadhaar
                     $emailPrefix = substr(strtolower($name), 0, 3) . substr($aadhaarNumber, -4);
                 }
-                $email = $emailPrefix.'@loanportal.local';
-                
+                $email = $emailPrefix . '@loanportal.local';
+
                 // Ensure uniqueness
                 $counter = 1;
                 while (User::where('email', $email)->exists() || Customer::where('email', $email)->exists()) {
-                    $email = $emailPrefix.'_'.$counter.'@loanportal.local';
+                    $email = $emailPrefix . '_' . $counter . '@loanportal.local';
                     $counter++;
                     if ($counter > 100) {
-                        break; // Prevent infinite loop
+                        break;  // Prevent infinite loop
                     }
                 }
-                
+
                 Log::info('Email not found on Aadhaar card, created from extracted name', [
                     'extracted_name' => $name,
                     'created_email' => $email,
@@ -357,10 +360,9 @@ class AccountCreationService
                 'user' => $user,
                 'customer' => $customer,
             ];
-
         } catch (\Exception $e) {
             DB::rollback();
-            Log::error('Error creating/getting accounts: '.$e->getMessage(), [
+            Log::error('Error creating/getting accounts: ' . $e->getMessage(), [
                 'stack' => $e->getTraceAsString(),
                 'aadhaar' => $aadhaarNumber,
                 'pan' => $panNumber,
@@ -393,22 +395,23 @@ class AccountCreationService
     {
         // First, try to find a single document with both
         $query = Document::query();
-        
+
         if ($aadhaarNumber) {
             $query->where('aadhar_card_number', $aadhaarNumber);
         }
-        
+
         if ($panNumber) {
             $query->where('pan_card_number', $panNumber);
         }
 
         // Get the latest document that has both
-        $document = $query->whereNotNull('aadhar_card_number')
-                          ->whereNotNull('aadhar_card_image')
-                          ->whereNotNull('pan_card_number')
-                          ->whereNotNull('pan_card_image')
-                          ->latest()
-                          ->first();
+        $document = $query
+            ->whereNotNull('aadhar_card_number')
+            ->whereNotNull('aadhar_card_image')
+            ->whereNotNull('pan_card_number')
+            ->whereNotNull('pan_card_image')
+            ->latest()
+            ->first();
 
         if ($document) {
             return [
@@ -421,22 +424,22 @@ class AccountCreationService
         // If single document doesn't have both, check for separate documents
         // Get Aadhaar document
         $aadhaarQuery = Document::whereNotNull('aadhar_card_number')
-                                ->whereNotNull('aadhar_card_image');
-        
+            ->whereNotNull('aadhar_card_image');
+
         if ($aadhaarNumber) {
             $aadhaarQuery->where('aadhar_card_number', $aadhaarNumber);
         }
-        
+
         $aadhaarDoc = $aadhaarQuery->latest()->first();
 
         // Get PAN document
         $panQuery = Document::whereNotNull('pan_card_number')
-                           ->whereNotNull('pan_card_image');
-        
+            ->whereNotNull('pan_card_image');
+
         if ($panNumber) {
             $panQuery->where('pan_card_number', $panNumber);
         }
-        
+
         $panDoc = $panQuery->latest()->first();
 
         // If both documents exist, return their data
@@ -475,7 +478,7 @@ class AccountCreationService
 
         // Try to parse DD/MM/YYYY or DD-MM-YYYY
         if (preg_match('/(\d{2})[\/\-](\d{2})[\/\-](\d{4})/', $dob, $matches)) {
-            return $matches[3].'-'.$matches[2].'-'.$matches[1]; // Convert to YYYY-MM-DD
+            return $matches[3] . '-' . $matches[2] . '-' . $matches[1];  // Convert to YYYY-MM-DD
         }
 
         return null;
@@ -491,7 +494,7 @@ class AccountCreationService
         }
 
         $gender = strtoupper(trim($gender));
-        
+
         if (in_array($gender, ['M', 'MALE', 'पुरुष'])) {
             return 'Male';
         } elseif (in_array($gender, ['F', 'FEMALE', 'महिला'])) {
@@ -501,4 +504,3 @@ class AccountCreationService
         return $gender;
     }
 }
-

@@ -28,14 +28,46 @@
                     </ul>
                 </aside>
                 <div class="main-right">
+                    @if(session('success'))
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: "{{ session('success') }}",
+                                    confirmButtonColor: '#252484', // Primary color
+                                    confirmButtonText: 'OK',
+                                    customClass: {
+                                        popup: 'animated fadeIn', // Optional animation
+                                        title: 'swal2-title',     // Ensuring it uses our customized title class if defined
+                                        content: 'swal2-content'
+                                    },
+                                    background: '#fff',
+                                    color: '#333' // Text color
+                                });
+                            });
+                        </script>
+                    @endif
+                    @if($errors->any())
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    html: '{!! implode("<br>", $errors->all()) !!}',
+                                    confirmButtonColor: '#d33',
+                                });
+                            });
+                        </script>
+                    @endif
 
                     <div class="header-btn">
                         <button class="sidebar-toggle">
                             <i class="fa-solid fa-bars"></i>
                         </button>
                         <div class="" style="display: flex; gap: 10px;">
-                            <button type="button" class="btn-cancel">Cancel</button>
-                            <button type="button" class="btn-submit">Save Changes</button>
+                            <button type="button" class="btn-cancel" onclick="window.location.href='{{ route('dashboard') }}'">Cancel</button>
+                            <button type="button" class="btn-submit" onclick="document.getElementById('personal-info-form').submit()">Save Changes</button>
                         </div>
                     </div>
 
@@ -44,36 +76,51 @@
                         <div class="card setting-section" id="personal-info">
                             <h3>Personal Information</h3>
                             <div class="profile-info">
-                                <div class="profile">
-                                    <img src="https://i.pravatar.cc/150?img=47" alt="Profile">
-                                    <a href="#" id="">Change Photo</a>
-                                </div>
-
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label>First Name</label>
-                                        <input type="text" class="form-control" id="" value="Sarah">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Last Name</label>
-                                        <input type="text" class="form-control" id="" value="Johnson">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Email</label>
-                                        <input type="email" class="form-control" id="" value="info@gmail.com">
+                                <form id="personal-info-form" action="{{ route('update.personal.info') }}" method="POST" enctype="multipart/form-data" class="profile-info" style="width: 100%;">
+                                    @csrf
+                                    
+                                    <!-- Left Column: Profile Image -->
+                                    <div class="profile">
+                                        <div class="profile-image-container" style="position: relative; display: inline-block;">
+                                            <img id="profile-preview" 
+                                                 src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : 'https://i.pravatar.cc/150?img=47' }}" 
+                                                 alt="Profile" 
+                                                 style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                                            
+                                            <label for="profile_image" style="cursor: pointer; display: block; margin-top: 10px; color: #6765e8; text-decoration: none; text-align: center;">
+                                                Change Photo
+                                            </label>
+                                            <input type="file" name="profile_image" id="profile_image" style="display: none;" accept="image/*" onchange="previewImage(this)">
+                                        </div>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label>Phone</label>
-                                        <input type="text" class="form-control" id="" value="+91 1234567890">
-                                    </div>
+                                    <!-- Right Column: Form Fields -->
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label>First Name</label>
+                                            <input type="text" class="form-control" name="first_name" value="{{ $firstName }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Last Name</label>
+                                            <input type="text" class="form-control" name="last_name" value="{{ $lastName }}">
+                                        </div>
 
-                                    <div class="form-group" style="grid-column: 1 / -1;">
-                                        <label>Address</label>
-                                        <textarea rows="5" class="form-control" id="">32 ABC Society, Katargam, Surat, Gujarat, India</textarea>
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="email" class="form-control" name="email" value="{{ $user->email }}" readonly style="background-color: #e9ecef;">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Phone</label>
+                                            <input type="text" class="form-control" name="phone" value="{{ $user->phone }}" readonly style="background-color: #e9ecef;">
+                                        </div>
+
+                                        <div class="form-group" style="grid-column: 1 / -1;">
+                                            <label>Address</label>
+                                            <textarea rows="5" class="form-control" name="address" readonly style="background-color: #e9ecef;">{{ $user->address }}</textarea>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
 
@@ -86,7 +133,7 @@
                                         <h4>Change MPIN</h4>
                                         <span>Update your mobile PIN for enhanced security</span>
                                     </div>
-                                    <a href="#">Change</a>
+                                    <a href="{{ route('change.mpin') }}">Change</a>
                                 </div>
                                 <div class="securify-pin">
                                     <div>
@@ -154,4 +201,17 @@
 @endsection
 @push('scripts')
     <script src="{{ asset('js/user-setting.js') }}"></script>
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    document.getElementById('profile-preview').src = e.target.result;
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 @endpush

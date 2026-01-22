@@ -34,7 +34,7 @@ class AadhaarController extends Controller
         return view('aadhar_not_linked');
     }
 
-     public function applicant()
+    public function applicant()
     {
         return view('applicant_detail');
     }
@@ -81,7 +81,7 @@ class AadhaarController extends Controller
             $document->aadhar_card_otp_expired = $otpExpiration;
 
             // Attempt to save the document record
-            if (! $document->save()) {
+            if (!$document->save()) {
                 throw new \Exception('Failed to save Aadhaar number and OTP.');
             }
 
@@ -97,12 +97,11 @@ class AadhaarController extends Controller
 
             // Return success response with OTP expiration message
             return redirect()->route('aadhaar_verify_otp')->with('success', 'Aadhaar number stored successfully. OTP sent for verification.');
-
         } catch (\Exception $e) {
             // Rollback transaction in case of an error
             DB::rollback();
 
-            Log::error('Error during Aadhaar processing: '.$e->getMessage(), [
+            Log::error('Error during Aadhaar processing: ' . $e->getMessage(), [
                 'stack' => $e->getTraceAsString(),
             ]);
 
@@ -111,14 +110,14 @@ class AadhaarController extends Controller
     }
 
     /**
-     *  Verify the OTP entered by the user.
+     * Verify the OTP entered by the user.
      */
     public function verifyOtp(Request $request)
     {
         // Validate the OTP input
         $request->validate([
-            'otp' => 'required|array|size:6', // Ensure there are exactly 6 OTP digits
-            'otp.*' => 'required|numeric|digits:1', // Each OTP digit should be numeric and exactly one digit
+            'otp' => 'required|array|size:6',  // Ensure there are exactly 6 OTP digits
+            'otp.*' => 'required|numeric|digits:1',  // Each OTP digit should be numeric and exactly one digit
         ]);
 
         // Combine the OTP digits into a string
@@ -128,7 +127,7 @@ class AadhaarController extends Controller
         $document = Document::where('aadhar_card_number', $request->aadhaar_number)->first();
 
         // Check if the document exists
-        if (! $document) {
+        if (!$document) {
             return back()->withErrors(['error' => 'Aadhaar number not found.']);
         }
 
@@ -148,9 +147,12 @@ class AadhaarController extends Controller
 
     public function uploadAadhaarDocument(Request $request)
     {
+        // Increase execution time for this specific request (OCR can be slow)
+        set_time_limit(300);  // 5 minutes
+
         // Validate the uploaded file
         $validated = $request->validate([
-            'aadhaar_card_image' => 'required|mimes:jpg,png,pdf|max:10240', // Max size 10MB
+            'aadhaar_card_image' => 'required|mimes:jpg,png,pdf|max:10240',  // Max size 10MB
         ]);
 
         // Handle the file upload
@@ -158,16 +160,16 @@ class AadhaarController extends Controller
             $file = $request->file('aadhaar_card_image');
 
             // Generate a unique filename with the current timestamp
-            $filename = 'aadhaar_card_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $filename = 'aadhaar_card_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
 
             // Store the file in the 'private_uploads/aadhar_card' folder inside 'storage/app'
             $path = $file->storeAs('private_uploads/aadhar_card', $filename);
 
             // Get the Aadhaar number from request or latest document
-            $aadhaarNumber = $request->input('aadhaar_number') ??
-                           Document::whereNotNull('aadhar_card_number')
-                                   ->latest()
-                                   ->value('aadhar_card_number');
+            $aadhaarNumber = $request->input('aadhaar_number')
+                ?? Document::whereNotNull('aadhar_card_number')
+                    ->latest()
+                    ->value('aadhar_card_number');
 
             if (!$aadhaarNumber) {
                 return back()->with('error', 'Aadhaar number not found. Please enter Aadhaar number first.');
@@ -182,8 +184,8 @@ class AadhaarController extends Controller
 
             // Find the existing document created during OTP verification
             $document = Document::where('aadhar_card_number', $aadhaarNumber)
-                                ->latest()
-                                ->first();
+                ->latest()
+                ->first();
 
             if (!$document) {
                 // Fallback if somehow OTP step was skipped or doc missing
@@ -192,13 +194,13 @@ class AadhaarController extends Controller
             }
 
             $document->aadhar_card_image = $filename;  // Store only the image name in the database
-            $document->save(); // Save immediately to ensure image is linked
+            $document->save();  // Save immediately to ensure image is linked
 
             // Get full path to uploaded image for extraction
             // Check both possible storage paths
-            $aadhaarImagePath = storage_path('app/private_uploads/aadhar_card/'.$filename);
+            $aadhaarImagePath = storage_path('app/private_uploads/aadhar_card/' . $filename);
             if (!file_exists($aadhaarImagePath)) {
-                $aadhaarImagePath = storage_path('app/private/private_uploads/aadhar_card/'.$filename);
+                $aadhaarImagePath = storage_path('app/private/private_uploads/aadhar_card/' . $filename);
             }
 
             // Create or get accounts based on Aadhaar number with image extraction
@@ -229,19 +231,20 @@ class AadhaarController extends Controller
                 $panDocument = Document::whereNotNull('pan_card_number')
                     ->whereNotNull('pan_card_image')
                     ->where('aadhar_card_number', $aadhaarNumber)
-                    ->orWhere(function($query) use ($accounts) {
-                         // Use safe access for accounts['user']
-                         if (isset($accounts['user']->id)) {
-                             $query->where('user_id', $accounts['user']->id)
-                                   ->whereNotNull('pan_card_number')
-                                   ->whereNotNull('pan_card_image');
-                         }
+                    ->orWhere(function ($query) use ($accounts) {
+                        // Use safe access for accounts['user']
+                        if (isset($accounts['user']->id)) {
+                            $query
+                                ->where('user_id', $accounts['user']->id)
+                                ->whereNotNull('pan_card_number')
+                                ->whereNotNull('pan_card_image');
+                        }
                     })
                     ->latest()
                     ->first();
 
                 if ($panDocument && $panDocument->id !== $document->id && !$panDocument->user_id) {
-                     // Merge separate PAN doc if it exists and is different (rare case now)
+                    // Merge separate PAN doc if it exists and is different (rare case now)
                     $panDocument->user_id = $resolvedUserId ?? ($accounts['user']->id ?? null);
                     $panDocument->customer_id = $accounts['customer']->id;
                     $panDocument->customer_name = $accounts['user']->name;
@@ -263,7 +266,7 @@ class AadhaarController extends Controller
     }
 
     /**
-     *  Generate and download the Aadhaar verification receipt as a PDF.
+     * Generate and download the Aadhaar verification receipt as a PDF.
      */
     public function downloadReceipt(Request $request)
     {
@@ -290,7 +293,7 @@ class AadhaarController extends Controller
                     ->first();
             }
 
-            if (! $document) {
+            if (!$document) {
                 return back()->withErrors(['error' => 'Document not found. Please complete Aadhaar verification first.']);
             }
 
@@ -303,7 +306,7 @@ class AadhaarController extends Controller
             $imageFileName = $document->aadhar_card_image;
 
             if ($imageFileName) {
-                $imagePath = storage_path('app/private/private_uploads/aadhar_card/'.$imageFileName);
+                $imagePath = storage_path('app/private/private_uploads/aadhar_card/' . $imageFileName);
 
                 if (file_exists($imagePath)) {
                     // Check if the file is readable
@@ -321,19 +324,19 @@ class AadhaarController extends Controller
                             $imageMimeType = mime_content_type($imagePath);
                         }
                     } else {
-                        Log::error('File found but not readable: '.$imagePath);
+                        Log::error('File found but not readable: ' . $imagePath);
                     }
                 } else {
-                    Log::error('File NOT found at path: '.$imagePath);
+                    Log::error('File NOT found at path: ' . $imagePath);
                 }
             } else {
-                Log::warning('Aadhaar image filename is missing in the database record for document ID: '.$document->id);
+                Log::warning('Aadhaar image filename is missing in the database record for document ID: ' . $document->id);
             }
 
             // 3. Prepare Data for PDF
-            $maskedAadhaar = ! empty($document->aadhar_card_number) && strlen($document->aadhar_card_number) >= 8
-                        ? substr($document->aadhar_card_number, 0, 4).' XXXX '.substr($document->aadhar_card_number, -4)
-                        : 'XXXX XXXX XXXX';
+            $maskedAadhaar = !empty($document->aadhar_card_number) && strlen($document->aadhar_card_number) >= 8
+                ? substr($document->aadhar_card_number, 0, 4) . ' XXXX ' . substr($document->aadhar_card_number, -4)
+                : 'XXXX XXXX XXXX';
 
             $userData = [
                 'name' => $userName,
@@ -343,7 +346,7 @@ class AadhaarController extends Controller
                 'verification_time' => $document->created_at ? $document->created_at->format('H:i:s') : now()->format('H:i:s'),
                 'aadhar_card_image' => $imageBase64,
                 'aadhar_card_image_mime' => $imageMimeType,
-                'response_code' => strtoupper(substr(md5($document->id.$document->aadhar_card_number.time()), 0, 32)),
+                'response_code' => strtoupper(substr(md5($document->id . $document->aadhar_card_number . time()), 0, 32)),
             ];
             // dd($userData);
             // 4. Generate and Download PDF
@@ -353,9 +356,8 @@ class AadhaarController extends Controller
 
             return $pdf->download('aadhaar_verification_receipt.pdf');
             dd($userData);
-
         } catch (\Exception $e) {
-            Log::error('PDF Download Error: '.$e->getMessage(), [
+            Log::error('PDF Download Error: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
 
@@ -422,9 +424,9 @@ class AadhaarController extends Controller
 
                 // Try to extract data from Aadhaar image if not already in database
                 if ($document->aadhar_card_image) {
-                    $imagePath = storage_path('app/private_uploads/aadhar_card/'.$document->aadhar_card_image);
+                    $imagePath = storage_path('app/private_uploads/aadhar_card/' . $document->aadhar_card_image);
                     if (!file_exists($imagePath)) {
-                        $imagePath = storage_path('app/private/private_uploads/aadhar_card/'.$document->aadhar_card_image);
+                        $imagePath = storage_path('app/private/private_uploads/aadhar_card/' . $document->aadhar_card_image);
                     }
 
                     if (file_exists($imagePath)) {
@@ -443,9 +445,8 @@ class AadhaarController extends Controller
             ];
 
             return view('aadhaar_data_review', $data);
-
         } catch (\Exception $e) {
-            Log::error('Error loading aadhaar data review: '.$e->getMessage());
+            Log::error('Error loading aadhaar data review: ' . $e->getMessage());
             return view('aadhaar_data_review', [
                 'document' => null,
                 'user' => null,
