@@ -24,37 +24,45 @@
                     <form id="mpin-form" method="POST" action="{{ route('mpin.store') }}">
                         @csrf
                         <div class="pin-box">
-                            <label class="fw-semibold mb-1">Enter 6-Digit MPIN</label>
-                            <div class="mb-3">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-1"
-                                    name="mpin[0]">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-2"
-                                    name="mpin[1]">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-3"
-                                    name="mpin[2]">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-4"
-                                    name="mpin[3]">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-5"
-                                    name="mpin[4]">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="mpin-6"
-                                    name="mpin[5]">
+                            <div class="form-group">
+                                <label class="">Enter 6-Digit MPIN</label>
+
+
+                                <div class="">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="mpin-1" name="mpin[0]">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="mpin-2" name="mpin[1]">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="mpin-3" name="mpin[2]">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="mpin-4" name="mpin[3]">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="mpin-5" name="mpin[4]">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="mpin-6" name="mpin[5]">
+                                </div>
 
                             </div>
                             <div id="mpin-error-message" class="error-message text-danger"></div>
-                            <label class="fw-semibold mb-1">Confirm MPIN</label>
-                            <div class="mb-3">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-1"
-                                    name="cmpin[0]">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-2"
-                                    name="cmpin[1]">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-3"
-                                    name="cmpin[2]">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-4"
-                                    name="cmpin[3]">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-5"
-                                    name="cmpin[4]">
-                                <input type="password" inputmode="numeric" maxlength="1" class="mpin-box" id="cmpin-6"
-                                    name="cmpin[5]">
+                            <div class="form-group">
+                                <label class="">Confirm MPIN</label>
+
+
+                                <div class="">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="cmpin-1" name="cmpin[0]">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="cmpin-2" name="cmpin[1]">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="cmpin-3" name="cmpin[2]">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="cmpin-4" name="cmpin[3]">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="cmpin-5" name="cmpin[4]">
+                                    <input type="password" inputmode="numeric" maxlength="1" class="mpin-box"
+                                        id="cmpin-6" name="cmpin[5]">
+                                </div>
                             </div>
                             <div id="cmpin-error-message" class="error-message text-danger"></div>
                         </div>

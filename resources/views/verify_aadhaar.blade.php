@@ -47,7 +47,7 @@
                                 Resend OTP in <span id="timer" class="text-danger fw-semibold">30</span> s
                             </small>
                             <br>
-                            <a id="resend-otp" class="resend-link">Resend OTP</a>
+                            <a id="resend-otp" href="#" class="resend-link">Resend OTP</a>
                         </div>
 
                         <!-- Security Note -->

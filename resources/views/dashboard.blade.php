@@ -3,11 +3,11 @@
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/common_header.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
 @endsection
 
 @section('content')
-@include('layouts.common_header')
+    @include('layouts.common_header')
 
     <div class="hero-section">
         <div class="container">
@@ -89,46 +89,50 @@
 
     <div class="dashboard-container">
         <div class="container">
-            <header class="dashboard-header">
-                <h2>Welcome back, {{ $userName }}!</h2>
-                <p>Here's an overview of your financial dashboard</p>
-            </header>
-
-            <div class="main-actions-grid">
-                <div class="action-card card-green">
-                    <div class="icon-box"><i class="fas fa-file-invoice"></i></div>
-                    <h3 class="card-title">Apply for Loan</h3>
-                    <p class="card-description">Start your loan application process with our simple and quick form. Get
-                        approved
-                        in minutes.</p>
-                    <a href="{{ route('apply_loan') }}" class="btn btn-card-action">Start Application &rarr;</a>
+            <div class="dashboard-inner">
+                <div class="section-title text-center">
+                    <h2>Smart Loan Management</h2>
+                    <p>Apply for loans, check eligibility with AI, track application status, and manage all your loan
+                        updates in one seamless platform.</p>
                 </div>
 
-                <div class="action-card card-blue-light">
-                    <div class="icon-box"><i class="fas fa-robot"></i></div>
-                    <h3 class="card-title">AI Eligibility Checker</h3>
-                    <p class="card-description">Use our AI-powered tool to instantly check your loan eligibility and get
-                        personalized recommendations.</p>
-                    <a href="#" class="btn btn-card-action">Check Eligibility &rarr;</a>
-                </div>
+                <div class="main-actions-grid">
+                    <div class="action-card card-green">
+                        <div class="icon-box"><i class="fas fa-file-invoice"></i></div>
+                        <h3 class="card-title">Apply for Loan</h3>
+                        <p class="card-description">Start your loan application process with our simple and quick form. Get
+                            approved
+                            in minutes.</p>
+                        <a href="{{ route('apply_loan') }}" class="btn btn-card-action">Start Application &rarr;</a>
+                    </div>
 
-                <div class="action-card card-blue-dark">
-                    <div class="icon-box"><i class="fas fa-bell"></i></div>
-                    <h3 class="card-title">Loan Updates</h3>
-                    <p class="card-description">Stay informed about your loan status, payment schedules, and important
-                        notifications.</p>
-                    <a href="#" class="btn btn-card-action">View Updates &rarr;</a>
-                </div>
+                    <div class="action-card card-blue-light">
+                        <div class="icon-box"><i class="fas fa-robot"></i></div>
+                        <h3 class="card-title">AI Eligibility Checker</h3>
+                        <p class="card-description">Use our AI-powered tool to instantly check your loan eligibility and get
+                            personalized recommendations.</p>
+                        <a href="#" class="btn btn-card-action">Check Eligibility &rarr;</a>
+                    </div>
 
-                <div class="action-card card-orange">
-                    <div class="icon-box"><i class="fas fa-chart-line"></i></div>
-                    <h3 class="card-title">Other Loan Tracking</h3>
-                    <p class="card-description">Track all your external loans and manage multiple financial obligations in
-                        one
-                        place.</p>
-                    <a href="#" class="btn btn-card-action">Track Loans &rarr;</a>
-                </div>
+                    <div class="action-card card-blue-dark">
+                        <div class="icon-box"><i class="fas fa-bell"></i></div>
+                        <h3 class="card-title">Loan Updates</h3>
+                        <p class="card-description">Stay informed about your loan status, payment schedules, and important
+                            notifications.</p>
+                        <a href="#" class="btn btn-card-action">View Updates &rarr;</a>
+                    </div>
 
+                    <div class="action-card card-orange">
+                        <div class="icon-box"><i class="fas fa-chart-line"></i></div>
+                        <h3 class="card-title">Other Loan Tracking</h3>
+                        <p class="card-description">Track all your external loans and manage multiple financial obligations
+                            in
+                            one
+                            place.</p>
+                        <a href="#" class="btn btn-card-action">Track Loans &rarr;</a>
+                    </div>
+
+                </div>
             </div>
 
             <div class="quick-actions-section">
@@ -142,7 +146,7 @@
                         <i class="fas fa-folder"></i>
                         <p class="mb-0 fw-medium">My Document Locker</p>
                     </a>
-                     <a href="#" class="quick-item-button">
+                    <a href="#" class="quick-item-button">
                         <i class="fas fa-headset"></i>
                         <p class="mb-0 fw-medium">Customer Support</p>
                     </a>
@@ -159,6 +163,7 @@
             </div>
         </div>
 
+        @include('layouts.footer')
     @endsection
     @push('scripts')
         {{-- <script src="{{ asset('js/register.js') }}"></script> --}}
@@ -178,31 +183,30 @@
                     });
                 }
             });
-
         </script>
-            <script>
-        // EMI Calculator
-        function calculateEMI() {
-            const amount = parseFloat(document.getElementById('loanAmount').value);
-            const months = parseInt(document.getElementById('loanTerm').value);
-            const rate = 0.035; // 3.5% annual rate
-            const monthlyRate = rate / 12;
+        <script>
+            // EMI Calculator
+            function calculateEMI() {
+                const amount = parseFloat(document.getElementById('loanAmount').value);
+                const months = parseInt(document.getElementById('loanTerm').value);
+                const rate = 0.035; // 3.5% annual rate
+                const monthlyRate = rate / 12;
 
-            const payment = amount * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate,
-                months) - 1);
+                const payment = amount * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate,
+                    months) - 1);
 
-            document.getElementById('monthlyPayment').textContent = '₹' + Math.round(payment).toLocaleString();
-        }
+                document.getElementById('monthlyPayment').textContent = '₹' + Math.round(payment).toLocaleString();
+            }
 
-        // Add event listeners
-        document.getElementById('loanAmount').addEventListener('input', calculateEMI);
-        document.getElementById('loanTerm').addEventListener('change', calculateEMI);
+            // Add event listeners
+            document.getElementById('loanAmount').addEventListener('input', calculateEMI);
+            document.getElementById('loanTerm').addEventListener('change', calculateEMI);
 
-        // Initial calculation
-        calculateEMI();
+            // Initial calculation
+            calculateEMI();
 
 
-         document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function() {
                 const profileToggle = document.querySelector('.profile-toggle');
                 const profileMenu = document.querySelector('.profile-menu');
 
@@ -217,5 +221,5 @@
                     });
                 }
             });
-    </script>
+        </script>
     @endpush

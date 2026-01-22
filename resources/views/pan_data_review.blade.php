@@ -20,7 +20,7 @@
 
                     </div>
                 </div>
-                <div class="form-card">
+                <div class="form-card fix-height">
                     <div class="mb-4">
                         <div class="icon-circle">
                             <i class="fa-solid fa-address-card"></i>

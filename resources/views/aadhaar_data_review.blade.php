@@ -20,10 +20,10 @@
 
                     </div>
                 </div>
-                <div class="form-card">
+                <div class="form-card fix-height">
                     <div class="review-container w-100">
-                        <div class="text-center mb-4" id="formHeader">
-                             <div class="icon-circle mx-auto">
+                        <div class="" id="formHeader">
+                             <div class="icon-circle">
                             <i class="fa-solid fa-address-card"></i>
                         </div>
 
@@ -56,19 +56,19 @@
                                     @php
                                         // PRIORITIZE Extracted Data for Review
                                         // The user wants to see what was scanned from the card
-                                        
+
                                         $fullName = $extracted['name'] ?? ($user->name ?? ($customer->name ?? 'N/A'));
-                                        
+
                                         $dob = $extracted['date_of_birth'] ?? ($user->date_of_birth ?? ($customer->date_of_birth ?? 'N/A'));
-                                        
+
                                         $address = $extracted['address'] ?? ($user->address ?? ($customer->address ?? 'N/A'));
-                                        
+
                                         $gender = $extracted['gender'] ?? ($user->gender ?? ($customer->gender ?? 'N/A'));
-                                        
+
                                         $phone = $extracted['phone'] ?? ($user->phone ?? ($customer->phone ?? 'N/A'));
-                                        
+
                                         $email = $extracted['email'] ?? ($user->email ?? ($customer->email ?? 'N/A'));
-                                        
+
                                         $aadhaarNumber = $extracted['aadhaar_number'] ?? ($document->aadhar_card_number ?? 'N/A');
 
                                         // Format Aadhaar number (mask it)

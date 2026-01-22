@@ -307,69 +307,10 @@ body {
     color: #6765e8;
 }
 
-.footer {
-    background: #252484;
-    padding: 100px 0 30px;
-}
-
-.footer-top {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
 .logo {
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 8px;
-}
-
-.footer .tagline {
-    font-size: 16px;
-    color: #d1d5ff;
-}
-
-.divider {
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
-    margin: 20px 0;
-}
-
-.footer-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 13px;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.footer-left {
-    color: #d1d5ff;
-    font-size: 16px;
-}
-
-.footer-center a {
-    color: #d1d5ff;
-    margin: 0 8px;
-    font-size: 16px;
-    transition: 0.3s;
-}
-
-.footer-center a:hover {
-    opacity: 0.7;
-}
-
-.footer-right a {
-    color: #d1d5ff;
-    margin-left: 15px;
-    text-decoration: none;
-    transition: 0.3s;
-    font-size: 16px;
-}
-
-.footer-right a:hover {
-    opacity: 1;
-    text-decoration: underline;
 }
 
 /* Responsive */
@@ -384,17 +325,7 @@ body {
         display: block;
     }
 }
-@media (max-width: 768px) {
-    .footer-bottom {
-        flex-direction: column;
-        text-align: center;
-    }
 
-    .footer-right a {
-        margin-left: 10px;
-        margin-right: 10px;
-    }
-}
 
 @media (max-width: 767px) {
     .slide h1,
@@ -409,10 +340,7 @@ body {
 
     .card-info p,
     .how-it-works .steps .step p,
-    .how-it-works .subtitle,
-    .footer .tagline,
-    .footer-left,
-    .footer-right a{
+    .how-it-works .subtitle{
         font-size: 14px;
     }
 
@@ -434,9 +362,6 @@ body {
 
     .section-padding {
         padding: 50px 0px;
-    }
-    .footer{
-        padding: 50px 0 30px;
     }
     .card-info {
         text-align: center;

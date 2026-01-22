@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class="form-card">
-                    <div class="text-center mb-5">
+                    <div class="">
                         <div class="icon-circle mb-3">
                             <i class="fas fa-mobile-alt"></i>
                         </div>
@@ -30,7 +30,8 @@
                         <div class="form-group">
                             <label for="phone" class="form-label">Mobile Number</label>
                             <input type="text" class="form-control" id="phone" name="phone"
-                                placeholder="Enter your mobile number" maxlength="10" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                placeholder="Enter your mobile number" maxlength="10" inputmode="numeric"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             @error('phone')
                                 <div class="error-message text-danger">{{ $message }}</div>
                             @enderror
@@ -40,7 +41,8 @@
                             Send OTP
                         </button>
                         <div class="text-center mt-3">
-                            <a href="{{ route('login') }}" class="text-decoration-none" style="color: #666;">Back to Login</a>
+                            <a href="{{ route('login') }}" class="text-decoration-none" style="color: #666;">Back to
+                                Login</a>
                         </div>
                     </form>
                 </div>

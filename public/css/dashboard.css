@@ -2,11 +2,28 @@ body {
     font-family: "Poppins", sans-serif;
 }
 
+.dashboard-inner {
+    padding: 100px 5px;
+}
+
+.dashboard-container .section-title h2 {
+    font-size: 40px;
+    line-height: 50px;
+    color: #111827;
+    font-weight: 600;
+}
+
+.dashboard-container .section-title p {
+    font-size: 16px;
+    color: #4b5563;
+    line-height: 22px;
+}
+
 .main-actions-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
-    margin-bottom: 3rem;
+    margin: 50px 0 0;
 }
 
 .action-card {
@@ -26,8 +43,8 @@ body {
 
 .action-card.card-green .icon-box,
 .action-card.card-blue-light .icon-box,
-.action-card.card-blue-dark  .icon-box,
-.action-card.card-orange .icon-box  {
+.action-card.card-blue-dark .icon-box,
+.action-card.card-orange .icon-box {
     font-size: 20px;
     background: #4ccb7b75;
     height: 55px;
@@ -40,16 +57,16 @@ body {
     margin-bottom: 15px;
 }
 
-.action-card.card-blue-light .icon-box{
+.action-card.card-blue-light .icon-box {
     background: #5a599e;
 }
 
-.action-card.card-blue-dark .icon-box{
+.action-card.card-blue-dark .icon-box {
     background: #7573e6;
 }
 
-.action-card.card-orange .icon-box{
-    background: #F7B13C;
+.action-card.card-orange .icon-box {
+    background: #c83cf7
 }
 
 .card-title {
@@ -65,7 +82,7 @@ body {
 }
 
 .card-green {
-    background: linear-gradient(to left, #22C55E, #16A34A);
+    background: linear-gradient(to left, #22c55e, #16a34a);
 }
 
 .card-blue-light {
@@ -73,11 +90,11 @@ body {
 }
 
 .card-blue-dark {
-     background: linear-gradient(to left, #8887d6, #6765e8);
+    background: linear-gradient(to left, #8887d6, #6765e8);
 }
 
 .card-orange {
-    background: linear-gradient(to left, #E6AF52, #F59E0B);
+    background: linear-gradient(to left, #ba0bf5, #ba0bf5);
 }
 
 /* Button Styling for Main Cards */
@@ -102,8 +119,9 @@ body {
 .quick-actions-section {
     background: white;
     border-radius: 8px;
-    border: 1px solid #E5E7EB;
+    border: 1px solid #e5e7eb;
     padding: 20px 24px;
+    margin-bottom: 50px;
 }
 
 .quick-actions-title {
@@ -124,7 +142,7 @@ body {
     min-width: 150px;
     padding: 20px;
     border-radius: 8px;
-    background-color: #F9FAFB;
+    background-color: #f9fafb;
     text-decoration: none;
     color: #374151;
     transition: all 0.2s ease;
@@ -142,7 +160,7 @@ body {
     font-size: 14px;
 }
 
-.my-doc{
+.my-doc {
     border: 1px solid #4f46e5;
 }
 
@@ -164,7 +182,7 @@ body {
 
 .hero-section {
     background: linear-gradient(135deg, #faf5ff 0%, #eff6ff 100%);
-    padding: 40px 10px;
+    padding: 40px 5px;
 }
 
 .trust-text {
@@ -274,7 +292,7 @@ body {
 }
 
 .form-group label {
-   font-size: 16px;
+    font-size: 16px;
     font-weight: 600;
     margin-bottom: 0px;
     color: #374151;
@@ -365,7 +383,6 @@ body {
     width: 100%;
 }
 
-
 @media (min-width: 1024px) {
     .hero-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -390,40 +407,39 @@ body {
     }
 }
 
-
 @media (max-width: 992px) {
-    .main-actions-grid {
-        grid-template-columns: 1fr;
-    }
     .hero-content,
-    .stats{
+    .stats {
         gap: 1rem;
     }
-    .payment-value{
+    .payment-value {
         font-size: 1.5rem;
     }
     .hero-grid .hero-title,
-    .hero-grid .hero-description{
+    .hero-grid .hero-description {
         margin-bottom: 0px;
     }
 }
 
 @media (max-width: 767px) {
-    .dashboard-container{
-    padding: 40px 10px;
-}
-    .dashboard-header h2,
+    .dashboard-inner {
+        padding: 50px 0;
+    }
+    .dashboard-container .section-title h2 {
+        font-size: 26px;
+        line-height: 32px;
+    }
     .card-title,
-    .logo-text{
+    .logo-text {
         font-size: 20px;
         line-height: 28px;
     }
-    .dashboard-header p,
     .card-description,
     .user-name,
     .hero-description,
     .hero-grid .form-input,
-    .hero-grid .form-group label{
+    .hero-grid .form-group label,
+    .dashboard-container .section-title p {
         font-size: 14px;
     }
     .logo-text {
@@ -441,15 +457,17 @@ body {
     .quick-item-button {
         flex: 1 1 calc(50% - 10px);
     }
-    .profile-toggle img{
+    .profile-toggle img {
         height: 30px;
         width: 30px;
     }
+    .main-actions-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-@media (min-width:1400px){
+@media (min-width: 1400px) {
     .container {
         max-width: 1320px;
     }
 }
-

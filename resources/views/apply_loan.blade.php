@@ -3,6 +3,7 @@
 @section('styles')
     <link rel="stylesheet" href="{{ asset('css/apply_loan.css') }}">
     <link rel="stylesheet" href="{{ asset('css/common_header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
 @endsection
 
 @section('content')
@@ -10,7 +11,7 @@
 
     <section class="banner-wrapper">
         <div class="banner-image">
-            <img src="../images/apply_loan.jpg" alt="Loan Banner" class="img-fluid">
+            <img src="../images/apply_for_loan.jpg" alt="Loan Banner" class="img-fluid">
         </div>
     </section>
 
@@ -162,6 +163,7 @@
             </div>
         </div>
     </div>
+     @include('layouts.footer')
 @endsection
 
 @push('scripts')

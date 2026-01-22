@@ -9,7 +9,6 @@ body {
 }
 
 .banner-image img {
-    height: 700px;
     object-fit: cover;
     object-position: top;
     width: 100%;
@@ -59,7 +58,7 @@ body {
 }
 
 .btn-blue {
-    background: #2563eb;
+    background: #252484;
     color: white;
 }
 
@@ -123,8 +122,8 @@ body {
 }
 
 .section-title {
-    font-size: 48px;
-    font-weight: 800;
+    font-size: 42px;
+    font-weight: 700;
     color: #111827;
     margin-bottom: 1rem;
 }
@@ -168,7 +167,7 @@ body {
 
 .icon-blue {
     background: #dbeafe;
-    color: #2563eb;
+    color: #252484;
 }
 
 .icon-purple {
@@ -295,9 +294,6 @@ body {
     }
     .why-section {
         padding-bottom: 40px;
-    }
-    .banner-image img{
-        height: 300px;
     }
 }
 @media (min-width: 640px) {

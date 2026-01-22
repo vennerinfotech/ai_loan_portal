@@ -6,6 +6,7 @@ use App\Http\Controllers\AadhaarController;
 use App\Http\Controllers\PancardController;
 use App\Http\Controllers\UserSettingController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BusinessProofController;
 
 Route::get('/', function () {
     if (Illuminate\Support\Facades\Auth::check()) {
@@ -34,6 +35,7 @@ Route::get('/reset-mpin', [RegisterController::class, 'showResetMpin'])->name('r
 Route::post('/reset-mpin', [RegisterController::class, 'storeNewMpin'])->name('reset.mpin.store');
 
 Route::get('/dashboard', [RegisterController::class, 'showDashboard'])->name('dashboard');
+Route::get('/business_proof', [BusinessProofController::class, 'business_proof'])->name('business_proof');
 
 route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
