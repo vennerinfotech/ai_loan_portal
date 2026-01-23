@@ -113,7 +113,8 @@ body {
 
 /* Loan Types Section */
 .loan-types-section {
-    padding: 80px 10px;
+    padding: 100px 10px;
+    background: #f8f8ff;
 }
 
 .section-header {
@@ -231,7 +232,7 @@ body {
 /* Why Section */
 .why-section {
     background: white;
-    padding: 0 10px 80px;
+    padding: 100px 0 80px;
 }
 
 .features-grid {
@@ -264,6 +265,7 @@ body {
     font-size: 20px;
     font-weight: 800;
     color: #111827;
+    margin-bottom: 0px;
 }
 
 .feature-description {
@@ -290,10 +292,10 @@ body {
         font-size: 22px;
     }
     .loan-types-section {
-        padding: 40px 10px;
+        padding: 50px 10px;
     }
     .why-section {
-        padding-bottom: 40px;
+        padding: 50px 0 30px;
     }
 }
 @media (min-width: 640px) {

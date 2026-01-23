@@ -139,6 +139,10 @@ body {
     }
 }
 
+.modal-dialog-scrollable .modal-body {
+    scrollbar-width: thin;
+}
+
 /*Salaried Css*/
 .business_proof_type {
     padding: 100px 5px;
@@ -162,7 +166,7 @@ body {
     font-size: 14px;
 }
 
-.custom_bussiness_type_modal .modal-body{
+.custom_bussiness_type_modal .modal-body {
     padding: 20px;
 }
 
@@ -179,7 +183,7 @@ body {
     background: #fff;
 }
 
-.business_box_inner .upload_card:last-child{
+.business_box_inner .upload_card:last-child {
     margin-bottom: 0px;
 }
 
@@ -203,7 +207,7 @@ body {
 .business_box_inner .upload_area {
     position: relative;
     margin-top: 15px;
-    border: 1px solid #E5E7EB;
+    border: 1px solid #e5e7eb;
     border-radius: 12px;
     padding: 35px;
     text-align: center;
@@ -215,7 +219,7 @@ body {
     content: "";
     position: absolute;
     inset: 15px;
-    border: 2px dashed #D1D5DB;
+    border: 2px dashed #d1d5db;
     border-radius: 10px;
     pointer-events: none;
 }
@@ -242,12 +246,13 @@ body {
     display: block;
 }
 
-.business_box_inner .upload_area button {
+.business_box_inner .upload_area button,
+.fetch-gst-btn {
     margin-top: 15px;
     background: #6c63ff;
     color: #fff;
     border: none;
-    padding: 10px 20px;
+    padding: 13px 20px;
     border-radius: 8px;
     font-size: 14px;
     cursor: pointer;
@@ -294,11 +299,10 @@ body {
     transform: rotate(45deg);
 }
 
-.custom_bussiness_type_modal .btn-close:focus{
+.custom_bussiness_type_modal .btn-close:focus {
     box-shadow: none;
 }
 
-/* Options */
 .business_box_inner .option {
     display: flex;
     align-items: center;
@@ -310,16 +314,16 @@ body {
     background: #fff;
 }
 
-/* Buttons */
 button:focus {
     outline: none;
 }
+
 .business_box_btn {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     margin-top: 30px;
-            gap: 10px;
-            width: 100%;
+    gap: 10px;
+    width: 100%;
 }
 
 .business_box_btn .btn-submit {
@@ -358,18 +362,89 @@ button:focus {
     color: #fff;
 }
 
-@media (max-width:380px){
-    .business_box_btn{
-       flex-direction: column;
+.business_box .form-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 15px;
+    background: #fff;
+    margin-top: 15px;
+}
+
+.business_box .form-card .form-group > .fetch-input {
+    display: grid;
+    grid-template-columns: minmax(300px, 1fr) 115px;
+    align-items: center;
+    gap: 10px;
+}
+
+.business_box .form-card .form-group label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #374151;
+}
+
+.business_box .form-card .form-group .form-control {
+    border: 1px solid #e5e7eb;
+    height: 50px;
+    color: #374151;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.business_box .form-card .form-group .form-control:focus {
+    border-color: #6765e8;
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(103, 101, 232, 0.15);
+}
+
+.business_box .form-card .fetch-gst-btn {
+    margin-top: 0px;
+    border: 1px solid #6c63ff;
+    display: inline-block;
+}
+
+.business_box .form-card .fetch-gst-btn:hover {
+    background: #fff;
+    color: #6c63ff;
+}
+
+@media (max-width: 380px) {
+    .business_box_btn {
+        flex-direction: column;
     }
     .business_box_btn .btn-cancel,
-    .business_box_btn .btn-submit{
+    .business_box_btn .btn-submit {
         width: 100%;
     }
 }
 
-@media (max-width:767px){
-    .business_proof_type{
-        padding: 50px 5px;;
+@media (max-width: 500px) {
+    .business_box .form-card .form-group > .fetch-input {
+        display: block;
+
+    }
+    .business_box .form-card .fetch-gst-btn{
+     margin-top: 15px;
+    }
+}
+
+@media (max-width: 767px) {
+    .cards-grid .card-title {
+        font-size: 20px;
+    }
+    .business_proof_type {
+        padding: 50px 5px;
+    }
+    .cards-grid .card::before {
+        height: 150px;
+        width: 150px;
+    }
+}
+
+@media (max-width: 991px) {
+    .business_box .form-card .form-group > .fetch-input {
+        grid-template-columns: minmax(250px, 1fr) 115px;
     }
 }
