@@ -79,7 +79,7 @@
                             </p>
 
                             @if ($document->aadhar_card_image)
-                                <a href="{{ route('my-documents.show', 'aadhaar') }}" class="custom-btn">
+                                <a href="{{ route('my-documents.pdf', 'aadhaar') }}" target="_blank" class="custom-btn">
                                     <i class="fas fa-file-alt"></i>
                                     View Document
                                 </a>
@@ -125,7 +125,7 @@
                             </p>
 
                             @if ($document->pan_card_image)
-                                <a href="{{ route('my-documents.show', 'pan') }}" class="custom-btn btn-view-primary">
+                                <a href="{{ route('my-documents.pdf', 'pan') }}" target="_blank" class="custom-btn btn-view-primary">
                                     <i class="fas fa-file-alt"></i>
                                     View Document
                                 </a>

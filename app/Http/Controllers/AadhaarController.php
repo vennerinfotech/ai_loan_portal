@@ -95,6 +95,9 @@ class AadhaarController extends Controller
                 'aadhar_card_otp_expired' => $otpExpiration,
             ]);
 
+            // Store Aadhaar number in session for verification step
+            session(['aadhaar_number' => $validated['aadhaar_number']]);
+
             // Return success response with OTP expiration message
             return redirect()->route('aadhaar_verify_otp')->with('success', 'Aadhaar number stored successfully. OTP sent for verification.');
         } catch (\Exception $e) {
@@ -124,7 +127,7 @@ class AadhaarController extends Controller
         $enteredOtp = implode('', $request->otp);
 
         // Fetch the stored document record by Aadhaar number (or another identifier if needed)
-        $document = Document::where('aadhar_card_number', $request->aadhaar_number)->first();
+        $document = Document::where('aadhar_card_number', $request->aadhaar_number)->latest()->first();
 
         // Check if the document exists
         if (!$document) {
@@ -132,7 +135,7 @@ class AadhaarController extends Controller
         }
 
         // Check if the OTP matches and is not expired
-        if ($document->aadhar_card_otp !== $enteredOtp) {
+        if ((string) $document->aadhar_card_otp !== (string) $enteredOtp) {
             return back()->withErrors(['error' => 'Invalid OTP entered. Please try again.']);
         }
 
@@ -370,7 +373,36 @@ class AadhaarController extends Controller
      */
     public function showOtpForm()
     {
-        return view('verify_aadhaar');
+        $aadhaarNumber = session('aadhaar_number');
+        if (!$aadhaarNumber) {
+            // Fallback or redirect if session expired (optional)
+            // return redirect()->route('enter-aadhaar')->with('error', 'Session expired. Please enter Aadhaar number again.');
+        }
+        return view('verify_aadhaar', ['aadhaar_number' => $aadhaarNumber]);
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $aadhaarNumber = $request->input('aadhaar_number');
+
+        if (!$aadhaarNumber) {
+            return response()->json(['success' => false, 'message' => 'Aadhaar number missing.'], 400);
+        }
+
+        $otp = rand(100000, 999999);
+        $otpExpiration = Carbon::now()->addMinutes(10);
+
+        $document = Document::where('aadhar_card_number', $aadhaarNumber)->latest()->first();
+
+        if ($document) {
+            $document->aadhar_card_otp = $otp;
+            $document->aadhar_card_otp_expired = $otpExpiration;
+            $document->save();
+
+            return response()->json(['success' => true, 'message' => 'OTP resent successfully.', 'otp' => $otp]);  // Remove 'otp' in production if needed
+        }
+
+        return response()->json(['success' => false, 'message' => 'Document not found.'], 404);
     }
 
     /**

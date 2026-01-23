@@ -13,7 +13,7 @@
                     </div>
                     <div class="profile-dropdown">
                         <div class="profile-toggle">
-                            <img src="{{ Auth::user()->profile_image ? asset('storage/' . Auth::user()->profile_image) : 'https://i.pravatar.cc/40' }}" 
+                            <img src="{{ Auth::user()->profile_image ? asset('storage/' . Auth::user()->profile_image) : asset('images/user-profile.jpg') }}" a 
                                  alt="User" 
                                  style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
                             <span class="user-name">{{ Auth::user()->name }}</span>

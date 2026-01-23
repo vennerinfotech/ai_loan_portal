@@ -28,8 +28,25 @@
                         <p>Enter the OTP sent to your registered mobile number</p>
                     </div>
 
-                    <form action="{{ route('verify.otp') }}" method="POST" id="otpForm">
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger" role="alert">
+                             <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form action="{{ route('aadhaar.verify.otp') }}" method="POST" id="otpForm">
                         @csrf
+                        <input type="hidden" name="aadhaar_number" id="aadhaar_number" value="{{ $aadhaar_number ?? '' }}">
 
                         <!-- OTP Boxes -->
                         <div class="aadhar-otp-box mb-4">
@@ -39,11 +56,11 @@
                         </div>
 
                         <!-- Verify Button -->
-                        <button type="button" class="btn-submit">Verify OTP</button>
+                        <button type="submit" class="btn-submit">Verify OTP</button>
 
                         <!-- Resend OTP -->
                         <div class="text-center mt-3">
-                            <small class="text-muted">
+                            <small id="timer-text" class="text-muted">
                                 Resend OTP in <span id="timer" class="text-danger fw-semibold">30</span> s
                             </small>
                             <br>

@@ -3,15 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const otpForm = document.getElementById('otpForm');
     const timerElement = document.getElementById('timer');
     const resendOtpLink = document.getElementById('resend-otp');
+    const aadhaarNumberInput = document.getElementById('aadhaar_number');
 
-    // Store demo OTP for local testing
-    const demoOtp = "111111";
-    localStorage.setItem("aadhaarOtp", demoOtp);
+    const timerText = document.getElementById('timer-text');
 
-    let timeLeft = 120;
+    // Timer Duration in seconds
+    const TIMER_DURATION = 77;
+    const STORAGE_KEY = 'aadhaar_rx_timer_expiry';
 
     // Focus first box
-    otpBoxes[0].focus();
+    if (otpBoxes.length > 0) otpBoxes[0].focus();
 
     // Handle input typing and movement
     otpBoxes.forEach((box, index) => {
@@ -27,9 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const enteredOtp = Array.from(otpBoxes).map(i => i.value).join('');
-            if (enteredOtp.length === 6) {
-                submitOtp();
-            }
+            // Auto submit if needed, or just let user click verify
         });
 
         box.addEventListener('keydown', (e) => {
@@ -39,106 +38,143 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Countdown timer
-    const interval = setInterval(() => {
-        if (timeLeft <= 0) {
-            clearInterval(interval);
-            timerElement.textContent = "Expired";
-            otpBoxes.forEach(i => i.disabled = true);
+    // --- Persistent Timer Logic ---
+    let interval;
 
+    function startTimer() {
+        // Check if there is an existing expiry time
+        let expiryTime = localStorage.getItem(STORAGE_KEY);
+        const now = Date.now();
+
+        if (!expiryTime || parseInt(expiryTime) < now) {
+            if(!expiryTime) {
+                expiryTime = now + (TIMER_DURATION * 1000);
+                localStorage.setItem(STORAGE_KEY, expiryTime);
+            }
+        }
+        
+        updateTimerUI(expiryTime);
+
+        interval = setInterval(() => {
+            updateTimerUI(expiryTime);
+        }, 1000);
+    }
+
+    function updateTimerUI(expiryTime) {
+        const now = Date.now();
+        const timeLeftMs = parseInt(expiryTime) - now;
+        const timeLeftSec = Math.ceil(timeLeftMs / 1000);
+
+        if (timeLeftSec <= 0) {
+            clearInterval(interval);
+            
+            // Show Expired text
+            timerText.innerHTML = '<span class="text-danger fw-bold">Expired</span>';
+            otpBoxes.forEach(i => i.disabled = true);
+            
+            // Show Resend Link
+            resendOtpLink.style.display = 'inline';
+            resendOtpLink.style.pointerEvents = 'auto';
+            resendOtpLink.style.color = ''; // Reset color
+            
+        } else {
+            // Restore counting text
+            timerText.innerHTML = `Resend OTP in <span id="timer" class="text-danger fw-semibold">${timeLeftSec}</span> s`;
+            
+            resendOtpLink.style.display = 'none'; // Hide resend link while counting
+        }
+    }
+
+    // Initialize Timer
+    startTimer();
+
+
+    // --- Resend OTP Logic ---
+    resendOtpLink.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const aadhaarNumber = aadhaarNumberInput ? aadhaarNumberInput.value : '';
+
+        if (!aadhaarNumber) {
             Swal.fire({
                 icon: 'error',
-                title: 'OTP Expired',
-                text: 'Your OTP has expired. Please resend to get a new code.',
-                confirmButtonColor: '#3085d6'
+                title: 'Error',
+                text: 'Aadhaar number not found. Please try again from start.',
             });
             return;
         }
 
-        timerElement.textContent = timeLeft;
-        timeLeft--;
-    }, 1000);
+        // Disable link to prevent double click
+        resendOtpLink.style.pointerEvents = 'none';
 
-    // Resend OTP
-    resendOtpLink.addEventListener('click', (e) => {
-        e.preventDefault();
+        fetch('/aadhaar-resend-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ aadhaar_number: aadhaarNumber })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'OTP Resent',
+                    text: 'A new OTP has been sent to your registered mobile number.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
 
-        Swal.fire({
-            icon: 'info',
-            title: 'OTP Resent',
-            html: 'A new OTP has been sent to your registered mobile number.<br><b>(Use 111111 for local testing)</b>',
-            confirmButtonColor: '#3085d6'
-        });
+                // Reset inputs
+                otpBoxes.forEach(i => i.value = '');
+                otpBoxes.forEach(i => i.disabled = false);
+                otpBoxes[0].focus();
 
-        localStorage.setItem("aadhaarOtp", demoOtp);
-        timeLeft = 30;
-        otpBoxes.forEach(i => i.disabled = false);
-        otpBoxes.forEach(i => i.value = '');
-        otpBoxes[0].focus();
-        resendOtpLink.style.display = 'none';
+                // Reset Timer
+                const now = Date.now();
+                const newExpiry = now + (TIMER_DURATION * 1000);
+                localStorage.setItem(STORAGE_KEY, newExpiry);
+                
+                // Restart Interval
+                clearInterval(interval);
+                startTimer();
 
-        // Restart timer
-        const newInterval = setInterval(() => {
-            if (timeLeft <= 0) {
-                clearInterval(newInterval);
-                timerElement.textContent = "Expired";
-                otpBoxes.forEach(i => i.disabled = true);
-                resendOtpLink.style.display = 'inline';
             } else {
-                timerElement.textContent = timeLeft;
-                timeLeft--;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed',
+                    text: data.message || 'Could not resend OTP.',
+                });
+                resendOtpLink.style.pointerEvents = 'auto';
             }
-        }, 1000);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Something went wrong. Please try again.',
+            });
+            resendOtpLink.style.pointerEvents = 'auto';
+        });
     });
 
-    // OTP submission
+    // --- Form Submission ---
     otpForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        submitOtp();
-    });
-
-
-    function submitOtp() {
+        // We let the form submit naturally to the backend for verification
+        // But we check if inputs are filled
         const enteredOtp = Array.from(otpBoxes).map(i => i.value).join('');
-        const storedOtp = localStorage.getItem("aadhaarOtp");
-
         if (enteredOtp.length < 6) {
+            e.preventDefault();
             Swal.fire({
                 icon: 'warning',
                 title: 'Incomplete OTP',
                 text: 'Please enter all 6 digits of the OTP.',
                 confirmButtonColor: '#3085d6'
             });
-            return;
         }
-
-        if (enteredOtp === storedOtp) {
-            Swal.fire({
-                icon: 'success',
-                title: 'OTP Verified Successfully!',
-                text: 'Redirecting to the next step...',
-                confirmButtonColor: '#28a745',
-                timer: 1500,
-                showConfirmButton: false
-            }).then(() => {
-                localStorage.removeItem("aadhaarOtp");
-                window.location.href = '/upload_aadhaar_document'; // Change to your next route
-            });
-        } else {
-            Swal.fire({
-                title: 'Aadhaar Not Linked with Mobile',
-                text: 'We could not send OTP. Please upload your Aadhaar card for manual verification.',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: 'Cancel',
-                confirmButtonText: 'Upload Aadhaar Card',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'http://127.0.0.1:8000/upload_aadhaar_document';
-                }
-            });
-        }
-    }
-
+        // If valid, form submits POST to /verify-aadhaar-otp
+    });
 });
+

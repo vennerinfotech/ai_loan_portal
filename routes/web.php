@@ -3,10 +3,10 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AadhaarController;
+use App\Http\Controllers\BusinessProofController;
 use App\Http\Controllers\PancardController;
 use App\Http\Controllers\UserSettingController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BusinessProofController;
 
 Route::get('/', function () {
     if (Illuminate\Support\Facades\Auth::check()) {
@@ -47,7 +47,8 @@ route::get('/enter-aadhaar', [AadhaarController::class, 'create'])->name('enter-
 Route::post('/store-aadhaar', [AadhaarController::class, 'store'])->name('store-aadhaar');
 
 route::get('/aadhaar_verify_otp', [AadhaarController::class, 'showOtpForm'])->name('aadhaar_verify_otp');
-Route::post('/verify-aadhaar-otp', [AadhaarController::class, 'verifyOtp'])->name('verify.otp');
+Route::post('/verify-aadhaar-otp', [AadhaarController::class, 'verifyOtp'])->name('aadhaar.verify.otp');
+Route::post('/aadhaar-resend-otp', [AadhaarController::class, 'resendOtp'])->name('aadhaar.resend_otp');
 
 route::get('/upload_aadhaar_document', [AadhaarController::class, 'uploadaadhaarform'])->name('upload_aadhaar_doc');
 Route::post('/upload-aadhaar', [AadhaarController::class, 'uploadAadhaarDocument'])->name('upload.aadhaar.store');
@@ -258,4 +259,5 @@ Route::get('/aa', function () {
 // Document Locker Route
 Route::get('/my-documents', [App\Http\Controllers\DocumentController::class, 'index'])->name('my-documents');
 Route::get('/my-documents/{type}', [App\Http\Controllers\DocumentController::class, 'show'])->name('my-documents.show');
+Route::get('/my-documents/{type}/pdf', [App\Http\Controllers\DocumentController::class, 'showPdf'])->name('my-documents.pdf');
 Route::get('/document-image/{type}/{filename}', [App\Http\Controllers\DocumentController::class, 'serveImage'])->name('document.image');

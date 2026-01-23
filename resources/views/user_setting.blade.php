@@ -83,7 +83,7 @@
                                     <div class="profile">
                                         <div class="profile-image-container" style="position: relative; display: inline-block;">
                                             <img id="profile-preview" 
-                                                 src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : 'https://i.pravatar.cc/150?img=47' }}" 
+                                                 src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : asset('images/user-profile.jpg') }}" 
                                                  alt="Profile" 
                                                  style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
                                             
