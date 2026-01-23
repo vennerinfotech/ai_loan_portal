@@ -84,7 +84,8 @@
                     <div class="card-icon green"><i class="fa-regular fa-credit-card"></i></div>
                     <h3>Loan Eligibility</h3>
                     <p>Find out how much you can borrow in just 2 minutes with our simple checker.</p>
-                    <a href="{{ auth()->check() ? route('dashboard') : route('login') }}" class="card-link">Calculate Now →</a>
+                    <a href="{{ auth()->check() ? route('dashboard') : route('login') }}" class="card-link">Calculate Now
+                        →</a>
                 </div>
 
                 <div class="card-info">
@@ -153,5 +154,5 @@
 @endsection
 
 @push('scripts')
-    <script type="text/javascript" src="{{ asset('js/home.js') }}"></script>
+    <script src="{{ asset('js/home.js') }}"></script>
 @endpush

@@ -4,7 +4,6 @@
     <link rel="stylesheet" href="{{ asset('css/common_header.css') }}">
     <link rel="stylesheet" href="{{ asset(path: 'css/business_proof.css') }}">
     <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 @endsection
 
 @section('content')
@@ -33,7 +32,7 @@
                     </div>
                     <h3 class="card-title">Salaried</h3>
                     <p class="card-description">Full-time employees with regular monthly income from an employer</p>
-                    <a href="{{ route('salaried_proof') }}" class="select-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <a href="javascript:void(0)" class="select-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         Select <span class="arrow">→</span></a>
                 </div>
 
@@ -81,93 +80,92 @@
 
     @include('layouts.footer')
 
-@endsection
+    <!-- Modal -->
+    <div class="modal fade custom_bussiness_type_modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Salaried Business Proof</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+             <div class="business_box">
 
-<div class="modal fade custom_bussiness_type_modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Salaried Business Proof</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-         <div class="business_box">
+                    {{-- <div class="title">
+                        <h2>Salaried Business Proof</h2>
+                        <p>Select and upload your business registration documents</p>
+                    </div> --}}
 
-                {{-- <div class="title">
-                    <h2>Salaried Business Proof</h2>
-                    <p>Select and upload your business registration documents</p>
-                </div> --}}
+                    <div class="business_box_inner">
 
-                <div class="business_box_inner">
+                        <!-- Option 1 -->
+                        <div class="upload_card active">
+                            <label class="upload_header custom-checkbox">
+                                <input type="checkbox" checked />
+                                <span class="checkmark"></span>
+                                <span class="checkbox-title">Form 16 or ITR</span>
+                            </label>
 
-                    <!-- Option 1 -->
-                    <div class="upload_card active">
-                        <label class="upload_header custom-checkbox">
-                            <input type="checkbox" checked />
-                            <span class="checkmark"></span>
-                            <span class="checkbox-title">Form 16 or ITR</span>
-                        </label>
-
-                        <div class="upload_area">
-                            <div class="upload_icon">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <div class="upload_area">
+                                <div class="upload_icon">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <p>Drop files here or click to upload</p>
+                                <small>PDF, JPG, PNG (Max 5MB)</small>
+                                <button type="button">Choose File</button>
                             </div>
-                            <p>Drop files here or click to upload</p>
-                            <small>PDF, JPG, PNG (Max 5MB)</small>
-                            <button type="button">Choose File</button>
                         </div>
-                    </div>
 
-                    <!-- Option 2 -->
-                    <div class="upload_card">
-                        <label class="upload_header custom-checkbox">
-                            <input type="checkbox" />
-                            <span class="checkmark"></span>
-                            <span class="checkbox-title">Latest Salary Slips</span>
-                        </label>
+                        <!-- Option 2 -->
+                        <div class="upload_card">
+                            <label class="upload_header custom-checkbox">
+                                <input type="checkbox" />
+                                <span class="checkmark"></span>
+                                <span class="checkbox-title">Latest Salary Slips</span>
+                            </label>
 
-                        <div class="upload_area">
-                            <div class="upload_icon">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <div class="upload_area">
+                                <div class="upload_icon">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <p>Drop files here or click to upload</p>
+                                <small>PDF, JPG, PNG (Max 5MB)</small>
+                                <button type="button">Choose File</button>
                             </div>
-                            <p>Drop files here or click to upload</p>
-                            <small>PDF, JPG, PNG (Max 5MB)</small>
-                            <button type="button">Choose File</button>
                         </div>
-                    </div>
 
-                    <!-- Option 3 -->
-                    <div class="upload_card">
-                        <label class="upload_header custom-checkbox">
-                            <input type="checkbox" />
-                            <span class="checkmark"></span>
-                            <span class="checkbox-title">Salary Letterpad</span>
-                        </label>
+                        <!-- Option 3 -->
+                        <div class="upload_card">
+                            <label class="upload_header custom-checkbox">
+                                <input type="checkbox" />
+                                <span class="checkmark"></span>
+                                <span class="checkbox-title">Salary Letterpad</span>
+                            </label>
 
-                        <div class="upload_area">
-                            <div class="upload_icon">
-                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <div class="upload_area">
+                                <div class="upload_icon">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <p>Drop files here or click to upload</p>
+                                <small>PDF, JPG, PNG (Max 5MB)</small>
+                                <button type="button">Choose File</button>
                             </div>
-                            <p>Drop files here or click to upload</p>
-                            <small>PDF, JPG, PNG (Max 5MB)</small>
-                            <button type="button">Choose File</button>
                         </div>
                     </div>
                 </div>
-            </div>
-      </div>
-      <div class="modal-footer">
-        <div class="business_box_btn">
-                    <button class="btn-cancel">Cancel</button>
-                    <button class="btn-submit">Save & Continue</button>
-                </div>
+          </div>
+          <div class="modal-footer">
+            <div class="business_box_btn">
+                        <button class="btn-cancel">Cancel</button>
+                        <button class="btn-submit">Save & Continue</button>
+                    </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+
+@endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{ asset('js/business_proof.js') }}"></script>
-
 @endpush
