@@ -74,9 +74,9 @@
                             </p>
                         </div>
                     </div>
-                    <button class="btn-submit">
+                    <a href="{{ route('cibil_crif') }}" class="btn-submit">
                             <i class="fa-solid fa-check me-1"></i> Continue
-                        </button>
+                    </a>
                      <a href="{{ route('cibil.download.report') }}"
                             class="btn-cancel">
                             <i class="fa-solid fa-file me-1"></i> View Full Report

@@ -35,7 +35,9 @@ Route::get('/reset-mpin', [RegisterController::class, 'showResetMpin'])->name('r
 Route::post('/reset-mpin', [RegisterController::class, 'storeNewMpin'])->name('reset.mpin.store');
 
 Route::get('/dashboard', [RegisterController::class, 'showDashboard'])->name('dashboard');
+
 Route::get('/business_proof', [BusinessProofController::class, 'business_proof'])->name('business_proof');
+Route::get('/salaried_proof', [BusinessProofController::class, 'salaried_proof'])->name('salaried_proof');
 
 route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');

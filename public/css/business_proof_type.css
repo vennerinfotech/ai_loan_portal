@@ -8,138 +8,6 @@ body {
     box-sizing: border-box;
 }
 
-.section-wrapper {
-    background: #f3f4f6;
-    padding: 100px 0px;
-}
-
-.section-title {
-    text-align: center;
-}
-
-.section-title h1 {
-    font-size: 40px;
-    color: #252484;
-    font-weight: 700;
-    line-height: 50px;
-    margin: 0px 0 20px;
-}
-
-.section-title p {
-    color: #4b5563;
-    font-size: 16px;
-    line-height: 22px;
-}
-
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 24px;
-    margin-top: 40px;
-}
-
-.cards-grid .card {
-    background: white;
-    border-radius: 16px;
-    padding: 32px 24px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.cards-grid .card::before {
-    position: absolute;
-    content: "";
-    background: #2524840a;
-    height: 200px;
-    width: 200px;
-    border-radius: 100%;
-    top: -80px;
-    right: -60px;
-}
-
-.cards-grid .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-}
-
-.cards-grid .icon-wrapper {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-    background: #252484;
-}
-
-.cards-grid .icon i {
-    color: #fff;
-    font-size: 23px;
-}
-
-.cards-grid .card-title {
-    color: #252484;
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    font-weight: 600;
-    margin-bottom: 12px;
-}
-
-.cards-grid .card-description {
-    color: #4b5563;
-    font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 30px;
-}
-
-.cards-grid .select-link {
-    color: #5b6ef5;
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: gap 0.3s ease;
-}
-
-.cards-grid .card:hover .select-link {
-    gap: 10px;
-}
-
-.cards-grid .arrow {
-    display: inline-block;
-    transition: transform 0.3s ease;
-}
-
-@media (max-width: 767px) {
-    .section-wrapper {
-        padding: 50px 0 30px;
-    }
-    .section-title h1 {
-        font-size: 26px;
-        line-height: 34px;
-    }
-    .section-title p {
-        font-size: 14px;
-    }
-    .cards-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-}
-
-@media (min-width: 1400px) {
-    .section-wrapper .container {
-        max-width: 1320px;
-    }
-}
-
-/*Salaried Css*/
 .business_proof_type {
     padding: 100px 5px;
     background: #eaeafd;
@@ -148,6 +16,7 @@ body {
 
 .business_box {
     border-radius: 14px;
+    padding: 15px;
 }
 
 .business_box .title h2 {
@@ -162,8 +31,8 @@ body {
     font-size: 14px;
 }
 
-.custom_bussiness_type_modal .modal-body{
-    padding: 20px;
+.business_box_inner {
+    margin-top: 25px;
 }
 
 /* Upload Card */
@@ -177,10 +46,6 @@ body {
     padding: 15px;
     margin-bottom: 20px;
     background: #fff;
-}
-
-.business_box_inner .upload_card:last-child{
-    margin-bottom: 0px;
 }
 
 .business_box_inner .upload_card:hover {
@@ -201,23 +66,13 @@ body {
 }
 
 .business_box_inner .upload_area {
-    position: relative;
     margin-top: 15px;
-    border: 1px solid #E5E7EB;
+    border: 2px dashed #d1d5db;
     border-radius: 12px;
-    padding: 35px;
+    padding: 25px;
     text-align: center;
     background: #fff;
     display: none;
-}
-
-.business_box_inner .upload_area::before {
-    content: "";
-    position: absolute;
-    inset: 15px;
-    border: 2px dashed #D1D5DB;
-    border-radius: 10px;
-    pointer-events: none;
 }
 
 .upload_card.active .upload_area {
@@ -249,7 +104,6 @@ body {
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
-    font-size: 14px;
     cursor: pointer;
 }
 
@@ -294,10 +148,6 @@ body {
     transform: rotate(45deg);
 }
 
-.custom_bussiness_type_modal .btn-close:focus{
-    box-shadow: none;
-}
-
 /* Options */
 .business_box_inner .option {
     display: flex;
@@ -318,8 +168,7 @@ button:focus {
     display: flex;
     justify-content: space-between;
     margin-top: 30px;
-            gap: 10px;
-            width: 100%;
+            gap: 10px
 }
 
 .business_box_btn .btn-submit {

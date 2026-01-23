@@ -41,7 +41,7 @@
                             Send OTP
                         </button>
                         <div class="text-center mt-3">
-                            <a href="{{ route('login') }}" class="text-decoration-none" style="color: #666;">Back to
+                            <a href="{{ route('login') }}" class="text-decoration-none MPIN-link">Back to
                                 Login</a>
                         </div>
                     </form>

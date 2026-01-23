@@ -28,7 +28,7 @@
                         <h3 class="mt-3">Credit Report Verified Successfully</h3>
                         <p> Your credit report has been fetched and analyzed. You can now continue with your loan
                             application.</p>
-                        <a href="{{route(apply)}}" class="btn-submit">
+                        <a href="{{route('applicant_detail')}}" class="btn-submit">
                             Proceed to Loan Application
                         </a>
 
