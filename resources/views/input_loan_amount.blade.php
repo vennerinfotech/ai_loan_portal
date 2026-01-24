@@ -47,9 +47,9 @@
                                 <div class="form-group">
                                     <label for="aadhaar">Enter Loan Amount</label>
                                     <div class="aadhaar-input-container">
-                                        <input type="text" id="" name="aadhaar_number"
+                                        <input type="text" id="loanAmount" name="loanAmount"
                                             placeholder="Enter Loan Amount" autocomplete="off" class="form-control"
-                                            value="">
+                                            inputmode="numeric" pattern="[0-9]*">
 
                                         <button type="button" class="aadhaar-toggle-visibility" id="toggleBtn">
                                             <i class="bi bi-shield-shaded"></i>
@@ -57,12 +57,22 @@
                                     </div>
                                 </div>
                                 <div class="loan-input-select">
-                                    <a href="#" class="btn-select" id=""><i class="fa-solid fa-indian-rupee-sign"></i>1,00,000</a>
-                                    <a href="#" class="btn-select" id=""><i class="fa-solid fa-indian-rupee-sign"></i>5,00,000</a>
-                                    <a href="#" class="btn-select" id=""><i class="fa-solid fa-indian-rupee-sign"></i>10,00,000</a>
+                                    <a href="#" class="btn-select" data-amount="100000">
+                                        <i class="fa-solid fa-indian-rupee-sign"></i>1,00,000
+                                    </a>
+
+                                    <a href="#" class="btn-select" data-amount="500000">
+                                        <i class="fa-solid fa-indian-rupee-sign"></i>5,00,000
+                                    </a>
+
+                                    <a href="#" class="btn-select" data-amount="1000000">
+                                        <i class="fa-solid fa-indian-rupee-sign"></i>10,00,000
+                                    </a>
                                 </div>
+
                                 <div class="loan-input-btn">
-                                    <a href="{{ route('apply_loan') }}" class="btn-cancel" id=""><i class="fa-solid fa-arrow-left pr-2"></i>Back</a>
+                                    <a href="{{ route('apply_for_loan') }}" class="btn-cancel" id=""><i
+                                            class="fa-solid fa-arrow-left pr-2"></i>Back</a>
                                     <a href="{{ route('enter-aadhaar') }}" class="btn-submit" id="">Continue</a>
                                 </div>
 
@@ -76,4 +86,5 @@
 @endsection
 
 @push('scripts')
+    <script src="{{ asset('js/input_loan_amount.js') }}"></script>
 @endpush

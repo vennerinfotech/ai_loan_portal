@@ -626,7 +626,8 @@ button:focus {
     text-align: center;
 }
 
-.form-card .loan-input-select .btn-select:hover {
+.form-card .loan-input-select .btn-select:hover,
+.form-card .loan-input-select .btn-select.selected  {
     border-color: #6765e8;
     background: white;
     box-shadow: 0 4px 12px rgba(103, 101, 232, 0.15);

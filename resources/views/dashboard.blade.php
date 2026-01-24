@@ -56,7 +56,6 @@
                 <div class="calculator-card">
                     <div class="calculator-header">
                         <h3>Quick Estimate</h3>
-                        <button class="icon-btn">📊</button>
                     </div>
 
                     <div class="form-group">

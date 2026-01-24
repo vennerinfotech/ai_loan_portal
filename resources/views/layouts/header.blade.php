@@ -154,7 +154,7 @@
               <nav>
                   <a href="#home">Home</a>
                   <a href="#customers">About Us</a>
-                  <a href="#collaborator">Collaborator</a>
+                  <a href="#calculator">Calculator</a>
                   <a href="#team">Meet the team</a>
                   <a href="#contact">Contact Us</a>
                   <a href="{{ route('login') }}" class="apply-btn">Apply Now</a>
@@ -170,7 +170,7 @@
           <div class="mobile-menu" id="mobileMenu">
               <a href="#home">Home</a>
               <a href="#customers">About Us</a>
-              <a href="#collaborator">Collaborator</a>
+              <a href="#calculator">Calculator</a>
               <a href="#team">Meet the team</a>
               <a href="#contact">Contact Us</a>
               <button class="apply-btn">Login</button>

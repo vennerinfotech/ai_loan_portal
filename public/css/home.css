@@ -72,6 +72,12 @@ body {
     font-weight: 600;
     text-align: justify;
     font-weight: 600;
+    cursor: auto;
+}
+
+.slide-buttons .btn:active{
+    color: #fff;
+    border-color: #4f4ea56e;
 }
 
 .slide-buttons .btn span {

@@ -176,7 +176,7 @@ Route::middleware(['auth'])->group(function () {
             'reportDate' => $reportDate,
             'provider' => $provider,
         ]);
-    })->name('cibil_credit_score_report');
+    })->name('cibil_credit_score');
 
     Route::get('/download-cibil-report', [PancardController::class, 'downloadFullReport'])->name('cibil.download.report');
 
