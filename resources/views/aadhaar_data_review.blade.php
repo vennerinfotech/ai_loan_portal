@@ -168,7 +168,7 @@
                                             <span class="d-block">By confirming, you agree that the information provided is accurate and complete. This data will be used for identity verification purposes only.</span>
                                         </div>
                                     </div>
-                                    <a href="{{ route('aadhaar_verification_comp') }}"
+                                    <a href="{{ route('aadhaar_verification_completed') }}"
                                             class="btn-submit">
                                             Confirm & Submit
                                         </a>

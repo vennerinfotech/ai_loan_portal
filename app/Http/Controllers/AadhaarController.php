@@ -261,7 +261,7 @@ class AadhaarController extends Controller
             }
 
             // Optionally, you can also return a success message
-            return redirect()->route('aadhaar1')->with('success', 'Aadhaar card uploaded successfully.');
+            return redirect()->route('aadhaar_data_review')->with('success', 'Aadhaar card uploaded successfully.');
         }
 
         // If no file is uploaded, return error

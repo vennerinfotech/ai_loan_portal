@@ -45,7 +45,7 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('cibil_crifr') }}" class="btn-submit">
+                        <a href="{{ route('cibil_credit_report') }}" class="btn-submit">
                             Continue
                         </a>
 

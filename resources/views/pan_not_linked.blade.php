@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="">
-                         <a href="{{ route('Verify_pan') }}" class="btn-submit">Upload PAN</a>
+                         <a href="{{ route('upload_pan_document') }}" class="btn-submit">Upload PAN</a>
                         <a href="#" class="btn-cancel">Cancel</a>
                     </div>
                 </div>

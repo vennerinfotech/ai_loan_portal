@@ -74,7 +74,7 @@
                             </p>
                         </div>
                     </div>
-                    <a href="{{ route('cibil_crif') }}" class="btn-submit">
+                    <a href="{{ route('final_confirmation') }}" class="btn-submit">
                             <i class="fa-solid fa-check me-1"></i> Continue
                     </a>
                      <a href="{{ route('cibil.download.report') }}"

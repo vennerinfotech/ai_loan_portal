@@ -103,7 +103,7 @@
                         <p class="card-description">Start your loan application process with our simple and quick form. Get
                             approved
                             in minutes.</p>
-                        <a href="{{ route('apply_loan') }}" class="btn btn-card-action">Start Application &rarr;</a>
+                        <a href="{{ route('apply_for_loan') }}" class="btn btn-card-action">Start Application &rarr;</a>
                     </div>
 
                     <div class="action-card card-blue-light">
