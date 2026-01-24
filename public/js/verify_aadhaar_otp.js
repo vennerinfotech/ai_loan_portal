@@ -8,8 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const timerText = document.getElementById('timer-text');
 
     // Timer Duration in seconds
-    const TIMER_DURATION = 77;
+    const TIMER_DURATION = 119;
     const STORAGE_KEY = 'aadhaar_rx_timer_expiry';
+
+    // Check for success message (fresh load)
+    const successAlert = document.querySelector('.alert-success');
+    if (successAlert) {
+        localStorage.removeItem(STORAGE_KEY);
+    }
 
     // Focus first box
     if (otpBoxes.length > 0) otpBoxes[0].focus();
@@ -47,10 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const now = Date.now();
 
         if (!expiryTime || parseInt(expiryTime) < now) {
-            if(!expiryTime) {
-                expiryTime = now + (TIMER_DURATION * 1000);
-                localStorage.setItem(STORAGE_KEY, expiryTime);
-            }
+            expiryTime = now + (TIMER_DURATION * 1000);
+            localStorage.setItem(STORAGE_KEY, expiryTime);
         }
         
         updateTimerUI(expiryTime);

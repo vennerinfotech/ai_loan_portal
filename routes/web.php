@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\AadhaarController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\AadhaarController;
 use App\Http\Controllers\BusinessProofController;
 use App\Http\Controllers\PancardController;
 use App\Http\Controllers\UserSettingController;
@@ -12,6 +12,7 @@ Route::get('/', function () {
     if (Illuminate\Support\Facades\Auth::check()) {
         return redirect()->route('dashboard');
     }
+
     return view('welcome', ['showHeader' => true]);
 });
 
@@ -38,6 +39,24 @@ Route::post('/forgot-mpin-resend', [RegisterController::class, 'resendForgotMpin
 Route::get('/reset-mpin', [RegisterController::class, 'showResetMpin'])->name('reset.mpin.view');
 Route::post('/reset-mpin', [RegisterController::class, 'storeNewMpin'])->name('reset.mpin.store');
 
+route::get('/enter-aadhaar', [AadhaarController::class, 'create'])->name('enter-aadhaar');
+Route::post('/store-aadhaar', [AadhaarController::class, 'store'])->name('store-aadhaar');
+
+route::get('/aadhaar_verify_otp', [AadhaarController::class, 'showOtpForm'])->name('aadhaar_verify_otp');
+Route::post('/verify-aadhaar-otp', [AadhaarController::class, 'verifyOtp'])->name('aadhaar.verify.otp');
+Route::post('/aadhaar-resend-otp', [AadhaarController::class, 'resendOtp'])->name('aadhaar.resend_otp');
+
+route::get('/upload_aadhaar_document', [AadhaarController::class, 'uploadaadhaarform'])->name('upload_aadhaar_doc');
+Route::post('/upload-aadhaar', [AadhaarController::class, 'uploadAadhaarDocument'])->name('upload.aadhaar.store');
+
+route::get('/aadhaar_data_review', [AadhaarController::class, 'aadhaar_data_review'])->name('aadhaar_data_review');
+route::get('/aadhaar_verification_completed', [AadhaarController::class, 'aadhaar_verification_form'])->name('aadhaar_verification_completed');
+
+route::get('/aadhar_not_linked', [AadhaarController::class, 'aadhar_not_linked'])->name('aadhar_not_linked');
+
+// Route to download Aadhaar verification receipt
+Route::get('/download-verification-receipt', [AadhaarController::class, 'downloadReceipt'])->name('aadhaar.downloadReceipt');
+
 // Protected Routes
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -46,24 +65,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/business_proof', [BusinessProofController::class, 'business_proof'])->name('business_proof');
     Route::get('/salaried_proof', [BusinessProofController::class, 'salaried_proof'])->name('salaried_proof');
-
-    route::get('/enter-aadhaar', [AadhaarController::class, 'create'])->name('enter-aadhaar');
-    Route::post('/store-aadhaar', [AadhaarController::class, 'store'])->name('store-aadhaar');
-
-    route::get('/aadhaar_verify_otp', [AadhaarController::class, 'showOtpForm'])->name('aadhaar_verify_otp');
-    Route::post('/verify-aadhaar-otp', [AadhaarController::class, 'verifyOtp'])->name('aadhaar.verify.otp');
-    Route::post('/aadhaar-resend-otp', [AadhaarController::class, 'resendOtp'])->name('aadhaar.resend_otp');
-
-    route::get('/upload_aadhaar_document', [AadhaarController::class, 'uploadaadhaarform'])->name('upload_aadhaar_doc');
-    Route::post('/upload-aadhaar', [AadhaarController::class, 'uploadAadhaarDocument'])->name('upload.aadhaar.store');
-
-    route::get('/aadhaar_data_review', [AadhaarController::class, 'aadhaar_data_review'])->name('aadhaar_data_review');
-    route::get('/aadhaar_verification_completed', [AadhaarController::class, 'aadhaar_verification_form'])->name('aadhaar_verification_completed');
-
-    route::get('/aadhar_not_linked', [AadhaarController::class, 'aadhar_not_linked'])->name('aadhar_not_linked');
-
-    // Route to download Aadhaar verification receipt
-    Route::get('/download-verification-receipt', [AadhaarController::class, 'downloadReceipt'])->name('aadhaar.downloadReceipt');
 
     Route::get('/applicant_detail', [AadhaarController::class, 'applicant'])->name('applicant_detail');
 
@@ -80,10 +81,10 @@ Route::middleware(['auth'])->group(function () {
 
         if ($request->hasFile('aadhaar_image')) {
             $file = $request->file('aadhaar_image');
-            $filename = 'test_aadhaar_' . time() . '.' . $file->getClientOriginalExtension();
+            $filename = 'test_aadhaar_'.time().'.'.$file->getClientOriginalExtension();
             $path = $file->storeAs('private_uploads/aadhar_card', $filename);
 
-            $imagePath = storage_path('app/private_uploads/aadhar_card/' . $filename);
+            $imagePath = storage_path('app/private_uploads/aadhar_card/'.$filename);
 
             $service = new \App\Services\AadhaarExtractionService;
             $result = $service->extractFromImage($imagePath);
@@ -119,7 +120,7 @@ Route::middleware(['auth'])->group(function () {
         $panNumber = $user->pan_card_number ?? ($user->customer->pan_card_number ?? 'N/A');
 
         // If not in DB, check session (optional fallback)
-        if ($panNumber === 'N/A' || !$panNumber) {
+        if ($panNumber === 'N/A' || ! $panNumber) {
             $sessionData = session('pan_extracted_data');
             if (isset($sessionData['pan_number'])) {
                 $panNumber = $sessionData['pan_number'];
@@ -138,7 +139,7 @@ Route::middleware(['auth'])->group(function () {
         $panNumber = $user->pan_card_number ?? ($user->customer->pan_card_number ?? 'N/A');
 
         // Fallback to session if N/A
-        if ($panNumber === 'N/A' || !$panNumber) {
+        if ($panNumber === 'N/A' || ! $panNumber) {
             $sessionData = session('pan_extracted_data');
             if (isset($sessionData['pan_number'])) {
                 $panNumber = $sessionData['pan_number'];

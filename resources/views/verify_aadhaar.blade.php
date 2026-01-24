@@ -34,15 +34,7 @@
                         </div>
                     @endif
 
-                    @if ($errors->any())
-                        <div class="alert alert-danger" role="alert">
-                             <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+
 
                     <form action="{{ route('aadhaar.verify.otp') }}" method="POST" id="otpForm">
                         @csrf
@@ -87,4 +79,17 @@
 
 @push('scripts')
     <script src="{{ asset('js/verify_aadhaar_otp.js') }}"></script>
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Verification Failed',
+                    text: '{{ $errors->first() }}',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Try Again'
+                });
+            });
+        </script>
+    @endif
 @endpush
