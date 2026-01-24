@@ -59,23 +59,23 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Loan Amount</label>
-                        <input type="number" id="loanAmount" value="50000" class="form-input">
+                        <label>Loan Amount (₹)</label>
+                        <input type="number" id="loanAmount" value="500000" class="form-input">
                     </div>
 
                     <div class="form-group">
-                        <label>Loan Term</label>
-                        <select id="loanTerm" class="form-input">
-                            <option value="12">12 months</option>
-                            <option value="24">24 months</option>
-                            <option value="36">36 months</option>
-                            <option value="48">48 months</option>
-                        </select>
+                        <label>Interest Rate (% P.A.)</label>
+                        <input type="number" id="interestRate" value="3.5" step="0.1" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Loan Term (Months)</label>
+                        <input type="number" id="loanTerm" value="12" class="form-input">
                     </div>
 
                     <div class="payment-display">
                         <div class="payment-label">Monthly Payment</div>
-                        <div class="payment-value" id="monthlyPayment">₹4,350</div>
+                        <div class="payment-value" id="monthlyPayment">₹0</div>
                     </div>
 
                     <button class="btn btn-dark btn-full">
@@ -186,20 +186,25 @@
         <script>
             // EMI Calculator
             function calculateEMI() {
-                const amount = parseFloat(document.getElementById('loanAmount').value);
-                const months = parseInt(document.getElementById('loanTerm').value);
-                const rate = 0.035; // 3.5% annual rate
-                const monthlyRate = rate / 12;
+                const amount = parseFloat(document.getElementById('loanAmount').value) || 0;
+                const months = parseInt(document.getElementById('loanTerm').value) || 0;
+                const rateInput = parseFloat(document.getElementById('interestRate').value) || 0;
+                
+                // Convert annual percent to monthly decimal
+                const monthlyRate = (rateInput / 100) / 12;
 
-                const payment = amount * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate,
-                    months) - 1);
-
-                document.getElementById('monthlyPayment').textContent = '₹' + Math.round(payment).toLocaleString();
+                if (amount > 0 && months > 0 && monthlyRate > 0) {
+                    const payment = amount * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+                    document.getElementById('monthlyPayment').textContent = '₹' + Math.round(payment).toLocaleString('en-IN');
+                } else {
+                    document.getElementById('monthlyPayment').textContent = '₹0';
+                }
             }
 
             // Add event listeners
             document.getElementById('loanAmount').addEventListener('input', calculateEMI);
-            document.getElementById('loanTerm').addEventListener('change', calculateEMI);
+            document.getElementById('interestRate').addEventListener('input', calculateEMI);
+            document.getElementById('loanTerm').addEventListener('input', calculateEMI);
 
             // Initial calculation
             calculateEMI();

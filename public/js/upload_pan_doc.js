@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const uploadFromGalleryBtn = document.getElementById('galleryButton');  // Gallery button by id
     const fileInput = document.getElementById('fileInput');  // Hidden file input
     const uploadArea = document.querySelector('.pan-upload-area');
-    const submitButton = document.querySelector('.pan-btn-success'); // Continue button
-    const cancelButton = document.querySelector('.pan-btbuttonn-light'); // Cancel button (for navigation)
+    const submitButton = document.querySelector('.btn-submit'); // Continue button
+    const cancelButton = document.querySelector('.btn-cancel'); // Cancel button (for navigation)
     const errorMessageDiv = document.createElement('div'); // Error message div
 
     let previewBox = null; // To keep track of the existing preview box

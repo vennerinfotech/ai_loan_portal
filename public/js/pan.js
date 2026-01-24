@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const panForm = document.getElementById('panForm');
     const errorMessage = document.createElement('div');
     const successMessage = document.createElement('div');  // For success message
-    const panInputContainer = document.querySelector('.verifications-input-group');
+    const panInputContainer = document.querySelector('.verifications-input-container');
 
     // Regular expression for PAN format: XXXXX1234X (5 letters, 4 digits, 1 letter)
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Apply error class to input field for styling
         panInput.classList.add('error');  // Add error class
         errorMessage.classList.add('pan-error-message');
+        errorMessage.style.color = 'red';
         errorMessage.innerHTML = message;
         panInputContainer.appendChild(errorMessage);
         panInput.classList.add('shake');  // Add shake animation
